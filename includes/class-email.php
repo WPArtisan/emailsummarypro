@@ -15,12 +15,22 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 class Email_Summary_Pro_Email {
 
 	protected $data;
+	protected $date_from;
+	protected $date_to;
 
 	public function __construct() {
 		// Make sure there's a default date value.
 		$this->date();
 	}
 
+	/**
+	 * Work out the dates to build the email for.
+	 * Default to latest. Can pass any strtotime() compatible
+	 * date in and it will build the email for that week.
+	 *
+	 * @param  string $date
+	 * @return void
+	 */
 	public function date( $date = 'latest' ) {
 		$start_of_week = get_option( 'start_of_week' );
 		$start_of_week_day = date( 'l', strtotime( "Sunday + {$start_of_week} Days" ) );
@@ -41,6 +51,14 @@ class Email_Summary_Pro_Email {
 		$this->date_to = date( "Y-m-d", strtotime( "+ 6 days ", strtotime( $this->date_from ) ) );
 	}
 
+	/**
+	 * Constructs the email template.
+	 * Sets up global variables to be used in the templates.
+	 * Constructs both plain and HTML variavles.
+	 *
+	 * @param  string $type plains or HTML templates to build
+	 * @return string
+	 */
 	public function get_template( $type = 'plain' ) {
 
 		// Ensure type is something we're expecting
@@ -113,8 +131,6 @@ class Email_Summary_Pro_Email {
 	 *
 	 * Puts everything together and does the sending of the email.
 	 *
-	 * @since 1.0.0
-	 *
 	 * @access public
 	 * @return null
 	 */
@@ -135,26 +151,46 @@ class Email_Summary_Pro_Email {
 		}
 
 		/**
-		 * Subject for the roundup email.
+		 * Subject for the summary email.
 		 *
 		 * @since 1.0.0
 		 * @var string
 		 */
 		$subject = apply_filters( 'esp_email_subject', esc_html__( 'Weekly Roundup', 'wp-roundup' ) );
 
-		// Get the plain email templates
-		$plain_template = $this->get_template( 'plain' );
+		// Create a boundary for the email.
+		$boundary = uniqid( 'np' );
 
-		// Check if they want HTML emails
-		// if ( esp_get_option( 'html_emails' ) ) {
-			$html_template = $this->get_template( 'html' );
-		// }
+		// If HTML emails are disabled, send a plain one.
+		if ( esp_get_option( 'disable_html_emails' ) ) {
+			$message = $this->get_template( 'plain' );
+		} else {
+			//here is the content body
+			$message = "This is a MIME encoded message.";
 
-		$message = $html_template;
+			// Set the plain text boundary.
+			$message .= PHP_EOL . PHP_EOL . "--" . $boundary . PHP_EOL;
+			$message .= "Content-type: text/plain;charset=utf-8" . PHP_EOL . PHP_EOL;
+
+			// Plain text body.
+			$message .= $this->get_template( 'plain' );
+
+			// Set the HTML boundary.
+			$message .= PHP_EOL . PHP_EOL . "--" . $boundary . PHP_EOL;
+			$message .= "Content-type: text/html;charset=utf-8" . PHP_EOL . PHP_EOL;
+
+			//Html body
+			$message .= $this->get_template( 'html' );
+
+			// Close the boundary.
+			$message .= PHP_EOL . PHP_EOL . "--" . $boundary . "--";
+		}
 
 		// Email headers
 		$headers = array(
+			"MIME-Version: 1.0",
 			sprintf( "From: %s <%s>", get_bloginfo( 'name' ), get_bloginfo( 'admin_email' ) ),
+			sprintf( "boundary=%s", $boundary ),
 		);
 
 		/**
@@ -196,11 +232,18 @@ class Email_Summary_Pro_Email {
 
 	/**
 	 * Set the content type for the email.
+	 * Default to multipart/alternative.
+	 * If HTML has been disabled switch to text/plain.
 	 *
 	 * @param string $content_type Email message format.
+	 * @return string
 	 */
 	public function set_content_type( $content_type ) {
-		return 'text/html';
+		if ( esp_get_option( 'disable_html_emails' ) ) {
+			return 'text/plain';
+		}
+
+		return 'multipart/alternative';
 	}
 
 }

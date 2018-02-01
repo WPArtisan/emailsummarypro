@@ -150,9 +150,9 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 		);
 
 		add_settings_field(
-			'html_emails',
-			'<label for="html_emails">' . esc_html__( 'HTML Emails', 'email-summary-pro' ) . '</label>',
-			array( $this, 'html_emails_field_callback' ),
+			'disable_html_emails',
+			'<label for="disable-html-emails">' . esc_html__( 'Disable HTML Emails', 'email-summary-pro' ) . '</label>',
+			array( $this, 'disable_html_emails_field_callback' ),
 			$setting_name,
 			$setting_name
 		);
@@ -223,12 +223,12 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	 * @access public
 	 * @return null
 	 */
-	public function html_emails_field_callback() {
+	public function disable_html_emails_field_callback() {
 		?>
-		<label for="html-emails">
-			<input type="hidden" name="esp_options[html_emails]" value="0">
-			<input type="checkbox" name="esp_options[html_emails]" id="html-emails" class="" value="true"<?php checked( (bool) esp_get_option( 'html_emails' ) ); ?> />
-			<?php esc_html_e( 'Uncheck this for older email clients.', 'email-summary-pro' ); ?>
+		<label for="disable-html-emails">
+			<input type="hidden" name="esp_options[disable_html_emails]" value="0">
+			<input type="checkbox" name="esp_options[disable_html_emails]" id="disable-html-emails" class="" value="true"<?php checked( (bool) esp_get_option( 'disable_html_emails' ) ); ?> />
+			<?php esc_html_e( 'Disable HTML emails and only recieve plain text ones.', 'email-summary-pro' ); ?>
 		</label>
 		<?php
 	}
