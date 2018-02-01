@@ -5,7 +5,7 @@
 			<tr>
 				<td valign="top" class="preheaderContent" style="padding-top:10px; padding-right:20px; padding-bottom:10px; padding-left:20px;">
 					<?php echo date( "l, jS F Y", strtotime( $roundup_date_from ) ); ?>
-					&nbsp;&#150;&nbsp;
+					&nbsp;-&nbsp;
 					<?php echo date( "l, jS F Y", strtotime( $roundup_date_to ) ); ?>
 				</td>
 				<!-- *|IFNOT:ARCHIVE_PAGE|* -->

@@ -16,8 +16,8 @@ class Email_Summary_Pro_Email {
 
 	protected $data;
 
-	public function date( $date ) {
 
+	public function date( $date = 'latest' ) {
 		$start_of_week = get_option( 'start_of_week' );
 		$start_of_week_day = date( 'l', strtotime( "Sunday + {$start_of_week} Days" ) );
 
@@ -126,13 +126,14 @@ class Email_Summary_Pro_Email {
 		 * @var string
 		 */
 		$to = apply_filters( 'esp_email_to', esp_get_option( 'recipients' ) );
-$to = 'edward@thetab.com';
+
 		// Bail if no recipient is set
-		if ( empty( $to ) )
+		if ( empty( $to ) ){
 			return;
+		}
 
 		/**
-		 * Subject for the roundup email
+		 * Subject for the roundup email.
 		 *
 		 * @since 1.0.0
 		 * @var string
@@ -140,39 +141,64 @@ $to = 'edward@thetab.com';
 		$subject = apply_filters( 'esp_email_subject', esc_html__( 'Weekly Roundup', 'wp-roundup' ) );
 
 		// Get the plain email templates
-		// $plain_template = $this->get_template( 'plain' );
+		$plain_template = $this->get_template( 'plain' );
 
 		// Check if they want HTML emails
 		// if ( esp_get_option( 'html_emails' ) ) {
 			$html_template = $this->get_template( 'html' );
 		// }
-var_dump( $html_template );
-die;
+
+		$message = $html_template;
 
 		// Email headers
 		$headers = array(
-			sprintf( "From: %s <%s>", get_bloginfo('name'), get_bloginfo('admin_email') ),
+			sprintf( "From: %s <%s>", get_bloginfo( 'name' ), get_bloginfo( 'admin_email' ) ),
 		);
 
 		/**
-		 * Headers for the WP Round up email.
+		 * Headers for the summary email.
 		 *
-		 * @since 1.0.0
 		 * @var array $headers
 		 */
 		$headers = apply_filters( 'esp_email_headers', $headers );
 
 		/**
-		 * Attachments for the weekly roundup.
+		 * Attachments for the summary email.
 		 *
 		 * @since 1.0.0
 		 * @var array
 		 */
 		$attachments = apply_filters( 'esp_email_headers', array() );
+$to = 'edward@thetab.com';
+		// Make sure the email content type is set.
+		add_filter( 'wp_mail_content_type', array( $this, 'set_content_type' ), 10, 1 );
 
-		// Send the email
+		/**
+		 * Run directly before the summary is sent.
+		 *
+		 */
+		do_action( 'esp_before_wp_mail', $to, $subject, $message, $headers, $attachments );
+
+		// Send the email.
 		wp_mail( $to, $subject, $message, $headers, $attachments );
 
+		/**
+		 * Run directly after the summary is sent.
+		 *
+		 */
+		do_action( 'eso_after_wp_mail', $to, $subject, $message, $headers, $attachments );
+
+		// Remove the filter for changing the email content type.
+		remove_filter( 'wp_mail_content_type', array( $this, 'set_content_type' ), 10 );
+	}
+
+	/**
+	 * Set the content type for the email.
+	 *
+	 * @param string $content_type Email message format.
+	 */
+	public function set_content_type( $content_type ) {
+		return 'text/html';
 	}
 
 }

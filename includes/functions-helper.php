@@ -30,7 +30,7 @@ if ( ! function_exists( 'esp_get_option' ) ) :
 	 */
 	function esp_get_option( $name, $default = false ) {
 		// Grab all the options.
-		$esp_options = wpna_get_options();
+		$esp_options = esp_get_options();
 
 		// Setup the default value
 		$value = $default;

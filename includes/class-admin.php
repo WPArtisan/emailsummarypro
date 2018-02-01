@@ -48,8 +48,10 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	 * @return null
 	 */
 	public function hooks() {
-		add_action( 'admin_menu',         array( $this, 'add_menu_items' ), 23 );
-		add_action( 'esp_resend_summary', array( $this, 'resend_summary' ), 10 );
+		add_action( 'admin_init',          array( $this, 'setup_settings' ), 10 );
+		add_action( 'admin_menu',          array( $this, 'add_menu_items' ), 23 );
+		add_action( 'esp_resend_summary',  array( $this, 'resend_summary' ), 10 );
+		add_action( 'esp_preview_summary', array( $this, 'preview_summary' ), 10 );
 	}
 
 	/**
@@ -74,7 +76,6 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 		);
 
 		add_action( 'load-' . $this->page_slug, array( $this, 'setup_tabs' ), 10 );
-		add_action( 'load-' . $this->page_slug, array( $this, 'setup_settings' ), 10 );
 	}
 
 	/**
@@ -92,7 +93,7 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 		?>
 		<div class="wrap">
 			<div id="icon-tools" class="icon32"></div>
-			<h1><?php esc_html_e( 'WP Roundup', 'email-summary-pro' ); ?></h1>
+			<h1><?php esc_html_e( 'Email Summary Pro', 'email-summary-pro' ); ?></h1>
 			<div class="wrap">
 				<?php email_summary_pro()->tabs_helper->tabs_nav(); ?>
 				<?php email_summary_pro()->tabs_helper->tabs_content(); ?>
@@ -149,7 +150,7 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 		);
 
 		add_settings_field(
-			'esp_html_emails',
+			'html_emails',
 			'<label for="html_emails">' . esc_html__( 'HTML Emails', 'email-summary-pro' ) . '</label>',
 			array( $this, 'html_emails_field_callback' ),
 			$setting_name,
@@ -157,7 +158,7 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 		);
 
 		add_settings_field(
-			'esp_roundup_recipients',
+			'recipients',
 			'<label for="recipients">' . esc_html__( 'Recipients', 'email-summary-pro' ) . '</label>',
 			array( $this, 'recipients_field_callback' ),
 			$setting_name,
@@ -165,9 +166,17 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 		);
 
 		add_settings_field(
-			'esp_resend_summary',
-			'<label for="">' . esc_html__( 'Resend Roundup', 'email-summary-pro' ) . '</label>',
+			'resend_summary',
+			'<label for="">' . esc_html__( 'Resend Summary', 'email-summary-pro' ) . '</label>',
 			array( $this, 'resend_summary_field_callback' ),
+			$setting_name,
+			$setting_name
+		);
+
+		add_settings_field(
+			'scheduled',
+			'<label for="">' . esc_html__( 'Scheduled', 'email-summary-pro' ) . '</label>',
+			array( $this, 'scheduled_field_callback' ),
 			$setting_name,
 			$setting_name
 		);
@@ -187,7 +196,7 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	 */
 	public function settings_tab_callback() {
 		?>
-		<form action="" method="post">
+		<form action="options.php" method="post">
 			<?php settings_fields( 'esp_general_settings' ); ?>
 			<?php do_settings_sections( 'esp_general_settings' ); ?>
 			<?php submit_button(); ?>
@@ -237,7 +246,7 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	public function recipients_field_callback() {
 		?>
 		<input type="text" name="esp_options[recipients]" id="recipients" class="regular-text" value="<?php echo esc_attr( esp_get_option( 'recipients' ) ); ?>">
-		<p class="description"><?php esc_html_e( 'Multiple recipients can be added using commas. e.g. <code>admin1@site.com, admin2@site.com</code>', 'email-summary-pro' ); ?></p>
+		<p class="description"><?php echo sprintf( esc_html__( 'Multiple recipients can be added using commas. e.g. %s', 'email-summary-pro'), '<code>admin1@site.com, admin2@site.com</code>' ); ?></p>
 		<?php
 	}
 
@@ -247,41 +256,70 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	* Just a link back to the current page with an action set.
 	*
 	* @access public
-	* @return null
+	* @return void
 	*/
 	public function resend_summary_field_callback() {
+		// Work out the date of the last summary.
+		$start_of_week = get_option( 'start_of_week' );
+		$start_of_week_day = date( 'l', strtotime( "Sunday + {$start_of_week} Days" ) );
+		$last_summary = date( 'Y-m-d', strtotime( 'last ' . $start_of_week_day ) );
+
 		// Add these params.
-		$query = array(
-			'page'       => 'email_summary_pro',
-			'tab'        => 'settings',
-			'esp-action' => 'resend_summary',
+		$default_query = array(
+			'page' => 'email_summary_pro',
+			'date' => $last_summary,
 		);
 
-		// Reconstruct the URL
-		$url = add_query_arg( $query, admin_url( 'options-general.php' ) );
+		// Resend URL.
+		$resend_url = wp_nonce_url( add_query_arg( array_merge( $default_query, array( 'esp-action' => 'resend_summary' ) ), admin_url( 'options-general.php' ) ), 'resend_summary', 'esp_nonce');
+
+		// Preview URL.
+		$preview_url = wp_nonce_url( add_query_arg( array_merge( $default_query, array( 'esp-action' => 'preview_summary' ) ), admin_url( 'options-general.php' ) ), 'preview_summary', 'esp_nonce');
 		?>
-		<a href="<?php echo esc_url( $url ); ?>" class="buton button-secondary"><?php esc_html_e( 'Resend', 'email-summary-pro' ); ?></a>
+		<input type="date" name="summary_week" max="<?php echo date( 'Y-m-d' ); ?>" value="<?php echo esc_attr( $last_summary ); ?>" >
+		<a href="<?php echo esc_url( $resend_url ); ?>" class="buton button-secondary" title="<?php esc_html_e( 'Resend Email Summary', 'email-summary-pro' ); ?>"><?php esc_html_e( 'Resend', 'email-summary-pro' ); ?></a>
+		<a target="_blank" href="<?php echo esc_url( $preview_url ); ?>" class="buton button-secondary" title="<?php esc_html_e( 'Preview Email Summary', 'email-summary-pro' ); ?>"><?php esc_html_e( 'Preview', 'email-summary-pro' ); ?></a>
+		<p class="description"><?php esc_html_e( 'Select a past date to resend or preview the email summary for that week.', 'easy-summary-pro' ); ?></p>
+		<?php
+	}
+
+	/**
+	* Outputs the HTML for the scheduled field.
+	*
+	* Works out the tme the next summary email is scheduled for.
+	*
+	* @access public
+	* @return void
+	*/
+	public function scheduled_field_callback() {
+		?>
+		<p class="description"><i>01:00, Firday 20th 2018</i></p>
 		<?php
 	}
 
 	/**
 	 * Resends the last stats email.
 	 *
-	 * @since 1.0.0
-	 *
 	 * @return null
 	 */
 	public function resend_summary() {
 		// Check it's an admin user.
-		if ( ! current_user_can('manage_options') ) {
+		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
 
 		// Check the nonce.
+		if ( ! isset( $_GET['esp_nonce'] ) || ! wp_verify_nonce( $_GET['esp_nonce'], 'resend_summary' ) ) {
+			wp_die( __( 'Cheatin&#8217; huh?', 'email-summary-pro' ) );
+		}
 
 		// Setup new email summary and send it.
 		$summary = new Email_Summary_Pro_Email();
-		$summary->date( '2016-04-12' );
+
+		if ( ! empty( $_GET['date'] ) ) {
+			$summary->date( $_GET['date'] );
+		}
+
 		$summary->send();
 
 		// Add these params.
@@ -296,6 +334,35 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 
 		wp_safe_redirect( $url );
 		exit;
+	}
+
+	/**
+	 * Resends the last stats email.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return null
+	 */
+	public function preview_summary() {
+		// Check it's an admin user.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		// Check the nonce.
+		if ( ! isset( $_GET['esp_nonce'] ) || ! wp_verify_nonce( $_GET['esp_nonce'], 'preview_summary' ) ) {
+			wp_die( __( 'Cheatin&#8217; huh?', 'email-summary-pro' ) );
+		}
+
+		// Setup new email summary and output the preview.
+		$summary = new Email_Summary_Pro_Email();
+
+		if ( ! empty( $_GET['date'] ) ) {
+			$summary->date( $_GET['date'] );
+		}
+
+		echo $summary->get_template( 'html' );
+		die;
 	}
 
 }
