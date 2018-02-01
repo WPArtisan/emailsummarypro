@@ -43,13 +43,22 @@ if ( ! class_exists( 'Email_Summary_Pro' ) ) :
 		private $version = '1.0.0';
 
 		/**
-		 * The admin interface.
+		 * The main admin class.
 		 *
 		 * @access public
 		 * @since  1.0
 		 * @var    Email_Summary_Pro_Admin
 		 */
 		public $admin;
+
+		/**
+		 * The tabs help class.
+		 *
+		 * @access public
+		 * @since  1.0
+		 * @var    Email_Summary_Pro_Tabs_Helper
+		 */
+		public $tabs_helper;
 
 		/**
 		 * Main Email_Summary_Pro Instance
@@ -137,8 +146,10 @@ if ( ! class_exists( 'Email_Summary_Pro' ) ) :
 		private function includes() {
 			require WP_ESP_BASE_PATH . '/includes/functions-helper.php';
 			require WP_ESP_BASE_PATH . '/includes/functions-stats.php';
+			require WP_ESP_BASE_PATH . '/includes/admin-actions.php';
+			require WP_ESP_BASE_PATH . '/includes/admin-notices.php';
 			require WP_ESP_BASE_PATH . '/includes/class-admin-base.php';
-			require WP_ESP_BASE_PATH . '/includes/class-helper-tabs.php';
+			require WP_ESP_BASE_PATH . '/includes/class-tabs-helper.php';
 			require WP_ESP_BASE_PATH . '/includes/class-roundup.php';
 			require WP_ESP_BASE_PATH . '/includes/class-admin.php';
 		}
@@ -153,6 +164,7 @@ if ( ! class_exists( 'Email_Summary_Pro' ) ) :
 		public function setup_objects() {
 
 			self::$instance->admin = new Email_Summary_Pro_Admin;
+			self::$instance->tabs_helper = new Email_Summary_Pro_Tabs_Helper;
 		}
 
 	}

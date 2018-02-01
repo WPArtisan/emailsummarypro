@@ -9,23 +9,15 @@
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) exit;
 
- /**
-  * Main admin class for the plugin.
-  *
-  * Sets up all menus, settings, pages and dashboards.
-  *
-  * @since  1.0.0
-  */
+/**
+ * Main admin class for the plugin.
+ *
+ * Sets up all menus, settings, pages and dashboards.
+ *
+ * @since  1.0.0
+ */
 class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 
-	/**
-	 * An instance of the Helper_Tabs class.
-	 *
-	 * @since 1.0.0
-	 * @access public
-	 * @var WP_Roundup_Helper_Tabs
-	 */
-	public $tabs;
 
 	/**
 	 * The slug of the current page.
@@ -36,8 +28,16 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	 * @access public
 	 * @var string
 	 */
-	public $page_slug = 'wp_roundup';
+	public $page_slug;
 
+	/**
+	 * An instance of the Email_Summary_Pro_Helper_Tabs class.
+	 *
+	 * @since 1.0.0
+	 * @access public
+	 * @var Email_Summary_Pro_Helper_Tabs
+	 */
+	public $tabs;
 
 	/**
 	 * Hooks registered in this class.
@@ -48,9 +48,8 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	 * @return null
 	 */
 	public function hooks() {
-		// add_action( 'admin_init', array( $this, 'setup_settings' ), 10, 0 );
-		// add_action( 'admin_init', array( $this, 'resend_roundup' ), 10, 0 );
-		add_action( 'admin_menu', array( $this, 'add_menu_items' ), 23, 0 );
+		add_action( 'admin_menu',         array( $this, 'add_menu_items' ), 23 );
+		add_action( 'esp_resend_summary', array( $this, 'resend_summary' ), 10 );
 	}
 
 	/**
@@ -65,7 +64,7 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	 */
 	public function add_menu_items() {
 
-		$page_slug = add_submenu_page(
+		$this->page_slug = add_submenu_page(
 			'options-general.php',
 			esc_html__( 'Email Summary Pro', 'email-summary-pro' ),
 			esc_html__( 'Email Summary Pro', 'email-summary-pro' ),
@@ -74,16 +73,15 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 			array( $this, 'output_callback' )
 		);
 
-		// add_action( 'load-' . $page_hook, array( $this, 'setup_tabs' ) );
-		// add_action( 'load-' . $page_hook, array( $this, 'setup_meta_boxes' ) );
+		add_action( 'load-' . $this->page_slug, array( $this, 'setup_tabs' ), 10 );
+		add_action( 'load-' . $this->page_slug, array( $this, 'setup_settings' ), 10 );
 	}
 
 	/**
 	 * Outputs HTML for the settings page.
 	 *
-	 * The Facebook settings page is a tabbed interface. It uses
-	 * the WPNA_Helper_Tabs class to setup and register the tabbed interface.
-	 * The WPNA_Helper_Tabs class is initiated in the setup_tabs method.
+	 * The menu page is a tabbed interface. It uses
+	 * the Email_Summary_Pro_Tabs_Helper class to register the tabbed interface.
 	 *
 	 * @since 1.0.0
 	 *
@@ -94,10 +92,10 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 		?>
 		<div class="wrap">
 			<div id="icon-tools" class="icon32"></div>
-			<!-- <h1><?php esc_html_e( 'WP Roundup', 'email-summary-pro' ); ?></h1> -->
+			<h1><?php esc_html_e( 'WP Roundup', 'email-summary-pro' ); ?></h1>
 			<div class="wrap">
-				<?php // $this->tabs->tabs_nav(); ?>
-				<?php // $this->tabs->tabs_content(); ?>
+				<?php email_summary_pro()->tabs_helper->tabs_nav(); ?>
+				<?php email_summary_pro()->tabs_helper->tabs_content(); ?>
 			</div>
 		</div>
 		<?php
@@ -106,69 +104,19 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	/**
 	 * Sets up the tab helper for the Admin Facebook page.
 	 *
-	 * Creates a new instance of the WP_Roundup_Helper_Tabs class and registers the
-	 * first tab, 'Settings'. Other tabs are added using the
-	 * 'wp_roundup_admin_tabs' action.
-	 *
-	 * @since 1.0.0
-	 *
 	 * @access public
 	 * @return null
 	 */
 	public function setup_tabs() {
-		$this->tabs = new WP_Roundup_Helper_Tabs();
-
-		$this->tabs->register_tab(
-			'Settings',
+		email_summary_pro()->tabs_helper->register_tab(
+			'settings',
 			esc_html__( 'Settings', 'email-summary-pro' ),
 			$this->page_url(),
 			array( $this, 'settings_tab_callback' ),
 			true
 		);
-
-		/**
-		 * Called after the first tab has been setup for this page.
-		 * Passes the tabs in so it can be modified, other tabs added etc.
-		 *
-		 * @since 1.0.0
-		 * @param WP_Roundup_Helper_Tabs $this->tabs Instance of the tabs helper. Used
-		 *                                           to register new tabs.
-		 */
-		do_action( 'wp_roundup_admin_tabs', $this->tabs );
 	}
 
-	/**
-	 * Setup the screen columns.
-	 *
-	 * Do actions for registering meta boxes for this screen.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @access public
-	 * @return null
-	 */
-	public function setup_meta_boxes() {
-		$screen = get_current_screen();
-
-		/**
-		 * Trigger the add_meta_boxes_{$screen_id} hook to allow meta boxes
-		 * to be added to this screen.
-		 *
-		 * @since 1.0.0
-		 */
-		do_action( 'add_meta_boxes_' . $screen->id );
-
-		/**
-		* Trigger the add_meta_boxes hook to allow meta boxes to be added.
-		 *
-		 * @since 1.0.0
-		 * @param string $screen->id The ID of the screen for the admin page.
-		 */
-		do_action( 'add_meta_boxes', $screen->id );
-
-		// Add screen option: user can choose between 1 or 2 columns (default 2)
-		add_screen_option( 'layout_columns', array( 'max' => 2, 'default' => 2 ) );
-	}
 
 	/**
 	 * Register general Facebook settings.
@@ -189,41 +137,39 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	 */
 	public function setup_settings() {
 
-		// HTML Email
+		$setting_name = 'esp_general_settings';
 
-		// Patch WP Mailer
-
-		register_setting( 'wp_roundup-settings', 'wp_roundup_options', array( $this, 'wp_roundup_sanitize_options' ) );
+		register_setting( $setting_name, 'esp_options', 'esp_sanitize_options' );
 
 		add_settings_section(
-			'wp_roundup-settings',
-			esc_html__( 'Settings', 'wp-native-articles' ),
+			$setting_name,
+			esc_html__( 'Settings', 'email-summary-pro' ),
 			array( $this, 'settings_section_callback' ),
-			$this->page_slug
+			$setting_name
 		);
 
 		add_settings_field(
-			'wp_roundup_html_emails',
-			'<label for="html_emails">' . esc_html__( 'HTML Emails', 'wp-native-articles' ) . '</label>',
+			'esp_html_emails',
+			'<label for="html_emails">' . esc_html__( 'HTML Emails', 'email-summary-pro' ) . '</label>',
 			array( $this, 'html_emails_field_callback' ),
-			$this->page_slug,
-			'wp_roundup-settings'
+			$setting_name,
+			$setting_name
 		);
 
 		add_settings_field(
-			'wp_roundup_recipients',
-			'<label for="recipients">' . esc_html__( 'Recipients', 'wp-native-articles' ) . '</label>',
+			'esp_roundup_recipients',
+			'<label for="recipients">' . esc_html__( 'Recipients', 'email-summary-pro' ) . '</label>',
 			array( $this, 'recipients_field_callback' ),
-			$this->page_slug,
-			'wp_roundup-settings'
+			$setting_name,
+			$setting_name
 		);
 
 		add_settings_field(
-			'resend_roundup',
-			'<label for="">' . esc_html__( 'Resend Roundup', 'wp-native-articles' ) . '</label>',
-			array( $this, 'resend_roundup_field_callback' ),
-			$this->page_slug,
-			'wp_roundup-settings'
+			'esp_resend_summary',
+			'<label for="">' . esc_html__( 'Resend Roundup', 'email-summary-pro' ) . '</label>',
+			array( $this, 'resend_summary_field_callback' ),
+			$setting_name,
+			$setting_name
 		);
 	}
 
@@ -242,8 +188,8 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	public function settings_tab_callback() {
 		?>
 		<form action="options.php" method="post">
-			<?php settings_fields( 'wp_roundup-settings' ); ?>
-			<?php do_settings_sections( $this->page_slug ); ?>
+			<?php settings_fields( 'esp_general_settings' ); ?>
+			<?php do_settings_sections( 'esp_general_settings' ); ?>
 			<?php submit_button(); ?>
 		</form>
 		<?php
@@ -251,8 +197,6 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 
 	/**
 	 * Outputs the HTML displayed at the top of the settings section.
-	 *
-	 * @since 1.0.0
 	 *
 	 * @access public
 	 * @return null
@@ -267,16 +211,14 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	 *
 	 * Whether to use HTML emails or not.
 	 *
-	 * @since 1.0.0
-	 *
 	 * @access public
 	 * @return null
 	 */
 	public function html_emails_field_callback() {
 		?>
-		<label for="html_emails">
-			<input type="hidden" name="wp_roundup_options[html_emails]" value="0">
-			<input type="checkbox" name="wp_roundup_options[html_emails]" id="html_emails" class="" value="true"<?php checked( (bool) wp_roundup_get_option('html_emails') ); ?> />
+		<label for="html-emails">
+			<input type="hidden" name="esp_options[html_emails]" value="0">
+			<input type="checkbox" name="esp_options[html_emails]" id="html-emails" class="" value="true"<?php checked( (bool) esp_get_option( 'html_emails' ) ); ?> />
 			<?php esc_html_e( 'Uncheck this for older email clients.', 'email-summary-pro' ); ?>
 		</label>
 		<?php
@@ -294,35 +236,29 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	*/
 	public function recipients_field_callback() {
 		?>
-		<input type="text" name="wp_roundup_options[recipients]" id="recipients" class="regular-text" value="<?php echo esc_attr( wp_roundup_get_option('recipients') ); ?>">
-		<p class="description"><?php _e( 'Multiple recipients can be added using commas. e.g. <code>admin1@site.com, admin2@site.com</code>', 'email-summary-pro' ); ?></p>
+		<input type="text" name="esp_options[recipients]" id="recipients" class="regular-text" value="<?php echo esc_attr( esp_get_option( 'recipients' ) ); ?>">
+		<p class="description"><?php esc_html_e( 'Multiple recipients can be added using commas. e.g. <code>admin1@site.com, admin2@site.com</code>', 'email-summary-pro' ); ?></p>
 		<?php
 	}
 
 	/**
 	* Outputs the HTML for the resend_last_roundup button
 	*
-	* Just a link back to the current page with a variable set.
-	*
-	* @since 1.0.0
-	* @todo Move to ajax?
+	* Just a link back to the current page with an action set.
 	*
 	* @access public
 	* @return null
 	*/
-	public function resend_roundup_field_callback() {
-		// Get the current page URL
-		$url = menu_page_url( $this->page_slug, false );
-
-		// Add these params
+	public function resend_summary_field_callback() {
+		// Add these params.
 		$query = array(
-			'tab'    => 'settings',
-			'action' => 'resend_roundup',
+			'page'       => 'email_summary_pro',
+			'tab'        => 'settings',
+			'esp-action' => 'resend_summary',
 		);
 
 		// Reconstruct the URL
-		$url = add_query_arg( $query, $url );
-
+		$url = add_query_arg( $query, admin_url( 'options-general.php' ) );
 		?>
 		<a href="<?php echo esc_url( $url ); ?>" class="buton button-secondary"><?php esc_html_e( 'Resend', 'email-summary-pro' ); ?></a>
 		<?php
@@ -335,17 +271,30 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	 *
 	 * @return null
 	 */
-	public function resend_roundup() {
-		if ( empty( $_GET['action'] ) || 'resend_roundup' != $_GET['action'] )
+	public function resend_summary() {
+		// Check it's an admin user.
+		if ( ! current_user_can('manage_options') ) {
 			return;
+		}
 
-		if ( ! current_user_can('manage_options') )
-			return;
+		// Check the nonce.
 
-		$roundup = new WP_Roundup();
-		$roundup->date( '2016-04-12' );
-		$roundup->send();
+		// $roundup = new WP_Roundup();
+		// $roundup->date( '2016-04-12' );
+		// $roundup->send();
 
+		// Add these params.
+		$query = array(
+			'page'       => 'email_summary_pro',
+			'tab'        => 'settings',
+			'esp-notice' => 'resend_summary_success',
+		);
+
+		// Reconstruct the URL
+		$url = add_query_arg( $query, admin_url( 'options-general.php' ) );
+
+		wp_safe_redirect( $url );
+		exit;
 	}
 
 }

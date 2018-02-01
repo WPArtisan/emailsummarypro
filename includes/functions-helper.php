@@ -10,7 +10,7 @@
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-if ( ! function_exists( 'wp_roundup_get_option' ) ) :
+if ( ! function_exists( 'esp_get_option' ) ) :
 
 	/**
 	 * Retrieves a single plugin option.
@@ -21,22 +21,23 @@ if ( ! function_exists( 'wp_roundup_get_option' ) ) :
 	 *
 	 * @since 1.0.0
 	 *
-	 * @global $wp_roundup_options   Global array holding the plugin options.
+	 * @global $esp_options   Global array holding the plugin options.
 	 *
 	 * @param  string $name    The name of the option to retrieve.
 	 * @param  mixed  $default Optional. The default value to return.
 	 *                         Default false.
 	 * @return mixed The option or default value.
 	 */
-	function wp_roundup_get_option( $name, $default = false ) {
-		global $wp_roundup_options;
+	function esp_get_option( $name, $default = false ) {
+		// Grab all the options.
+		$esp_options = wpna_get_options();
 
 		// Setup the default value
 		$value = $default;
 
 		// Check if it exists in the global options array
-		if ( ! empty( $wp_roundup_options[ $name ] ) )
-			$value = $wp_roundup_options[ $name ];
+		if ( ! empty( $esp_options[ $name ] ) )
+			$value = $esp_options[ $name ];
 
 		/**
 		 * Filter all the option values before they're returned
@@ -47,7 +48,7 @@ if ( ! function_exists( 'wp_roundup_get_option' ) ) :
 		 * @param string $name    The name of the option being retrieved.
 		 * @param mixed  $default The default value to return.
 		 */
-		$option = apply_filters( 'wp_roundup_get_option', $value, $name, $default );
+		$option = apply_filters( 'esp_get_option', $value, $name, $default );
 
 		/**
 		 * Filter a specific option value before it's returned
@@ -58,7 +59,7 @@ if ( ! function_exists( 'wp_roundup_get_option' ) ) :
 		 * @param string $name    The name of the option being retrieved.
 		 * @param mixed  $default The default value to return.
 		 */
-		$option = apply_filters( 'wp_roundup_get_option_' . $name, $value, $name, $default );
+		$option = apply_filters( 'esp_get_option_' . $name, $value, $name, $default );
 
 		return $option;
 	}
@@ -66,7 +67,7 @@ if ( ! function_exists( 'wp_roundup_get_option' ) ) :
 endif;
 
 
-if ( ! function_exists( 'wp_roundup_get_options' ) ) :
+if ( ! function_exists( 'esp_get_options' ) ) :
 
 	/**
 	 * Retrieves all plugin options.
@@ -76,26 +77,24 @@ if ( ! function_exists( 'wp_roundup_get_options' ) ) :
 	 *
 	 * @since 1.0.0
 	 *
-	 * @global $wp_roundup_options Global array holding the plugin options.
+	 * @global $esp_options Global array holding the plugin options.
 	 *
 	 * @return array All of the plugin's options.
 	 */
-	function wp_roundup_get_options() {
-		global $wp_roundup_options;
-
-		if ( ! $wp_roundup_options )
-			$wp_roundup_options = get_option( 'wp_roundup_options' );
+	function esp_get_options() {
+		// get_option is cached so can call it as much as we like.
+		$esp_options = get_option( 'esp_options' );
 
 		/**
 		 * Filter all the option values before they're returned
 		 *
 		 * @since 1.0.0
 		 *
-		 * @param array $wp_roundup_options The options being returned.
+		 * @param array $esp_options The options being returned.
 		 */
-		$wp_roundup_options = apply_filters( 'wp_roundup_get_options', $wp_roundup_options );
+		$esp_options = apply_filters( 'esp_get_options', $esp_options );
 
-		return $wp_roundup_options;
+		return $esp_options;
 	}
 
 endif;
@@ -107,8 +106,6 @@ if ( ! function_exists( 'boolval' ) ) :
 	 *
 	 * PHP <= 5.5 didn't have boolval function, this patches it in.
 	 *
-	 * @since 1.0.6
-	 *
 	 * @param  mixed $value
 	 * @return boolean
 	 */
@@ -118,7 +115,7 @@ if ( ! function_exists( 'boolval' ) ) :
 
 endif;
 
-if ( ! function_exists( 'wp_roundup_locate_template' ) ) :
+if ( ! function_exists( 'esp_locate_template' ) ) :
 
 	/**
 	 * Locates a plugin template and returns the path to it
@@ -133,7 +130,7 @@ if ( ! function_exists( 'wp_roundup_locate_template' ) ) :
 	 * @param  string $name Name of the template to locate.
 	 * @return string The full path to the template file.
 	 */
-	function wp_roundup_locate_template( $name ) {
+	function esp_locate_template( $name ) {
 
 		// Check if there's an extension or not
 		$name .= '.php' !== substr( $name, -4 ) ? '.php' : '' ;
@@ -155,14 +152,14 @@ if ( ! function_exists( 'wp_roundup_locate_template' ) ) :
 		 * @param string $template_path The path to the template.
 		 * @param string $name          The name of the template to locate.
 		 */
-		$template_path = apply_filters( 'wp_roundup_template_path', $template_path, $name );
+		$template_path = apply_filters( 'esp_template_path', $template_path, $name );
 
 		return $template_path;
 	}
 
 endif;
 
-if ( ! function_exists( 'wp_roundup_load_textdomain' ) ) :
+if ( ! function_exists( 'esp_load_textdomain' ) ) :
 
 	/**
 	 * Load plugin textdomain.
@@ -173,7 +170,7 @@ if ( ! function_exists( 'wp_roundup_load_textdomain' ) ) :
 	 *
 	 * @return null
 	 */
-	function wp_roundup_load_textdomain() {
+	function esp_load_textdomain() {
 		load_plugin_textdomain( 'wp-roundup', false, WP_ROUNDUP_BASE_PATH . '/languages' );
 	}
 endif;
@@ -196,7 +193,7 @@ if ( ! function_exists( 'str_word_count' ) ) :
 	}
 endif;
 
-if ( ! function_exists( 'wp_roundup_circle' ) ) :
+if ( ! function_exists( 'esp_circle' ) ) :
 
 	/**
 	 * Generates a CSS circle that can be used in emails
@@ -209,7 +206,7 @@ if ( ! function_exists( 'wp_roundup_circle' ) ) :
 	 * @param string $color Hex value
 	 * @return int
 	 */
-	function wp_roundup_bar_line( $percentage, $color = '#EB4102' ) {
+	function esp_bar_line( $percentage, $color = '#EB4102' ) {
 		// The max size is out of a 100
 		// We don't want it getting to large so trim it down to out of 25
 		$percentage = $percentage / 3;
