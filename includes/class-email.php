@@ -16,16 +16,18 @@ class Email_Summary_Pro_Email {
 
 	protected $data;
 
+	public function __construct() {
+		// Make sure there's a default date value.
+		$this->date();
+	}
 
 	public function date( $date = 'latest' ) {
 		$start_of_week = get_option( 'start_of_week' );
 		$start_of_week_day = date( 'l', strtotime( "Sunday + {$start_of_week} Days" ) );
 
 		if ( 'latest' == $date ) {
-
 			$unix_timestamp = strtotime( "last " . $start_of_week_day );
 		} else {
-
 			$unix_timestamp = strtotime( $date );
 		}
 
@@ -169,7 +171,7 @@ class Email_Summary_Pro_Email {
 		 * @var array
 		 */
 		$attachments = apply_filters( 'esp_email_headers', array() );
-$to = 'edward@thetab.com';
+
 		// Make sure the email content type is set.
 		add_filter( 'wp_mail_content_type', array( $this, 'set_content_type' ), 10, 1 );
 

@@ -91,7 +91,7 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	 */
 	public function output_callback() {
 		?>
-		<div class="wrap">
+		<div class="wrap email-summary-pro">
 			<div id="icon-tools" class="icon32"></div>
 			<h1><?php esc_html_e( 'Email Summary Pro', 'email-summary-pro' ); ?></h1>
 			<div class="wrap">
@@ -267,7 +267,6 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 		// Add these params.
 		$default_query = array(
 			'page' => 'email_summary_pro',
-			'date' => $last_summary,
 		);
 
 		// Resend URL.
@@ -276,10 +275,26 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 		// Preview URL.
 		$preview_url = wp_nonce_url( add_query_arg( array_merge( $default_query, array( 'esp-action' => 'preview_summary' ) ), admin_url( 'options-general.php' ) ), 'preview_summary', 'esp_nonce');
 		?>
-		<input type="date" name="summary_week" max="<?php echo date( 'Y-m-d' ); ?>" value="<?php echo esc_attr( $last_summary ); ?>" >
-		<a href="<?php echo esc_url( $resend_url ); ?>" class="buton button-secondary" title="<?php esc_html_e( 'Resend Email Summary', 'email-summary-pro' ); ?>"><?php esc_html_e( 'Resend', 'email-summary-pro' ); ?></a>
-		<a target="_blank" href="<?php echo esc_url( $preview_url ); ?>" class="buton button-secondary" title="<?php esc_html_e( 'Preview Email Summary', 'email-summary-pro' ); ?>"><?php esc_html_e( 'Preview', 'email-summary-pro' ); ?></a>
-		<p class="description"><?php esc_html_e( 'Select a past date to resend or preview the email summary for that week.', 'easy-summary-pro' ); ?></p>
+		<input type="date" id="summary-week" max="<?php echo date( 'Y-m-d' ); ?>" value="<?php echo esc_attr( $last_summary ); ?>" >
+		<a href="#" data-url="<?php echo esc_url( $resend_url ); ?>" class="button button-secondary js-url-action" title="<?php esc_html_e( 'Resend Email Summary', 'email-summary-pro' ); ?>"><?php esc_html_e( 'Resend', 'email-summary-pro' ); ?></a>
+		<a href="#" data-url="<?php echo esc_url( $preview_url ); ?>" class="button button-secondary js-url-action" title="<?php esc_html_e( 'Preview Email Summary', 'email-summary-pro' ); ?>" target="_blank" ><?php esc_html_e( 'Preview', 'email-summary-pro' ); ?></a>
+		<p class="description"><?php esc_html_e( 'Select a past date to resend, or preview, the email summary for that week.', 'easy-summary-pro' ); ?></p>
+		<script>
+			var setUrl = function( ev ) {
+				var el = ev.target;
+				// Get the date to summerise.
+				var summaryWeek = document.querySelector( 'input#summary-week' ).value;
+				// Get the URL.
+				var url = el.getAttribute( 'data-url' );
+				// Replace and continue.
+				el.setAttribute( 'href', url + '&date=' + summaryWeek );
+			};
+
+			// Set watchers for every URL action.
+			[].forEach.call( document.querySelectorAll( '.js-url-action' ), function(el) {
+				el.addEventListener( 'click', setUrl.bind() );
+			} );
+		</script>
 		<?php
 	}
 
