@@ -1,6 +1,6 @@
 <?php
 /**
- * Admin class
+ * Admin class.
  *
  * @since 1.0.0
  */
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
   *
   * @since  1.0.0
   */
-class WP_Roundup_Admin extends WP_Roundup_Admin_Base {
+class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 
 	/**
 	 * An instance of the Helper_Tabs class.
@@ -48,9 +48,9 @@ class WP_Roundup_Admin extends WP_Roundup_Admin_Base {
 	 * @return null
 	 */
 	public function hooks() {
-		add_action( 'admin_init', array( $this, 'setup_settings' ), 10, 0 );
-		add_action( 'admin_init', array( $this, 'resend_roundup' ), 10, 0 );
-		add_action( 'admin_menu', array( $this, 'add_menu_items' ), 10, 0 );
+		// add_action( 'admin_init', array( $this, 'setup_settings' ), 10, 0 );
+		// add_action( 'admin_init', array( $this, 'resend_roundup' ), 10, 0 );
+		add_action( 'admin_menu', array( $this, 'add_menu_items' ), 23, 0 );
 	}
 
 	/**
@@ -65,17 +65,17 @@ class WP_Roundup_Admin extends WP_Roundup_Admin_Base {
 	 */
 	public function add_menu_items() {
 
-		// Add a setting page
-		$page_hook = add_options_page(
-			esc_html__( 'WP Roundup', 'wp-roundup' ),
-			esc_html__( 'WP Roundup', 'wp-roundup' ),
+		$page_slug = add_submenu_page(
+			'options-general.php',
+			esc_html__( 'Email Summary Pro', 'email-summary-pro' ),
+			esc_html__( 'Email Summary Pro', 'email-summary-pro' ),
 			'manage_options',
-			$this->page_slug,
+			'email_summary_pro',
 			array( $this, 'output_callback' )
 		);
 
-		add_action( 'load-' . $page_hook, array( $this, 'setup_tabs' ) );
-		add_action( 'load-' . $page_hook, array( $this, 'setup_meta_boxes' ) );
+		// add_action( 'load-' . $page_hook, array( $this, 'setup_tabs' ) );
+		// add_action( 'load-' . $page_hook, array( $this, 'setup_meta_boxes' ) );
 	}
 
 	/**
@@ -94,10 +94,10 @@ class WP_Roundup_Admin extends WP_Roundup_Admin_Base {
 		?>
 		<div class="wrap">
 			<div id="icon-tools" class="icon32"></div>
-			<h1><?php esc_html_e( 'WP Roundup', 'wp-roundup' ); ?></h1>
+			<!-- <h1><?php esc_html_e( 'WP Roundup', 'email-summary-pro' ); ?></h1> -->
 			<div class="wrap">
-				<?php $this->tabs->tabs_nav(); ?>
-				<?php $this->tabs->tabs_content(); ?>
+				<?php // $this->tabs->tabs_nav(); ?>
+				<?php // $this->tabs->tabs_content(); ?>
 			</div>
 		</div>
 		<?php
@@ -120,7 +120,7 @@ class WP_Roundup_Admin extends WP_Roundup_Admin_Base {
 
 		$this->tabs->register_tab(
 			'Settings',
-			esc_html__( 'Settings', 'wp-roundup' ),
+			esc_html__( 'Settings', 'email-summary-pro' ),
 			$this->page_url(),
 			array( $this, 'settings_tab_callback' ),
 			true
@@ -277,7 +277,7 @@ class WP_Roundup_Admin extends WP_Roundup_Admin_Base {
 		<label for="html_emails">
 			<input type="hidden" name="wp_roundup_options[html_emails]" value="0">
 			<input type="checkbox" name="wp_roundup_options[html_emails]" id="html_emails" class="" value="true"<?php checked( (bool) wp_roundup_get_option('html_emails') ); ?> />
-			<?php esc_html_e( 'Uncheck this for older email clients.', 'wp-roundup' ); ?>
+			<?php esc_html_e( 'Uncheck this for older email clients.', 'email-summary-pro' ); ?>
 		</label>
 		<?php
 	}
@@ -295,7 +295,7 @@ class WP_Roundup_Admin extends WP_Roundup_Admin_Base {
 	public function recipients_field_callback() {
 		?>
 		<input type="text" name="wp_roundup_options[recipients]" id="recipients" class="regular-text" value="<?php echo esc_attr( wp_roundup_get_option('recipients') ); ?>">
-		<p class="description"><?php _e( 'Multiple recipients can be added using commas. e.g. <code>admin1@site.com, admin2@site.com</code>', 'wp-roundup' ); ?></p>
+		<p class="description"><?php _e( 'Multiple recipients can be added using commas. e.g. <code>admin1@site.com, admin2@site.com</code>', 'email-summary-pro' ); ?></p>
 		<?php
 	}
 
@@ -324,7 +324,7 @@ class WP_Roundup_Admin extends WP_Roundup_Admin_Base {
 		$url = add_query_arg( $query, $url );
 
 		?>
-		<a href="<?php echo esc_url( $url ); ?>" class="buton button-secondary"><?php esc_html_e( 'Resend', 'wp-roundup' ); ?></a>
+		<a href="<?php echo esc_url( $url ); ?>" class="buton button-secondary"><?php esc_html_e( 'Resend', 'email-summary-pro' ); ?></a>
 		<?php
 	}
 

@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  *
  * @since 1.0.0
  */
-abstract class WP_Roundup_Admin_Base {
+abstract class Email_Summary_Pro_Admin_Base {
 
 	/**
 	 * Holds the slug of the current page.
