@@ -175,7 +175,7 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 
 		add_settings_field(
 			'scheduled',
-			'<label for="">' . esc_html__( 'Scheduled', 'email-summary-pro' ) . '</label>',
+			'<label for="">' . esc_html__( 'Next Summary', 'email-summary-pro' ) . '</label>',
 			array( $this, 'scheduled_field_callback' ),
 			$setting_name,
 			$setting_name
@@ -307,8 +307,9 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	* @return void
 	*/
 	public function scheduled_field_callback() {
+		$next = wp_next_scheduled( 'esp_cron_hook' );
 		?>
-		<p class="description"><i>01:00, Firday 20th 2018</i></p>
+		<p class="description"><i><?php echo esc_html( date( 'Y-m-d H:m:i', $next ) ); ?></i></p>
 		<?php
 	}
 

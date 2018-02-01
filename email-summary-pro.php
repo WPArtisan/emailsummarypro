@@ -61,6 +61,15 @@ if ( ! class_exists( 'Email_Summary_Pro' ) ) :
 		public $tabs_helper;
 
 		/**
+		 * The schedule class.
+		 *
+		 * @access public
+		 * @since  1.0
+		 * @var    Email_Summary_Pro_Tabs_Schedule
+		 */
+		public $schedule;
+
+		/**
 		 * Main Email_Summary_Pro Instance
 		 *
 		 * Insures that only one instance of Email_Summary_Pro exists in memory at any one
@@ -152,6 +161,7 @@ if ( ! class_exists( 'Email_Summary_Pro' ) ) :
 			require ESP_BASE_PATH . '/includes/class-tabs-helper.php';
 			require ESP_BASE_PATH . '/includes/class-email.php';
 			require ESP_BASE_PATH . '/includes/class-admin.php';
+			require ESP_BASE_PATH . '/includes/class-schedule.php';
 		}
 
 		/**
@@ -165,6 +175,7 @@ if ( ! class_exists( 'Email_Summary_Pro' ) ) :
 
 			self::$instance->admin = new Email_Summary_Pro_Admin;
 			self::$instance->tabs_helper = new Email_Summary_Pro_Tabs_Helper;
+			self::$instance->schedule = new Email_Summary_Pro_Schedule;
 		}
 
 	}
