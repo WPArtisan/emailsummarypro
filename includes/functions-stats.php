@@ -10,7 +10,7 @@
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-if ( ! function_exists( 'wp_roundup_get_post_stats' ) ) :
+if ( ! function_exists( 'esp_get_post_stats' ) ) :
 
 	/**
 	 * Retrives stats for a post type.
@@ -23,13 +23,13 @@ if ( ! function_exists( 'wp_roundup_get_post_stats' ) ) :
 	 * @param string $date_to The end date of the stats (inclusive)
 	 * @return object
 	 */
-	function wp_roundup_get_post_stats( $date_from, $date_to ) {
+	function esp_get_post_stats( $date_from, $date_to ) {
 
 		// Create a unique cache key
-		$key = 'wp_roundup_post_stats_' . md5( $date_from, $date_to );
+		$key = 'esp_post_stats_' . md5( $date_from, $date_to );
 
 		// See if it's cached or not
-		if ( $stats = wp_cache_get( $key, 'wp_roundup' ) )
+		if ( $stats = wp_cache_get( $key, 'esp' ) )
 			return $stats;
 
 		global $wpdb;
@@ -259,10 +259,10 @@ if ( ! function_exists( 'wp_roundup_get_post_stats' ) ) :
 		 *
 		 * @var object $stats The post stats to use
 		 */
-		$stats = apply_filters( 'wp_roundup_post_stats', (object) $stats );
+		$stats = apply_filters( 'esp_post_stats', (object) $stats );
 
 		// Cache the result
-		wp_cache_add( $key, $stats, 'wp_roundup' );
+		wp_cache_add( $key, $stats, 'esp' );
 
 		return $stats;
 	}
@@ -270,7 +270,7 @@ if ( ! function_exists( 'wp_roundup_get_post_stats' ) ) :
 endif;
 
 
-if ( ! function_exists( 'wp_roundup_get_comment_stats' ) ) :
+if ( ! function_exists( 'esp_get_comment_stats' ) ) :
 
 	/**
 	 * Retrives stats for comments.
@@ -281,13 +281,13 @@ if ( ! function_exists( 'wp_roundup_get_comment_stats' ) ) :
 	 *
 	 * @return object
 	 */
-	function wp_roundup_get_comment_stats( $date_from, $date_to ) {
+	function esp_get_comment_stats( $date_from, $date_to ) {
 
 		// Create a unique cache key
-		$key = 'wp_roundup_comment_stats_' . md5( $date_from, $date_to );
+		$key = 'esp_comment_stats_' . md5( $date_from, $date_to );
 
 		// See if it's cached or not
-		if ( $stats = wp_cache_get( $key, 'wp_roundup' ) )
+		if ( $stats = wp_cache_get( $key, 'esp' ) )
 			return $stats;
 
 		global $wpdb;
@@ -373,17 +373,17 @@ if ( ! function_exists( 'wp_roundup_get_comment_stats' ) ) :
 		 *
 		 * @var object $stats The post stats to use
 		 */
-		$stats = apply_filters( 'wp_roundup_comment_stats', (object) $stats );
+		$stats = apply_filters( 'esp_comment_stats', (object) $stats );
 
 		// Cache the result
-		wp_cache_add( $key, $stats, 'wp_roundup' );
+		wp_cache_add( $key, $stats, 'esp' );
 
 		return $stats;
 
 	}
 endif;
 
-if ( ! function_exists( 'wp_roundup_get_user_stats' ) ) :
+if ( ! function_exists( 'esp_get_user_stats' ) ) :
 
 	/**
 	 * Retrives stats for users.
@@ -394,13 +394,13 @@ if ( ! function_exists( 'wp_roundup_get_user_stats' ) ) :
 	 *
 	 * @return object
 	 */
-	function wp_roundup_get_user_stats( $date_from, $date_to ) {
+	function esp_get_user_stats( $date_from, $date_to ) {
 
 		// Create a unique cache key
-		$key = 'wp_roundup_user_stats_' . md5( $date_from, $date_to );
+		$key = 'esp_user_stats_' . md5( $date_from, $date_to );
 
 		// See if it's cached or not
-		if ( $stats = wp_cache_get( $key, 'wp_roundup' ) )
+		if ( $stats = wp_cache_get( $key, 'esp' ) )
 			return $stats;
 
 		global $wpdb;
@@ -440,17 +440,17 @@ if ( ! function_exists( 'wp_roundup_get_user_stats' ) ) :
 		 *
 		 * @var object $stats The post stats to use
 		 */
-		$stats = apply_filters( 'wp_roundup_user_stats', (object) $stats );
+		$stats = apply_filters( 'esp_user_stats', (object) $stats );
 
 		// Cache the result
-		wp_cache_add( $key, $stats, 'wp_roundup' );
+		wp_cache_add( $key, $stats, 'esp' );
 
 		return $stats;
 
 	}
 endif;
 
-if ( ! function_exists( 'wp_roundup_whimsical' ) ) :
+if ( ! function_exists( 'esp_whimsical' ) ) :
 
 	/**
 	 * Retrives whimsical stats.
@@ -461,7 +461,7 @@ if ( ! function_exists( 'wp_roundup_whimsical' ) ) :
 	 *
 	 * @return object
 	 */
-	function wp_roundup_whimsical(  ) {
+	function esp_whimsical(  ) {
 
 		global $wpdb;
 
@@ -488,10 +488,10 @@ if ( ! function_exists( 'wp_roundup_whimsical' ) ) :
 		$random_stat = $random_stats[ $random_key ];
 
 		// // Create a unique cache key
-		// $key = 'wp_roundup_whimsical_stats_' . $random_stat;
+		// $key = 'esp_whimsical_stats_' . $random_stat;
 		//
 		// // See if it's cached or not
-		// if ( $stats = wp_cache_get( $key, 'wp_roundup' ) )
+		// if ( $stats = wp_cache_get( $key, 'esp' ) )
 		// 	return $stats;
 
 		if ( 'user_most_drafts' == $random_stat ) {

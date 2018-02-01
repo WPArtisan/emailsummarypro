@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  *
  * @since 1.0.0
  */
-class WP_Roundup {
+class Email_Summary_Pro_Email {
 
 	protected $data;
 
@@ -76,17 +76,18 @@ class WP_Roundup {
 		 * @var array $default_template_parts Location of template part to include.
 		 * @var string $type The type of template we're dealing with.
 		 */
-		$template_parts = apply_filters( 'wp_roundup_template_parts-' . $type, $default_template_parts, $type );
+		$template_parts = apply_filters( 'esp_template_parts-' . $type, $default_template_parts, $type );
 
 		// Check the tempalte exists before trying to get it
-		if ( ! file_exists( wp_roundup_locate_template( $type . '/main' ) ) )
+		if ( ! file_exists( esp_locate_template( $type . '/main' ) ) ) {
 			return false;
+		}
 
 		ob_start();
 
 		// Load the template.
 		// All content is done through the template.
-		include wp_roundup_locate_template( $type . '/main.php' );
+		include esp_locate_template( $type . '/main.php' );
 
 		// Read the contents into a variable.
 		$template = ob_get_contents();
@@ -100,7 +101,7 @@ class WP_Roundup {
 		 * @since 1.0.0
 		 * @var string $template
 		 */
-		$template = apply_filters( 'wp_roundup_email_content-' . $type, $template );
+		$template = apply_filters( 'esp_email_content-' . $type, $template );
 
 		return $template;
 	}
@@ -124,8 +125,8 @@ class WP_Roundup {
 		 * @since 1.0.0
 		 * @var string
 		 */
-		$to = apply_filters( 'wp_roundup_email_to', wp_roundup_get_option('recipients') );
-
+		$to = apply_filters( 'esp_email_to', esp_get_option( 'recipients' ) );
+$to = 'edward@thetab.com';
 		// Bail if no recipient is set
 		if ( empty( $to ) )
 			return;
@@ -136,16 +137,16 @@ class WP_Roundup {
 		 * @since 1.0.0
 		 * @var string
 		 */
-		$subject = apply_filters( 'wp_roundup_email_subject', esc_html__( 'Weekly Roundup', 'wp-roundup' ) );
+		$subject = apply_filters( 'esp_email_subject', esc_html__( 'Weekly Roundup', 'wp-roundup' ) );
 
 		// Get the plain email templates
-		$plain_template = $this->get_template('plain');
+		// $plain_template = $this->get_template( 'plain' );
 
 		// Check if they want HTML emails
-		if ( wp_roundup_get_option('html_emails') ) {
-			$html_template = $this->get_template('html');
-		}
-echo $html_template;
+		// if ( esp_get_option( 'html_emails' ) ) {
+			$html_template = $this->get_template( 'html' );
+		// }
+var_dump( $html_template );
 die;
 
 		// Email headers
@@ -159,7 +160,7 @@ die;
 		 * @since 1.0.0
 		 * @var array $headers
 		 */
-		$headers = apply_filters( 'wp_roundup_email_headers', $headers );
+		$headers = apply_filters( 'esp_email_headers', $headers );
 
 		/**
 		 * Attachments for the weekly roundup.
@@ -167,7 +168,7 @@ die;
 		 * @since 1.0.0
 		 * @var array
 		 */
-		$attachments = apply_filters( 'wp_roundup_email_headers', array() );
+		$attachments = apply_filters( 'esp_email_headers', array() );
 
 		// Send the email
 		wp_mail( $to, $subject, $message, $headers, $attachments );

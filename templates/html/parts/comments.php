@@ -1,5 +1,5 @@
 <?php
-	$comment_stats = wp_roundup_get_comment_stats( $roundup_date_from, $roundup_date_to );
+	$comment_stats = esp_get_comment_stats( $roundup_date_from, $roundup_date_to );
 ?>
 <tr>
 	<td align="center" valign="top">

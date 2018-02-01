@@ -120,18 +120,18 @@ if ( ! class_exists( 'Email_Summary_Pro' ) ) :
 		 */
 		private function setup_constants() {
 			// Plugin version.
-			if ( ! defined( 'WP_ESP_VERSION' ) ) {
-				define( 'WP_ESP_VERSION', $this->version );
+			if ( ! defined( 'ESP_VERSION' ) ) {
+				define( 'ESP_VERSION', $this->version );
 			}
 
 			// Plugin base path.
-			if ( ! defined( 'WP_ESP_BASE_PATH' ) ) {
-				define( 'WP_ESP_BASE_PATH', plugin_dir_path( __FILE__ ) );
+			if ( ! defined( 'ESP_BASE_PATH' ) ) {
+				define( 'ESP_BASE_PATH', plugin_dir_path( __FILE__ ) );
 			}
 
 			// Plugin base URL.
-			if ( ! defined( 'WP_ESP_BASE_URL' ) ) {
-				define( 'WP_ESP_BASE_URL', plugin_dir_url( __FILE__ ) );
+			if ( ! defined( 'ESP_BASE_URL' ) ) {
+				define( 'ESP_BASE_URL', plugin_dir_url( __FILE__ ) );
 			}
 
 		}
@@ -144,14 +144,14 @@ if ( ! class_exists( 'Email_Summary_Pro' ) ) :
 		 * @return void
 		 */
 		private function includes() {
-			require WP_ESP_BASE_PATH . '/includes/functions-helper.php';
-			require WP_ESP_BASE_PATH . '/includes/functions-stats.php';
-			require WP_ESP_BASE_PATH . '/includes/admin-actions.php';
-			require WP_ESP_BASE_PATH . '/includes/admin-notices.php';
-			require WP_ESP_BASE_PATH . '/includes/class-admin-base.php';
-			require WP_ESP_BASE_PATH . '/includes/class-tabs-helper.php';
-			require WP_ESP_BASE_PATH . '/includes/class-roundup.php';
-			require WP_ESP_BASE_PATH . '/includes/class-admin.php';
+			require ESP_BASE_PATH . '/includes/functions-helper.php';
+			require ESP_BASE_PATH . '/includes/functions-stats.php';
+			require ESP_BASE_PATH . '/includes/admin-actions.php';
+			require ESP_BASE_PATH . '/includes/admin-notices.php';
+			require ESP_BASE_PATH . '/includes/class-admin-base.php';
+			require ESP_BASE_PATH . '/includes/class-tabs-helper.php';
+			require ESP_BASE_PATH . '/includes/class-email.php';
+			require ESP_BASE_PATH . '/includes/class-admin.php';
 		}
 
 		/**

@@ -3,7 +3,7 @@
 	if ( ! get_option( 'users_can_register' ) )
 		return;
 
-	$user_stats = wp_roundup_get_user_stats( $roundup_date_from, $roundup_date_to );
+	$user_stats = esp_get_user_stats( $roundup_date_from, $roundup_date_to );
 ?>
 <tr>
 	<td align="center" valign="top">

@@ -5,7 +5,7 @@
 	 * Template based on the Mailchimp blueprint email templates.
 	 * @link https://github.com/mailchimp/email-blueprints
 	 */
-	include wp_roundup_locate_template( 'html/header.php' );
+	include esp_locate_template( 'html/header.php' );
 ?>
 
 <center>
@@ -18,8 +18,8 @@
 					<?php
 					foreach ( $template_parts as $template_part ) : ?>
 						<?php
-						if ( file_exists( wp_roundup_locate_template( $template_part ) ) )
-							include wp_roundup_locate_template( $template_part );
+						if ( file_exists( esp_locate_template( $template_part ) ) )
+							include esp_locate_template( $template_part );
 						?>
 					<?php endforeach; ?>
 
@@ -34,5 +34,5 @@
 	/**
 	 * Include the footer template.
 	 */
-	include wp_roundup_locate_template( 'html/footer.php' );
+	include esp_locate_template( 'html/footer.php' );
 ?>

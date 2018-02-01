@@ -187,7 +187,7 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	 */
 	public function settings_tab_callback() {
 		?>
-		<form action="options.php" method="post">
+		<form action="" method="post">
 			<?php settings_fields( 'esp_general_settings' ); ?>
 			<?php do_settings_sections( 'esp_general_settings' ); ?>
 			<?php submit_button(); ?>
@@ -279,9 +279,10 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 
 		// Check the nonce.
 
-		// $roundup = new WP_Roundup();
-		// $roundup->date( '2016-04-12' );
-		// $roundup->send();
+		// Setup new email summary and send it.
+		$summary = new Email_Summary_Pro_Email();
+		$summary->date( '2016-04-12' );
+		$summary->send();
 
 		// Add these params.
 		$query = array(

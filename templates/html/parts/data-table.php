@@ -1,5 +1,5 @@
 <?php
-	$post_stats = wp_roundup_get_post_stats( $roundup_date_from, $roundup_date_to );
+	$post_stats = esp_get_post_stats( $roundup_date_from, $roundup_date_to );
 
 	// Just exit if no stats
 	if ( ! $post_stats )
@@ -29,8 +29,8 @@
 								?>
 
 								<td valign="bottom" align="center">
-									<?php wp_roundup_bar_line( $pending_percentage, '000000' ); ?>
-									<?php wp_roundup_bar_line( $publish_percentage, 'ff8080' ); ?>
+									<?php esp_bar_line( $pending_percentage, '000000' ); ?>
+									<?php esp_bar_line( $publish_percentage, 'ff8080' ); ?>
 								</td>
 
 							<?php endforeach; ?>

@@ -1,5 +1,5 @@
 <?php
-	$post_stats = wp_roundup_get_post_stats( $roundup_date_from, $roundup_date_to );
+	$post_stats = esp_get_post_stats( $roundup_date_from, $roundup_date_to );
 ?>
 <tr>
 	<td align="center" valign="top">
