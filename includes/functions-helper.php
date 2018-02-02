@@ -159,6 +159,21 @@ if ( ! function_exists( 'esp_locate_template' ) ) :
 
 endif;
 
+if ( ! function_exists( 'esp_get_template' ) ) :
+
+	/**
+	 * [esp_get_template description]
+	 * @param  [type] $template [description]
+	 * @param  [type] $args     [description]
+	 * @return [type]           [description]
+	 */
+	function esp_get_template( $template, $args) {
+		extract( $args );
+
+		include esp_locate_template( $template );
+	}
+endif;
+
 if ( ! function_exists( 'esp_load_textdomain' ) ) :
 
 	/**

@@ -61,7 +61,7 @@ class Email_Summary_Pro_Email {
 	 */
 	public function get_template( $type = 'plain' ) {
 
-		// Ensure type is something we're expecting
+		// Ensure type is something we're expecting.
 		$type = ( 'plain' === $type ? 'plain' : 'html' );
 
 		// Setup the default template parts for every email.
@@ -76,11 +76,6 @@ class Email_Summary_Pro_Email {
 			$type . '/parts/users',
 			$type . '/parts/signoff',
 		);
-
-		// Setup the default template variables for every email.
-		$roundup_date = $this->date; // The roundup is sent the da after the week ends
-		$roundup_date_from = $this->date_from; // The first date of the week we're rounding up
-		$roundup_date_to = $this->date_to; // The last date of the week we're rounding up (inclusive)
 
 		/**
 		 * Register template parts.
@@ -98,6 +93,21 @@ class Email_Summary_Pro_Email {
 		 */
 		$template_parts = apply_filters( 'esp_template_parts-' . $type, $default_template_parts, $type );
 
+		// Setup the default template variables for every email.
+		$template_arguments = array(
+			'template_parts'    => $template_parts,
+			'summary_date'      => $this->date, // The roundup is sent the day after the week ends.
+			'summary_date_from' => $this->date_from, // The first date of the week we're rounding up.
+			'summary_date_to'   => $this->date_to, // The last date of the week we're rounding up (inclusive).
+		);
+
+		/**
+		 * Global arguments available inside every template.
+		 *
+		 * @var array
+		 */
+		$template_arguments = apply_filters( 'esp_template_arguments-' . $type, $template_arguments, $type );
+
 		// Check the tempalte exists before trying to get it
 		if ( ! file_exists( esp_locate_template( $type . '/main' ) ) ) {
 			return false;
@@ -107,7 +117,7 @@ class Email_Summary_Pro_Email {
 
 		// Load the template.
 		// All content is done through the template.
-		include esp_locate_template( $type . '/main.php' );
+		esp_get_template( $type . '/main.php', $template_arguments );
 
 		// Read the contents into a variable.
 		$template = ob_get_contents();

@@ -7,7 +7,7 @@
 					<h1>
 						<center>
 							<?php echo sprintf(
-									__( '<a href="%1$s"><strong>%2$s\'s</strong></a> Weekly Round Up', 'wp-roundup' ),
+									__( '<a href="%1$s"><strong>%2$s\'s</strong></a> Weekly Round Up', 'email-summary-pro' ),
 									esc_url( get_bloginfo('url') ),
 									get_bloginfo('site_title')
 								);
@@ -17,14 +17,14 @@
 
 					<h2>
 						<center>
-							<?php echo date( "l, jS F", strtotime( $roundup_date_from ) ); ?>
+							<?php echo date( "l, jS F", strtotime( $summary_date_from ) ); ?>
 							&nbsp;&#150;&nbsp;
-							<?php echo date( "l, jS F", strtotime( $roundup_date_to ) ); ?>
+							<?php echo date( "l, jS F", strtotime( $summary_date_to ) ); ?>
 						</center>
 					</h2>
 
 					<br />
-					<?php _e( 'Hope you had a great week! Here is your roundup of what happened on your site last week.', 'wp-roundup' ); ?>
+					<?php _e( 'Hope you had a great week! Here is your roundup of what happened on your site last week.', 'email-summary-pro' ); ?>
 
 				</td>
 			</tr>

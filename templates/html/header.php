@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<title><?php echo sprintf( esc_html__( '%s\'s weekly roundup', 'wp-roundup' ), get_bloginfo('site_name') ); ?></title>
+		<title><?php echo sprintf( esc_html__( '%s\'s weekly roundup', 'email-summary-pro' ), get_bloginfo('site_name') ); ?></title>
 		<style type="text/css">
 			/* /\/\/\/\/\/\/\/\/ CLIENT-SPECIFIC STYLES /\/\/\/\/\/\/\/\/ */
 			#outlook a{padding:0;} /* Force Outlook to provide a "view in browser" message */

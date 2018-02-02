@@ -241,7 +241,7 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	 */
 	public function settings_section_callback() {
 		?>
-		<p></p>
+		<p><?php esc_html_e( 'Email Summaries are a round up of what has been happening on your site.', 'email-summary-pro' ); ?></p>
 		<?php
 	}
 

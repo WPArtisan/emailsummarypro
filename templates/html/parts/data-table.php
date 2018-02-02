@@ -1,5 +1,5 @@
 <?php
-	$post_stats = esp_get_post_stats( $roundup_date_from, $roundup_date_to );
+	$post_stats = esp_get_post_stats( $summary_date_from, $summary_date_to );
 
 	// Just exit if no stats
 	if ( ! $post_stats )
@@ -37,18 +37,18 @@
 						</tr>
 						<tr>
 							<td></td>
-							<td align="center" style="font-size:12px;"><?php _e( 'Mon', 'wp-roundup' ); ?></td>
-							<td align="center" style="font-size:12px;"><?php _e( 'Tues', 'wp-roundup' ); ?></td>
-							<td align="center" style="font-size:12px;"><?php _e( 'Wed', 'wp-roundup' ); ?></td>
-							<td align="center" style="font-size:12px;"><?php _e( 'Thurs', 'wp-roundup' ); ?></td>
-							<td align="center" style="font-size:12px;"><?php _e( 'Fri', 'wp-roundup' ); ?></td>
-							<td align="center" style="font-size:12px;"><?php _e( 'Sat', 'wp-roundup' ); ?></td>
-							<td align="center" style="font-size:12px;"><?php _e( 'Sun', 'wp-roundup' ); ?></td>
+							<td align="center" style="font-size:12px;"><?php _e( 'Mon', 'email-summary-pro' ); ?></td>
+							<td align="center" style="font-size:12px;"><?php _e( 'Tues', 'email-summary-pro' ); ?></td>
+							<td align="center" style="font-size:12px;"><?php _e( 'Wed', 'email-summary-pro' ); ?></td>
+							<td align="center" style="font-size:12px;"><?php _e( 'Thurs', 'email-summary-pro' ); ?></td>
+							<td align="center" style="font-size:12px;"><?php _e( 'Fri', 'email-summary-pro' ); ?></td>
+							<td align="center" style="font-size:12px;"><?php _e( 'Sat', 'email-summary-pro' ); ?></td>
+							<td align="center" style="font-size:12px;"><?php _e( 'Sun', 'email-summary-pro' ); ?></td>
 						</tr>
 
 						<tr>
 							<td colspan="7" align="center" style="font-size: 10px;">
-								<span style="color:#000000;"><?php _e( 'Pending Posts', 'wp-roundup' ); ?></span>&nbsp;-&nbsp;<span style="color: #EB4102;"><?php _e( 'Published Posts', 'wp-roundup' ); ?></span>
+								<span style="color:#000000;"><?php _e( 'Pending Posts', 'email-summary-pro' ); ?></span>&nbsp;-&nbsp;<span style="color: #EB4102;"><?php _e( 'Published Posts', 'email-summary-pro' ); ?></span>
 							</td>
 						</tr>
 
