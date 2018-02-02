@@ -31,7 +31,7 @@
 						); ?>
 						<br />
 						<br />
-						<?php echo sprintf( __( 'The longest post was <strong>%1$s</strong> (<a href="%2$s">%3$s</a> by %4$s) and the shortest was <strong>%5$s</strong> (<a href="%6$s">%7$s</a> by %8$s). <a href="%9$s">%10$s</a> was the best day (%11$s), <a href="%12$s">%13$s</a> was the best author (%14$s), and <a href="%15$s">%16$s</a> was the most popular category (%17$s).', 'email-summary-pro' ),
+						<?php echo sprintf( __( 'The longest post was <strong>%1$s</strong> (<a target="_blank" href="%2$s">%3$s</a> by %4$s) and the shortest was <strong>%5$s</strong> (<a target="_blank" href="%6$s">%7$s</a> by %8$s). <a target="_blank" href="%9$s">%10$s</a> was the best day (%11$s), <a target="_blank" href="%12$s">%13$s</a> was the best author (%14$s), and <a target="_blank" href="%15$s">%16$s</a> was the most popular category (%17$s).', 'email-summary-pro' ),
 							sprintf( _n( '%s word', '%s words', $post_stats->longest_post['word_count'], 'email-summary-pro' ), number_format( $post_stats->longest_post['word_count'] ) ),
 							get_permalink( $post_stats->longest_post['post_id'] ),
 							get_the_title( $post_stats->longest_post['post_id'] ),

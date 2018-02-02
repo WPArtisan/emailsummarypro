@@ -10,8 +10,7 @@
 					<h2><?php _e( 'Comments', 'email-summary-pro' ); ?></h2>
 
 					<?php if ( ! $comment_stats ) : ?>
-
-						<?php _e( 'No comment action this week.', 'email-summary-pro' ); ?>
+						<i><?php _e( 'No comment action this week.', 'email-summary-pro' ); ?></i>
 
 					<?php else : ?>
 
@@ -24,7 +23,7 @@
 						?>
 
 						<?php echo sprintf(
-								__( 'with <a href="%1$s">%2$s</a> being the most popular post (%3$s).', 'email-summary-pro' ),
+								__( 'with <a target="_blank" href="%1$s">%2$s</a> being the most popular post (%3$s).', 'email-summary-pro' ),
 								get_permalink( $comment_stats->popular_post['post_id'] ),
 								get_the_title( $comment_stats->popular_post['post_id'] ),
 								sprintf(

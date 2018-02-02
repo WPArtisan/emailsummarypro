@@ -224,17 +224,17 @@ if ( ! function_exists( 'esp_circle' ) ) :
 	function esp_bar_line( $percentage, $color = '#EB4102' ) {
 		// The max size is out of a 100
 		// We don't want it getting to large so trim it down to out of 25
-		$percentage = $percentage / 3;
+		$percentage = $percentage * 2;
 
 		// Make sure color has a preceeding hash
 		$color = '#' . ltrim( $color, '#' );
 		?>
 			<!--[if mso]>
-				<v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" style="height:<?php echo absint( $percentage ); ?>;v-text-anchor:middle;width:4px;vertical-align:bottom;" arcsize="600%" stroke="f" fillcolor="<?php echo $color; ?>">
+				<v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" style="height:<?php echo absint( $percentage ); ?>px;v-text-anchor:middle;width:4px;vertical-align:bottom;" arcsize="600%" stroke="f" fillcolor="<?php echo $color; ?>">
 				<w:anchorlock/>
 				<center>
 			<![endif]-->
-			<a style="background-color:<?php echo $color; ?>;border-radius:600px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:13px;font-weight:bold;line-height:<?php echo absint( $percentage ); ?>;text-align:center;text-decoration:none;width:4px;-webkit-text-size-adjust:none;vertical-align:bottom;">&nbsp;</a>
+			<a style="background-color:<?php echo $color; ?>;border-radius:600px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:13px;font-weight:bold;line-height:<?php echo absint( $percentage ); ?>px;text-align:center;text-decoration:none;width:4px;-webkit-text-size-adjust:none;vertical-align:bottom;">&nbsp;</a>
 			<!--[if mso]>
 				</center>
 				</v:roundrect>
