@@ -87,6 +87,11 @@ class Email_Summary_Pro_Extensions extends Email_Summary_Pro_Admin_Base {
 		}
 		</style>
 
+		<h2>
+			<?php esc_html_e( 'Apps and Integrations for Email Summary Pro', 'email-summary-pro' ); ?>
+			<a class="button button-primary" target="_blank" href="https://emailsummarypro.com/extensions/?utm_source=plugin&utm_medium=extensions-a"><?php esc_html_e( 'Browse all extensions', 'email-summary-pro' ); ?></a>
+		</h2>
+
 		<p>
 			<?php echo wp_kses( __( 'These extensions <b>add extra functionality</b> to your email summaries.', 'wp-native-articles' ), array( 'b' => true ) ); ?>
 		</p>
@@ -128,21 +133,21 @@ class Email_Summary_Pro_Extensions extends Email_Summary_Pro_Admin_Base {
 				'name'        => 'Frequency',
 				'description' => 'Change the frequency of site email. Hourly, Daily, Monthly, as often as you like',
 				'image'       => 'https://8333-presscdn-0-98-pagely.netdna-ssl.com/wp-content/uploads/edd/2016/04/stripe-featured-image.png',
-				'link'        => 'https://emailsummarypro.com/extensions/frequency/',
+				'link'        => 'https://emailsummarypro.com/extensions/frequency/?utm_source=plugin&utm_medium=extensions-b',
 				'active'      => false,
 			),
 			array(
 				'name'        => 'Author Summary',
 				'description' => 'Send Authors summarys of how their posts are doing.',
 				'image'       => 'https://8333-presscdn-0-98-pagely.netdna-ssl.com/wp-content/uploads/edd/2016/01/recurring-payments-product-image.png',
-				'link'        => 'https://emailsummarypro.com/extensions/author-summary',
+				'link'        => 'https://emailsummarypro.com/extensions/author-summary/?utm_source=plugin&utm_medium=extensions-b',
 				'active'      => false,
 			),
 			array(
 				'name'        => 'Google Analytics',
 				'description' => 'Add Google Analytics information to your Summary Emails.',
 				'image'       => 'https://8333-presscdn-0-98-pagely.netdna-ssl.com/wp-content/uploads/2015/08/software-licensing-product-image.png',
-				'link'        => 'https://emailsummarypro.com/extensions/author-summary',
+				'link'        => 'https://emailsummarypro.com/extensions/google-analytics/?utm_source=plugin&utm_medium=extensions-b',
 				'active'      => false,
 			),
 		);
