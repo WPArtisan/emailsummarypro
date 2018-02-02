@@ -28,7 +28,7 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	 * @access public
 	 * @var string
 	 */
-	public $page_slug;
+	public $page_slug = 'email_summary_pro';
 
 	/**
 	 * An instance of the Email_Summary_Pro_Helper_Tabs class.
@@ -45,7 +45,7 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	 * @since 1.0.0
 	 *
 	 * @access public
-	 * @return null
+	 * @return void
 	 */
 	public function hooks() {
 		add_action( 'admin_init',          array( $this, 'setup_settings' ), 10 );
@@ -62,11 +62,10 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	 * @since 1.0.0
 	 *
 	 * @access public
-	 * @return null
+	 * @return void
 	 */
 	public function add_menu_items() {
-
-		$this->page_slug = add_submenu_page(
+		$menu_id = add_submenu_page(
 			'options-general.php',
 			esc_html__( 'Email Summary Pro', 'email-summary-pro' ),
 			esc_html__( 'Email Summary Pro', 'email-summary-pro' ),
@@ -75,7 +74,7 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 			array( $this, 'output_callback' )
 		);
 
-		add_action( 'load-' . $this->page_slug, array( $this, 'setup_tabs' ), 10 );
+		add_action( 'load-' . $menu_id, array( $this, 'setup_tabs' ), 10 );
 	}
 
 	/**
@@ -106,7 +105,7 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	 * Sets up the tab helper for the Admin Facebook page.
 	 *
 	 * @access public
-	 * @return null
+	 * @return void
 	 */
 	public function setup_tabs() {
 		email_summary_pro()->tabs_helper->register_tab(
@@ -116,6 +115,13 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 			array( $this, 'settings_tab_callback' ),
 			true
 		);
+
+		/**
+		 * Use to add more tabs to the admin.
+		 *
+		 * @var string Page URL for the tabs.
+		 */
+		do_action( 'esp_admin_tabs', $this->page_url() );
 	}
 
 
@@ -134,7 +140,7 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	 * @since 1.0.0
 	 *
 	 * @access public
-	 * @return null
+	 * @return void
 	 */
 	public function setup_settings() {
 
@@ -192,7 +198,7 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	 * @since 1.0.0
 	 *
 	 * @access public
-	 * @return null
+	 * @return void
 	 */
 	public function settings_tab_callback() {
 		?>
@@ -208,7 +214,7 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	 * Outputs the HTML displayed at the top of the settings section.
 	 *
 	 * @access public
-	 * @return null
+	 * @return void
 	 */
 	public function settings_section_callback() {
 		?>
@@ -221,7 +227,7 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	 * Whether to use HTML emails or not.
 	 *
 	 * @access public
-	 * @return null
+	 * @return void
 	 */
 	public function disable_html_emails_field_callback() {
 		?>
@@ -241,7 +247,7 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	* @since 1.0.0
 	*
 	* @access public
-	* @return null
+	* @return void
 	*/
 	public function recipients_field_callback() {
 		?>
@@ -316,7 +322,7 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	/**
 	 * Resends the last stats email.
 	 *
-	 * @return null
+	 * @return void
 	 */
 	public function resend_summary() {
 		// Check it's an admin user.
@@ -357,7 +363,7 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return null
+	 * @return void
 	 */
 	public function preview_summary() {
 		// Check it's an admin user.

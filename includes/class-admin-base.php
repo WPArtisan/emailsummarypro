@@ -56,7 +56,7 @@ abstract class Email_Summary_Pro_Admin_Base {
 	 */
 	public function page_url( $params = array() ) {
 		$query_args = array_merge( array( 'page' => $this->page_slug ), $params );
-		return add_query_arg( $query_args, admin_url( 'admin.php' ) );
+		return add_query_arg( $query_args );
 	}
 
 }
