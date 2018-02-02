@@ -227,3 +227,17 @@ if ( ! function_exists( 'esp_circle' ) ) :
 		<?php
 	}
 endif;
+
+if ( ! function_exists( 'esp_sort_by_order' ) ) :
+
+	/**
+	 * Used with usort() to order an array by the order key.
+	 *
+	 * @param  array $a
+	 * @param  array $b
+	 * @return int
+	 */
+	function esp_sort_by_order( $a, $b ) {
+		return $a['order'] - $b['order'];
+	}
+endif;
