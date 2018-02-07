@@ -337,7 +337,7 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	public function next_summary_field_callback() {
 		$next = wp_next_scheduled( 'esp_cron_hook' );
 		?>
-		<p class="description"><i><?php echo esc_html( date( 'H:ma, jS M Y', $next ) ); ?></i></p>
+		<p class="description"><code><?php echo esc_html( date( 'H:ma, jS M Y', $next ) ); ?></code></p>
 		<?php
 	}
 
