@@ -112,7 +112,7 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 			'settings',
 			esc_html__( 'Summary', 'email-summary-pro' ),
 			$this->page_url(),
-			array( $this, 'settings_tab_callback' ),
+			array( $this, 'tab_callback' ),
 			true
 		);
 
@@ -223,7 +223,7 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	 * @access public
 	 * @return void
 	 */
-	public function settings_tab_callback() {
+	public function tab_callback() {
 		?>
 		<form action="options.php" method="post">
 			<?php settings_fields( 'esp_settings' ); ?>

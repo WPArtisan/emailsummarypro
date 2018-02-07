@@ -161,6 +161,7 @@ if ( ! class_exists( 'Email_Summary_Pro' ) ) :
 			require ESP_BASE_PATH . '/includes/class-tabs-helper.php';
 			require ESP_BASE_PATH . '/includes/class-email.php';
 			require ESP_BASE_PATH . '/includes/class-admin.php';
+			require ESP_BASE_PATH . '/includes/class-debug.php';
 			require ESP_BASE_PATH . '/includes/class-extensions.php';
 			require ESP_BASE_PATH . '/includes/class-schedule.php';
 		}
@@ -175,6 +176,7 @@ if ( ! class_exists( 'Email_Summary_Pro' ) ) :
 		public function setup_objects() {
 			self::$instance->tabs_helper = new Email_Summary_Pro_Tabs_Helper;
 			self::$instance->admin = new Email_Summary_Pro_Admin;
+			self::$instance->debug = new Email_Summary_Pro_Debug;
 			self::$instance->extensions = new Email_Summary_Pro_Extensions;
 			self::$instance->schedule = new Email_Summary_Pro_Schedule;
 		}

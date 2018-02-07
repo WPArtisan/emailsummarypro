@@ -221,6 +221,9 @@ class Email_Summary_Pro_Email {
 		// Make sure the email content type is set.
 		add_filter( 'wp_mail_content_type', array( $this, 'set_content_type' ), 10, 1 );
 
+		// Make sure we're logging any errors.
+		add_action( 'wp_mail_failed', array( $this, 'log_errors' ), 10, 1 );
+
 		/**
 		 * Run directly before the summary is sent.
 		 *
@@ -236,8 +239,29 @@ class Email_Summary_Pro_Email {
 		 */
 		do_action( 'eso_after_wp_mail', $to, $subject, $message, $headers, $attachments );
 
+		// Remove the action for logging errors.
+		remove_action( 'wp_mail_failed', array( $this, 'log_errors' ), 10 );
+
 		// Remove the filter for changing the email content type.
 		remove_filter( 'wp_mail_content_type', array( $this, 'set_content_type' ), 10 );
+	}
+
+	/**
+	 * Log any errors with the mailer when sending the emails.
+	 *
+	 * @access public
+	 * @param WP_Error $wp_error What went wrong.
+	 * @return void
+	 */
+	public function log_errors( $wp_error ) {
+		// Get any old errors.
+		$errors = (array) get_transient( 'esp_email_errors' );
+
+		// Add the error message in,
+		$errors[] = $wp_error->get_error_message();
+
+		// Add it to the transient.
+		set_transient( 'esp_email_errors', $errors );
 	}
 
 	/**
@@ -245,6 +269,7 @@ class Email_Summary_Pro_Email {
 	 * Default to multipart/alternative.
 	 * If HTML has been disabled switch to text/plain.
 	 *
+	 * @access public
 	 * @param string $content_type Email message format.
 	 * @return string
 	 */

@@ -39,7 +39,7 @@ class Email_Summary_Pro_Extensions extends Email_Summary_Pro_Admin_Base {
 			'extensions',
 			esc_html__( 'Extensions', 'email-summary-pro' ),
 			$page_url,
-			array( $this, 'extensions_tab_callback' ),
+			array( $this, 'tab_callback' ),
 			true
 		);
 	}
@@ -50,7 +50,7 @@ class Email_Summary_Pro_Extensions extends Email_Summary_Pro_Admin_Base {
 	 * @access public
 	 * @return void
 	 */
-	public function extensions_tab_callback() {
+	public function tab_callback() {
 		?>
 		<style>
 		.esp-grid-container {
