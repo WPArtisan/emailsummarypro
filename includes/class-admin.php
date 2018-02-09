@@ -301,7 +301,7 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 		$resend_url = wp_nonce_url( add_query_arg( array_merge( $default_query, array( 'esp-action' => 'resend_summary' ) ), admin_url( 'options-general.php' ) ), 'resend_summary', 'esp_nonce');
 
 		// Preview URL.
-		$preview_url = wp_nonce_url( add_query_arg( array_merge( $default_query, array( 'esp-action' => 'preview_summary' ) ), admin_url( 'options-general.php' ) ), 'preview_summary', 'esp_nonce');
+		$preview_url = add_query_arg( array_merge( $default_query, array( 'esp-action' => 'preview_summary' ) ), admin_url( 'options-general.php' ) );
 		?>
 		<input type="date" id="summary-week" max="<?php echo date( 'Y-m-d' ); ?>" value="<?php echo esc_attr( $last_summary ); ?>" >
 		<a href="#" data-url="<?php echo esc_url( $resend_url ); ?>" class="button button-secondary js-url-action" title="<?php esc_html_e( 'Resend Email Summary', 'email-summary-pro' ); ?>"><?php esc_html_e( 'Resend', 'email-summary-pro' ); ?></a>
@@ -389,11 +389,6 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 		// Check it's an admin user.
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
-		}
-
-		// Check the nonce.
-		if ( ! isset( $_GET['esp_nonce'] ) || ! wp_verify_nonce( $_GET['esp_nonce'], 'preview_summary' ) ) {
-			wp_die( __( 'Cheatin&#8217; huh?', 'email-summary-pro' ) );
 		}
 
 		// Setup new email summary and output the preview.

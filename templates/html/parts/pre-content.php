@@ -10,7 +10,9 @@
 				</td>
 				<!-- *|IFNOT:ARCHIVE_PAGE|* -->
 				<td valign="top" width="180" class="preheaderContent" style="padding-top:10px; padding-right:20px; padding-bottom:10px; padding-left:0;">
-					Email not displaying correctly?<br /><a href="*|ARCHIVE|*" target="_blank">View it in your browser</a>.
+					<?php esc_html_e( 'Email not displaying correctly?', 'email-summary-pro' ); ?>
+					<br />
+					<a href="<?php echo esc_url( add_query_arg( array( 'page' => 'email_summary_pro', 'esp-action' => 'preview_summary', 'date' => $summary_date ), admin_url( 'options-general.php' ) ) ); ?>" target="_blank"><?php esc_html_e( 'View it in your browser', 'email-summary-pro' ); ?></a>.
 				</td>
 				<!-- *|END:IF|* -->
 			</tr>
