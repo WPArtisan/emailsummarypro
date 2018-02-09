@@ -1,3 +1,10 @@
+<?php
+	$custom_logo_id = get_theme_mod( 'custom_logo' );
+	$logo = wp_get_attachment_image_src( $custom_logo_id , 'full' );
+	if ( ! function_exists( 'has_custom_logo' ) || ! has_custom_logo() ) {
+		return;
+	}
+?>
 <tr>
 	<td align="center" valign="top">
 		<!-- BEGIN HEADER // -->
@@ -7,7 +14,7 @@
 
 					<!-- https://codex.wordpress.org/Theme_Logo -->
 					<br />
-					<center><img src="<?php echo esc_url('http://thetab.com/wp-content/themes/thetab-three/assets/_img/thetab-logo-red.png' ); ?>" style="max-width:128px;" id="headerImage" /></center>
+					<center><img src="<?php echo esc_url( $logo[0] ); ?>" style="max-width:128px;" id="headerImage" /></center>
 					<br />
 
 				</td>

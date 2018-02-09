@@ -74,6 +74,7 @@ class Email_Summary_Pro_Email {
 			$type . '/parts/data-table',
 			$type . '/parts/comments',
 			$type . '/parts/users',
+			$type . '/parts/updates',
 			$type . '/parts/signoff',
 		);
 
