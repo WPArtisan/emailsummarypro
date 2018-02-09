@@ -9,7 +9,7 @@
 							<?php echo sprintf(
 									__( '<a target="_blank" href="%1$s"><strong>%2$s\'s</strong></a> Weekly Round Up', 'email-summary-pro' ),
 									esc_url( get_bloginfo('url') ),
-									get_bloginfo('site_title')
+									get_bloginfo( 'site_title' )
 								);
 							?>
 						</center>
@@ -24,7 +24,7 @@
 					</h2>
 
 					<br />
-					<?php _e( 'Hope you had a great week! Here is your roundup of what happened on your site last week.', 'email-summary-pro' ); ?>
+					<?php esc_html_e( 'Hope you had a great week! Here is your summary of what happened on your site last week.', 'email-summary-pro' ); ?>
 
 				</td>
 			</tr>
