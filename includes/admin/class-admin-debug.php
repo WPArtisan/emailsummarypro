@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  *
  * @since  1.0.0
  */
-class Email_Summary_Pro_Debug extends Email_Summary_Pro_Admin_Base {
+class Email_Summary_Pro_Admin_Debug extends Email_Summary_Pro_Admin_Base {
 
 	/**
 	 * Hooks registered in this class.
@@ -37,7 +37,7 @@ class Email_Summary_Pro_Debug extends Email_Summary_Pro_Admin_Base {
 	public function setup_tabs( $page_url ) {
 		email_summary_pro()->tabs_helper->register_tab(
 			'debug',
-			esc_html__( 'Debug', 'email-summary-pro' ),
+			esc_html__( 'System Information', 'email-summary-pro' ),
 			$page_url,
 			array( $this, 'tab_callback' ),
 			true
@@ -55,15 +55,15 @@ class Email_Summary_Pro_Debug extends Email_Summary_Pro_Admin_Base {
 		?>
 
 		<h2>
-			<?php esc_html_e( 'Errors Logged', 'email-summary-pro' ); ?>
+			<?php esc_html_e( 'Email Errors', 'email-summary-pro' ); ?>
 		</h2>
-		<textarea style="width: 100%; padding: 20px;">
-			<?php if ( ! empty( $email_errors ) ) : ?>
-				<?php foreach ( $email_errors as $error ) :?>
-					<?php echo esc_html( $error ); ?>
-				<?php endforeach;?>
-			<?php endif;?>
-		</textarea>
+<textarea style="width: 100%; padding: 20px;">
+<?php if ( ! empty( $email_errors ) ) : ?>
+<?php foreach ( $email_errors as $error ) :?>
+<?php echo esc_html( $error ); ?>
+<?php endforeach;?>
+<?php endif;?>
+</textarea>
 
 		<h2>
 			<?php esc_html_e( 'System Information', 'email-summary-pro' ); ?>

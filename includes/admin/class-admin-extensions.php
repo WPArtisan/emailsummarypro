@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  *
  * @since  1.0.0
  */
-class Email_Summary_Pro_Extensions extends Email_Summary_Pro_Admin_Base {
+class Email_Summary_Pro_Admin_Extensions extends Email_Summary_Pro_Admin_Base {
 
 	/**
 	 * Hooks registered in this class.

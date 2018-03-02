@@ -43,15 +43,6 @@ if ( ! class_exists( 'Email_Summary_Pro' ) ) :
 		private $version = '1.0.0';
 
 		/**
-		 * The main admin class.
-		 *
-		 * @access public
-		 * @since  1.0
-		 * @var    Email_Summary_Pro_Admin
-		 */
-		public $admin;
-
-		/**
 		 * The tabs help class.
 		 *
 		 * @access public
@@ -61,11 +52,38 @@ if ( ! class_exists( 'Email_Summary_Pro' ) ) :
 		public $tabs_helper;
 
 		/**
+		 * The main admin class.
+		 *
+		 * @access public
+		 * @since  1.0
+		 * @var    Email_Summary_Pro_Admin
+		 */
+		public $admin;
+
+		/**
+		 * The admin debug class.
+		 *
+		 * @access public
+		 * @since  1.0
+		 * @var    Email_Summary_Pro_Admin_Debug
+		 */
+		public $admin_debug;
+
+		/**
+		 * The admin debug class.
+		 *
+		 * @access public
+		 * @since  1.0
+		 * @var    Email_Summary_Pro_Admin_Extensions
+		 */
+		public $admin_extensions;
+
+		/**
 		 * The schedule class.
 		 *
 		 * @access public
 		 * @since  1.0
-		 * @var    Email_Summary_Pro_Tabs_Schedule
+		 * @var    Email_Summary_Pro_Schedule
 		 */
 		public $schedule;
 
@@ -153,17 +171,20 @@ if ( ! class_exists( 'Email_Summary_Pro' ) ) :
 		 * @return void
 		 */
 		private function includes() {
-			require ESP_BASE_PATH . '/includes/functions-helper.php';
-			require ESP_BASE_PATH . '/includes/functions-stats.php';
-			require ESP_BASE_PATH . '/includes/admin-actions.php';
-			require ESP_BASE_PATH . '/includes/admin-notices.php';
-			require ESP_BASE_PATH . '/includes/class-admin-base.php';
-			require ESP_BASE_PATH . '/includes/class-tabs-helper.php';
-			require ESP_BASE_PATH . '/includes/class-email.php';
-			require ESP_BASE_PATH . '/includes/class-admin.php';
-			require ESP_BASE_PATH . '/includes/class-debug.php';
-			require ESP_BASE_PATH . '/includes/class-extensions.php';
-			require ESP_BASE_PATH . '/includes/class-schedule.php';
+			require ESP_BASE_PATH . 'includes/functions-helper.php';
+			require ESP_BASE_PATH . 'includes/functions-stats.php';
+			require ESP_BASE_PATH . 'includes/functions-summaries.php';
+			require ESP_BASE_PATH . 'includes/class-tabs-helper.php';
+			require ESP_BASE_PATH . 'includes/class-email.php';
+			require ESP_BASE_PATH . 'includes/class-schedule.php';
+			require ESP_BASE_PATH . 'includes/class-summary.php';
+			require ESP_BASE_PATH . 'includes/admin/summaries/class-admin-summaries-list-table.php';
+			require ESP_BASE_PATH . 'includes/admin/admin-actions.php';
+			require ESP_BASE_PATH . 'includes/admin/admin-notices.php';
+			require ESP_BASE_PATH . 'includes/admin/class-admin-base.php';
+			require ESP_BASE_PATH . 'includes/admin/class-admin.php';
+			require ESP_BASE_PATH . 'includes/admin/class-admin-debug.php';
+			require ESP_BASE_PATH . 'includes/admin/class-admin-extensions.php';
 		}
 
 		/**
@@ -174,11 +195,11 @@ if ( ! class_exists( 'Email_Summary_Pro' ) ) :
 		 * @return void
 		 */
 		public function setup_objects() {
-			self::$instance->tabs_helper = new Email_Summary_Pro_Tabs_Helper;
-			self::$instance->admin = new Email_Summary_Pro_Admin;
-			self::$instance->debug = new Email_Summary_Pro_Debug;
-			self::$instance->extensions = new Email_Summary_Pro_Extensions;
-			self::$instance->schedule = new Email_Summary_Pro_Schedule;
+			self::$instance->tabs_helper      = new Email_Summary_Pro_Tabs_Helper;
+			self::$instance->admin            = new Email_Summary_Pro_Admin;
+			self::$instance->admin_debug      = new Email_Summary_Pro_Admin_Debug;
+			self::$instance->admin_extensions = new Email_Summary_Pro_Admin_Extensions;
+			self::$instance->schedule         = new Email_Summary_Pro_Schedule;
 		}
 
 	}

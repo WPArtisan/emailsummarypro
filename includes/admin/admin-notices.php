@@ -31,9 +31,24 @@ function esp_admin_notices() {
 
 	switch ( $_GET['esp-notice'] ) { // Input var okay.
 
-		// Placements.
+		// Summaries.
 		case 'resend_summary_success':
 			add_settings_error( 'esp-notices', 'esp-resend-summary-succes', esc_html__( 'Email Summary successfully resent. Please check your Email.', 'email-summary-pro' ), 'updated' );
+			break;
+		case 'summary_validation_fail':
+			add_settings_error( 'esp-notices', 'esp-summary-validation-fail', esc_html__( 'Summary could not be added as one or more fields were empty or failed validation.', 'email-summary-pro' ), 'error' );
+			break;
+		case 'summary_added_error':
+			add_settings_error( 'esp-notices', 'esp-summary-added-error', esc_html__( 'There was a problem adding this summary. Please try again.', 'email-summary-pro' ), 'error' );
+			break;
+		case 'summary_added_success':
+			add_settings_error( 'esp-notices', 'esp-summary-added-success', esc_html__( 'Summary successfully added.', 'email-summary-pro' ), 'updated' );
+			break;
+		case 'summary_update_success':
+			add_settings_error( 'esp-notices', 'esp-summary-updated-success', esc_html__( 'Summary(s) successfully updated.', 'email-summary-pro' ), 'updated' );
+			break;
+		case 'summary_delete_success':
+			add_settings_error( 'esp-notices', 'esp-summary-delete-success', esc_html__( 'Summary(s) successfully deleted.', 'email-summary-pro' ), 'updated' );
 			break;
 
 		default:
