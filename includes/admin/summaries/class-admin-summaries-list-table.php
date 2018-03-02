@@ -85,12 +85,12 @@ class WPNA_Admin_Summaries_List_Table extends WP_List_Table {
 	 */
 	public function get_columns() {
 		$columns = array(
-			'cb'       => '<input type ="checkbox" />',
-			'name'     => esc_html__( 'Name', 'email-summary-pro' ),
-			'status'   => esc_html__( 'Status', 'email-summary-pro' ),
-			'type'     => esc_html__( 'Type', 'email-summary-pro' ),
-			'selector' => esc_html__( 'Selector', 'email-summary-pro' ),
-			'rule'     => esc_html__( 'Rule', 'email-summary-pro' ),
+			'cb'                  => '<input type ="checkbox" />',
+			'name'                => esc_html__( 'Name', 'email-summary-pro' ),
+			'status'              => esc_html__( 'Status', 'email-summary-pro' ),
+			'recipients'          => esc_html__( 'Recipients', 'email-summary-pro' ),
+			'disable_html_emails' => esc_html__( 'HTML Emails', 'email-summary-pro' ),
+			'next_scheduled'      => esc_html__( 'Next Scheduled', 'email-summary-pro' ),
 		);
 
 		return $columns;
@@ -175,18 +175,18 @@ class WPNA_Admin_Summaries_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Format the output for the status column.
+	 * Outputs the HTML for the scheduled field.
+	 *
+	 * Works out the tme the next summary email is scheduled for.
 	 *
 	 * @access public
-	 * @param  array $item Row item.
-	 * @return string Output for this row and column.
+	 * @return void
 	 */
-	public function column_selector( $item ) {
-		// If it's a shortcode wrap it in shortcode brackets.
-		if ( 'shortcode' === $item->type ) {
-			return sprintf( '[%s]', $item->selector );
-		}
-		return $item->selector;
+	public function column_next_scheduled() {
+		$next = wp_next_scheduled( 'esp_cron_hook' );
+		?>
+		<p class="description"><?php echo esc_html( date( 'H:ma, jS M Y', $next ) ); ?></p>
+		<?php
 	}
 
 	/**
@@ -197,10 +197,9 @@ class WPNA_Admin_Summaries_List_Table extends WP_List_Table {
 	 */
 	public function get_sortable_columns() {
 		$sortable_columns = array(
-			'name'   => array( 'name', false ),
-			'status' => array( 'status', false ),
-			'type'   => array( 'type', false ),
-			'rule'   => array( 'rule', false ),
+			'name'                => array( 'name', false ),
+			'status'              => array( 'status', false ),
+			'disable_html_emails' => array( 'disable_html_emails', false ),
 		);
 
 		return $sortable_columns;

@@ -55,7 +55,6 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	 * @return void
 	 */
 	public function hooks() {
-		add_action( 'admin_init',          array( $this, 'setup_settings' ), 10 );
 		add_action( 'admin_menu',          array( $this, 'add_menu_items' ), 23 );
 		add_action( 'esp_resend_summary',  array( $this, 'resend_summary' ), 10 );
 		add_action( 'esp_preview_summary', array( $this, 'preview_summary' ), 10 );
@@ -85,7 +84,6 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 		);
 
 		add_action( "load-{$menu_id}", array( $this, 'page_hooks' ), 1, 0 );
-
 
 		/**
 		 * Custom action for adding more menu items.
@@ -300,10 +298,10 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 
 		// Try and insert the summary.
 		if ( esp_add_summary( $data ) ) {
-			wp_safe_redirect( add_query_arg( 'esp-message', 'summary_added_success' ) );
+			wp_safe_redirect( add_query_arg( 'esp-notice', 'summary_added_success' ) );
 			die;
 		} else {
-			wp_safe_redirect( add_query_arg( 'esp-message', 'summary_added_error' ) );
+			wp_safe_redirect( add_query_arg( 'esp-noitce', 'summary_added_error' ) );
 			die;
 		}
 
@@ -339,156 +337,13 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 
 		// Try and insert the summary.
 		if ( esp_update_summary( $data['summary_id'], $data ) ) {
-			wp_safe_redirect( add_query_arg( 'esp-message', 'summary_update_success' ) );
+			wp_safe_redirect( add_query_arg( 'esp-noitce', 'summary_update_success' ) );
 			die;
 		} else {
-			wp_safe_redirect( add_query_arg( 'esp-message', 'summary_update_error' ) );
+			wp_safe_redirect( add_query_arg( 'esp-noitce', 'summary_update_error' ) );
 			die;
 		}
 
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-	/**
-	 * Register general Facebook settings.
-	 *
-	 * Uses the settings API to create and register all the settings fields in
-	 * the General tab of the Facebook admin. Uses the global esp_sanitize_options()
-	 * function to provide validation hooks based on each field name.
-	 *
-	 * The settings API replaces the entire global settings object with the new
-	 * values. esp_sanitize_options() takes any other fields found in the global
-	 * settings array that aren't registered here and merges them in to ensure
-	 * they're not lost.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @access public
-	 * @return void
-	 */
-	public function setup_settings() {
-
-		// Unique key for the settings API on this page.
-		$option_group = 'esp_settings';
-
-		// Register the setting.
-		register_setting( $option_group, 'esp_options', 'esp_sanitize_options' );
-
-		// Setup the general settings section.
-		add_settings_section(
-			$option_group,
-			esc_html__( 'General', 'email-summary-pro' ),
-			array( $this, 'settings_section_callback' ),
-			$option_group
-		);
-
-		// Register the default fields.
-		$settings_fields = array(
-			array(
-				'key'      => 'recipients',
-				'label'    => esc_html__( 'Recipients', 'email-summary-pro' ),
-				'callback' => array( $this, 'recipients_field_callback' ),
-				'order'    => 10,
-			),
-			array(
-				'key'      => 'disable_html_emails',
-				'label'    => esc_html__( 'Disable HTML Emails', 'email-summary-pro' ),
-				'callback' => array( $this, 'disable_html_emails_field_callback' ),
-				'order'    => 20,
-			),
-			array(
-				'key'      => 'resend_summary',
-				'label'    => esc_html__( 'Resend Summary', 'email-summary-pro' ),
-				'callback' => array( $this, 'resend_summary_field_callback' ),
-				'order'    => 30,
-			),
-			array(
-				'key'      => 'next_summary',
-				'label'    => esc_html__( 'Next Summary', 'email-summary-pro' ),
-				'callback' => array( $this, 'next_summary_field_callback' ),
-				'order'    => 40,
-			),
-		);
-
-		/**
-		 * Filter the fields for the this settings section.
-		 *
-		 * Use this filter to add any more fields in, or change the order.
-		 *
-		 * @var array
-		 */
-		$settings_fields = apply_filters( 'esp_settings_fields_general', $settings_fields, $option_group );
-
-		// Order the fields.
-		usort( $settings_fields, 'esp_sort_by_order' );
-
-		// Setup all the registered fields.
-		foreach ( $settings_fields as $field ) {
-			add_settings_field(
-				$field['key'],
-				'<label for="' . esc_attr( $field['key'] ) . '">' . esc_html( $field['label'] ) . '</label>',
-				$field['callback'],
-				$option_group,
-				$option_group
-			);
-		}
-
-	}
-
-	/**
-	 * Outputs the HTML displayed at the top of the settings section.
-	 *
-	 * @access public
-	 * @return void
-	 */
-	public function settings_section_callback() {
-		?>
-		<p><?php esc_html_e( 'Email Summaries are a round up of what has been happening on your site.', 'email-summary-pro' ); ?></p>
-		<?php
-	}
-
-	/**
-	 * Outputs the HTML for the 'recipient' settings field.
-	 *
-	 * Multi recipients can be added with commas.
-	 *
-	 * @access public
-	 * @return void
-	 */
-	public function recipients_field_callback() {
-		?>
-		<input type="text" name="esp_options[recipients]" id="recipients" class="regular-text" value="<?php echo esc_attr( esp_get_option( 'recipients' ) ); ?>">
-		<p class="description"><?php echo sprintf( esc_html__( 'Multiple recipients can be added using commas. e.g. %s', 'email-summary-pro'), '<code>admin1@site.com, admin2@site.com</code>' ); ?></p>
-		<?php
-	}
-
-	/**
-	 * Outputs the HTML for the 'html_emails' settings field.
-	 *
-	 * Whether to use HTML emails or not.
-	 *
-	 * @access public
-	 * @return void
-	 */
-	public function disable_html_emails_field_callback() {
-		?>
-		<label for="disable-html-emails">
-			<input type="hidden" name="esp_options[disable_html_emails]" value="0">
-			<input type="checkbox" name="esp_options[disable_html_emails]" id="disable_html_emails" class="" value="true"<?php checked( (bool) esp_get_option( 'disable_html_emails' ) ); ?> />
-			<?php esc_html_e( 'Disable HTML emails and only recieve plain text ones.', 'email-summary-pro' ); ?>
-		</label>
-		<?php
 	}
 
 	/**

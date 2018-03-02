@@ -20,10 +20,10 @@ if ( ! function_exists( 'esp_get_summary' ) ) :
 	 * Retrieves a summary from the DB.
 	 *
 	 * @param int $summary_id ID of the summary to retrieve.
-	 * @return object WPNA_Summary
+	 * @return object ESP_Summary
 	 */
 	function esp_get_summary( $summary_id ) {
-		$summary = new WPNA_Summary( $summary_id );
+		$summary = new ESP_Summary( $summary_id );
 		return $summary;
 	}
 endif;
@@ -34,7 +34,7 @@ if ( ! function_exists( 'esp_get_summaries' ) ) :
 	 * Retrieves a summary from the DB.
 	 *
 	 * @param array $args Custom WP_Query arguments for retrieving summaries.
-	 * @return object WPNA_Summary
+	 * @return object ESP_Summary
 	 */
 	function esp_get_summaries( $args = array() ) {
 		$defaults = array(
@@ -76,7 +76,7 @@ if ( ! function_exists( 'esp_get_summaries' ) ) :
 
 		$summaries = array();
 		foreach ( $query->get_posts() as $key => $summary ) {
-			$summaries[ $key ] = new WPNA_Summary( $summary->ID );
+			$summaries[ $key ] = new ESP_Summary( $summary->ID );
 		}
 
 		// Set the cache.
@@ -105,7 +105,7 @@ if ( ! function_exists( 'esp_add_summary' ) ) :
 	 * @return mixed. ID on success, false on failure.
 	 */
 	function esp_add_summary( $data ) {
-		$summary = new WPNA_Summary();
+		$summary = new ESP_Summary();
 		return $summary->add( $data );
 	}
 endif;
@@ -120,7 +120,7 @@ if ( ! function_exists( 'esp_update_summary' ) ) :
 	 * @return mixed. ID on success, false on failure.
 	 */
 	function esp_update_summary( $summary_id, $data ) {
-		$summary = new WPNA_Summary( $summary_id );
+		$summary = new ESP_Summary( $summary_id );
 		return $summary->update( $data );
 	}
 endif;

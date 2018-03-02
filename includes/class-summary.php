@@ -29,11 +29,32 @@ class ESP_Summary {
 	public $ID;
 
 	/**
+	 * Summary name.
+	 *
+	 * @var string
+	 */
+	public $name;
+
+	/**
 	 * Summary status.
 	 *
 	 * @var string
 	 */
 	public $status;
+
+	/**
+	 * Summary recipients.
+	 *
+	 * @var string
+	 */
+	public $recipients;
+
+	/**
+	 * Summary disable_html_emails.
+	 *
+	 * @var string
+	 */
+	public $disable_html_emails;
 
 	/**
 	 * Class constructor.
@@ -93,12 +114,11 @@ class ESP_Summary {
 		/**
 		 * Setup all object variables
 		 */
-		$this->ID       = absint( $summary->ID );
-		$this->name     = $this->setup_name();
-		$this->status   = $this->setup_status();
-		$this->type     = $this->setup_type();
-		$this->selector = $this->setup_selector();
-		$this->rule     = $this->setup_rule();
+		$this->ID                  = absint( $summary->ID );
+		$this->name                = $this->setup_name();
+		$this->status              = $this->setup_status();
+		$this->recipients          = $this->setup_recipients();
+		$this->disable_html_emails = $this->setup_disable_html_emails();
 
 		/**
 		 * Fires after the instance of the WPNA_Summary object is set up.
@@ -136,39 +156,27 @@ class ESP_Summary {
 	}
 
 	/**
-	 * Setup the summary type.
+	 * Setup the summary recipients.
 	 *
 	 * @access private
 	 *
-	 * @return string Summary type.
+	 * @return string Summary recipients.
 	 */
-	private function setup_type() {
-		$type = $this->get_meta( 'type', true );
-		return $type;
+	private function setup_recipients() {
+		$recipients = $this->get_meta( 'recipients', true );
+		return $recipients;
 	}
 
 	/**
-	 * Setup the summary selector.
+	 * Setup the summary disable_html_emails.
 	 *
 	 * @access private
 	 *
-	 * @return string Summary selector.
+	 * @return string Summary disable_html_emails.
 	 */
-	private function setup_selector() {
-		$selector = $this->get_meta( 'selector', true );
-		return $selector;
-	}
-
-	/**
-	 * Setup the summary rules.
-	 *
-	 * @access private
-	 *
-	 * @return string Summary rules.
-	 */
-	private function setup_rule() {
-		$rule = $this->get_meta( 'rule', true );
-		return $rule;
+	private function setup_disable_html_emails() {
+		$disable_html_emails = $this->get_meta( 'disable_html_emails', true );
+		return $disable_html_emails;
 	}
 
 	/**
@@ -310,11 +318,10 @@ class ESP_Summary {
 		$selector_key = 'selector_' . $args['type'];
 
 		$meta = array(
-			'name'     => ! empty( $args['name'] ) ? $args['name'] : '',
-			'status'   => ! empty( $args['status'] ) ? $args['status'] : 'active',
-			'type'     => ! empty( $args['type'] ) ? $args['type'] : '',
-			'selector' => ! empty( $args[ $selector_key ] ) ? $args[ $selector_key ] : '',
-			'rule'     => ! empty( $args['rule'] ) ? $args['rule'] : '',
+			'name'                => ! empty( $args['name'] ) ? $args['name'] : '',
+			'status'              => ! empty( $args['status'] ) ? $args['status'] : 'active',
+			'recipients'          => ! empty( $args['recipients'] ) ? $args['recipients'] : '',
+			'disable_html_emails' => ! empty( $args['disable_html_emails'] ) ? $args['disable_html_emails'] : '0',
 		);
 
 		return $meta;
