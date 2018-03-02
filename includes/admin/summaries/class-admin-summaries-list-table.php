@@ -6,7 +6,7 @@
  * @subpackage  Includes/summary
  * @copyright   Copyright (c) 2017, WPArtisan
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU Public License
- * @since       1.4.2
+ * @since       1.0.0
  */
 
 if ( ! class_exists( 'WP_List_Table' ) ) {
@@ -180,13 +180,11 @@ class WPNA_Admin_Summaries_List_Table extends WP_List_Table {
 	 * Works out the tme the next summary email is scheduled for.
 	 *
 	 * @access public
-	 * @return void
+	 * @param  array $item Row item.
+	 * @return string Output for this row and column.
 	 */
-	public function column_next_scheduled() {
-		$next = wp_next_scheduled( 'esp_cron_hook' );
-		?>
-		<p class="description"><?php echo esc_html( date( 'H:ma, jS M Y', $next ) ); ?></p>
-		<?php
+	public function column_next_scheduled( $item ) {
+		return date( 'H:ma, jS M Y', $item->next_scheduled );
 	}
 
 	/**
@@ -200,6 +198,7 @@ class WPNA_Admin_Summaries_List_Table extends WP_List_Table {
 			'name'                => array( 'name', false ),
 			'status'              => array( 'status', false ),
 			'disable_html_emails' => array( 'disable_html_emails', false ),
+			'next_scheduled'      => array( 'next_scheduled', false ),
 		);
 
 		return $sortable_columns;

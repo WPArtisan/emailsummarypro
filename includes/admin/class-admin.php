@@ -330,17 +330,17 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 			wp_die( esc_html__( 'You do not have permission to manage summaries', 'email-summary-pro' ), esc_html__( 'Error', 'email-summary-pro' ), array( 'response' => 403 ) );
 		}
 
-		if ( empty( $data['summary_id'] ) || empty( $data['type'] ) ) {
-			wp_safe_redirect( add_query_arg( 'esp-message', 'summary_validation_fail' ) );
+		if ( empty( $data['summary_id'] ) ) {
+			wp_safe_redirect( add_query_arg( 'esp-notice', 'summary_validation_fail' ) );
 			die;
 		}
 
 		// Try and insert the summary.
 		if ( esp_update_summary( $data['summary_id'], $data ) ) {
-			wp_safe_redirect( add_query_arg( 'esp-noitce', 'summary_update_success' ) );
+			wp_safe_redirect( add_query_arg( 'esp-notice', 'summary_update_success' ) );
 			die;
 		} else {
-			wp_safe_redirect( add_query_arg( 'esp-noitce', 'summary_update_error' ) );
+			wp_safe_redirect( add_query_arg( 'esp-notice', 'summary_update_error' ) );
 			die;
 		}
 

@@ -79,15 +79,6 @@ if ( ! class_exists( 'Email_Summary_Pro' ) ) :
 		public $admin_extensions;
 
 		/**
-		 * The schedule class.
-		 *
-		 * @access public
-		 * @since  1.0
-		 * @var    Email_Summary_Pro_Schedule
-		 */
-		public $schedule;
-
-		/**
 		 * Main Email_Summary_Pro Instance
 		 *
 		 * Insures that only one instance of Email_Summary_Pro exists in memory at any one
@@ -171,12 +162,13 @@ if ( ! class_exists( 'Email_Summary_Pro' ) ) :
 		 * @return void
 		 */
 		private function includes() {
+			require ESP_BASE_PATH . 'includes/post-types.php';
 			require ESP_BASE_PATH . 'includes/functions-helper.php';
 			require ESP_BASE_PATH . 'includes/functions-stats.php';
 			require ESP_BASE_PATH . 'includes/functions-summaries.php';
+			require ESP_BASE_PATH . 'includes/actions-cron.php';
 			require ESP_BASE_PATH . 'includes/class-tabs-helper.php';
 			require ESP_BASE_PATH . 'includes/class-email.php';
-			require ESP_BASE_PATH . 'includes/class-schedule.php';
 			require ESP_BASE_PATH . 'includes/class-summary.php';
 			require ESP_BASE_PATH . 'includes/admin/summaries/class-admin-summaries-list-table.php';
 			require ESP_BASE_PATH . 'includes/admin/admin-actions.php';
@@ -199,7 +191,6 @@ if ( ! class_exists( 'Email_Summary_Pro' ) ) :
 			self::$instance->admin            = new Email_Summary_Pro_Admin;
 			self::$instance->admin_debug      = new Email_Summary_Pro_Admin_Debug;
 			self::$instance->admin_extensions = new Email_Summary_Pro_Admin_Extensions;
-			self::$instance->schedule         = new Email_Summary_Pro_Schedule;
 		}
 
 	}

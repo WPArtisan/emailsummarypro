@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Summary class. Saves, deletes, applies etc.
  */
-class ESP_Summary {
+class Email_Summary_Pro_Summary {
 
 	/**
 	 * Summary ID.
@@ -118,7 +118,9 @@ class ESP_Summary {
 		$this->name                = $this->setup_name();
 		$this->status              = $this->setup_status();
 		$this->recipients          = $this->setup_recipients();
+		$this->interval            = $this->setup_interval();
 		$this->disable_html_emails = $this->setup_disable_html_emails();
+		$this->next_scheduled      = $this->setup_next_scheduled();
 
 		/**
 		 * Fires after the instance of the WPNA_Summary object is set up.
@@ -168,6 +170,18 @@ class ESP_Summary {
 	}
 
 	/**
+	 * Setup the summary interval.
+	 *
+	 * @access private
+	 *
+	 * @return string Summary interval.
+	 */
+	private function setup_interval() {
+		$interval = $this->get_meta( 'interval', true );
+		return $interval;
+	}
+
+	/**
 	 * Setup the summary disable_html_emails.
 	 *
 	 * @access private
@@ -177,6 +191,18 @@ class ESP_Summary {
 	private function setup_disable_html_emails() {
 		$disable_html_emails = $this->get_meta( 'disable_html_emails', true );
 		return $disable_html_emails;
+	}
+
+	/**
+	 * Setup the summary next_scheduled.
+	 *
+	 * @access private
+	 *
+	 * @return string Summary disable_html_emails.
+	 */
+	private function setup_next_scheduled() {
+		$next_scheduled = $this->get_meta( 'next_scheduled', true );
+		return $next_scheduled;
 	}
 
 	/**
@@ -315,14 +341,20 @@ class ESP_Summary {
 			return null;
 		}
 
-		$selector_key = 'selector_' . $args['type'];
-
 		$meta = array(
 			'name'                => ! empty( $args['name'] ) ? $args['name'] : '',
 			'status'              => ! empty( $args['status'] ) ? $args['status'] : 'active',
 			'recipients'          => ! empty( $args['recipients'] ) ? $args['recipients'] : '',
+			'interval'            => ! empty( $args['interval'] ) ? $args['interval'] : 'weekly',
 			'disable_html_emails' => ! empty( $args['disable_html_emails'] ) ? $args['disable_html_emails'] : '0',
 		);
+
+		// Work out the date of the next summary.
+		// $start_of_week = get_option( 'start_of_week' );
+		// $start_of_week_day = date( 'l', strtotime( "Sunday + {$start_of_week} Days" ) );
+		// $next_summary = strtotime( date( 'Y-m-d 04:00:00', strtotime( 'next ' . $start_of_week_day ) ) );
+
+		$meta = apply_filters( 'esp_summary_meta', $meta, $this->ID );
 
 		return $meta;
 	}
