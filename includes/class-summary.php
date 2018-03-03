@@ -206,6 +206,33 @@ class Email_Summary_Pro_Summary {
 	}
 
 	/**
+	 * Send the summary summary.
+	 *
+	 * @access public
+	 * @return object WPNA_Placement
+	 */
+	public function send() {
+		$method = null;
+
+		if ( 'email' === $this->method ) {
+			$method = new Email_Summary_Pro_Email( $this );
+		}
+
+		/**
+		 * Change the method used to send this summary.
+		 * Or kill it altogether.
+		 *
+		 * @var object
+		 * @var object Email_Summary_Pro_Summary
+		 */
+		$method = apply_filters( 'esp_summary_method', $method, $this );
+
+		if ( $method  ) {
+			$method->send( $this );
+		}
+	}
+
+	/**
 	 * Create a summary.
 	 *
 	 * @access public

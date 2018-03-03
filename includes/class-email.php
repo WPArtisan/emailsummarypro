@@ -18,9 +18,10 @@ class Email_Summary_Pro_Email {
 	protected $date_from;
 	protected $date_to;
 
-	public function __construct() {
+	public function __construct( $summary = null ) {
+
 		// Make sure there's a default date value.
-		$this->date();
+		// $this->date();
 	}
 
 	/**
