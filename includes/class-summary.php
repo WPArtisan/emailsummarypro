@@ -196,6 +196,44 @@ class Email_Summary_Pro_Summary {
 	}
 
 	/**
+	 * Setup the start date of the summary stats.
+	 *
+	 * @access private
+	 *
+	 * @return int Unix timestamp.
+	 */
+	private function setup_date_from() {
+		// Default to the current date/time.
+		$date_from = $this->date;
+
+		if ( 'weekly' === $this->interval ) {
+			$start_of_week     = get_option( 'start_of_week' );
+			$start_of_week_day = date( 'l', strtotime( "Sunday + {$start_of_week} Days" ) );
+			$date_from         = strtotime( 'Last ' . $start_of_week_day, $this->date );
+		}
+
+		return $date_from;
+	}
+
+	/**
+	 * Setup the last date of the summary stats.
+	 *
+	 * @access private
+	 *
+	 * @return int UNix timestamp.
+	 */
+	private function setup_date_to() {
+		// Default to the current date/time.
+		$date_to = $this->date;
+
+		if ( 'weekly' === $this->interval ) {
+			$date_to = strtotime( '+ 6 days ', strtotime( $this->date_from ) );
+		}
+
+		return $date_to;
+	}
+
+	/**
 	 * Setup the summary next_scheduled.
 	 *
 	 * @access private
@@ -203,9 +241,19 @@ class Email_Summary_Pro_Summary {
 	 * @return string Summary disable_html_emails.
 	 */
 	private function setup_next_scheduled() {
-		$start_of_week = get_option( 'start_of_week' );
-		$start_of_week_day = date( 'l', strtotime( "Sunday + {$start_of_week} Days" ) );
-		return strtotime( "next " . $start_of_week_day );
+		$next_scheduled = null;
+
+		if ( 'weekly' === $this->interval ) {
+			$start_of_week     = get_option( 'start_of_week' );
+			$start_of_week_day = date( 'l', strtotime( "Sunday + {$start_of_week} Days" ) );
+			$next_scheduled    = strtotime( 'next ' . $start_of_week_day );
+		}
+
+		if ( 'inactive' === $this->status ) {
+			$next_scheduled = null;
+		}
+
+		return $next_scheduled;
 	}
 
 	/**
@@ -214,18 +262,18 @@ class Email_Summary_Pro_Summary {
 	 * @param  string $template Template to load.
 	 * @return string
 	 */
-	public function content( $template = 'html' ) {
-
-		// Load in the default template arguments.
-		add_filter( 'esp_template_part_default_arguments', array( $this, 'set_summary_arguments' ), 10, 4 );
-
-		$content = esp_get_template( $this->method, $template );
-
-		// Remove this filter incase we're sending more than one.
-		remove_filter( 'esp_template_part_default_arguments', array( $this, 'set_summary_arguments' ), 10 );
-
-		return $content;
-	}
+	// public function content( $template = 'html' ) {
+    //
+	// 	// Load in the default template arguments.
+	// 	// add_filter( 'esp_template_part_default_arguments', array( $this, 'set_summary_arguments' ), 10, 4 );
+    //
+	// 	$content = esp_get_template( $this->method, $template );
+    //
+	// 	// Remove this filter incase we're sending more than one.
+	// 	// remove_filter( 'esp_template_part_default_arguments', array( $this, 'set_summary_arguments' ), 10 );
+    //
+	// 	return $content;
+	// }
 
 	/**
 	 * Send the summary summary.

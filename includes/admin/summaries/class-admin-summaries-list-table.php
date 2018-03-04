@@ -184,6 +184,10 @@ class WPNA_Admin_Summaries_List_Table extends WP_List_Table {
 	 * @return string Output for this row and column.
 	 */
 	public function column_next_scheduled( $item ) {
+		if ( ! $item->next_scheduled ) {
+			return '~';
+		}
+
 		return date( 'H:ma, jS M Y', $item->next_scheduled );
 	}
 

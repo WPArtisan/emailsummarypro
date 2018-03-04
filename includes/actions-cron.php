@@ -43,8 +43,10 @@ function esp_check_for_summaries_to_send() {
 	}
 
 	foreach ( $summaries as $summary ) {
+		// Setup the email.
+		$email = new ESP_Email( $summary );
 		// Send the summary.
-		$summary->send();
+		$email->send();
 	}
 }
 add_action( 'esp_send_summaries', 'esp_check_for_summaries_to_send', 10, 0 );

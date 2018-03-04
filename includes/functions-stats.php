@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Optimised functions for getting all the required stats.
  *
@@ -23,14 +22,17 @@ if ( ! function_exists( 'esp_get_post_stats' ) ) :
 	 * @param string $date_to The end date of the stats (inclusive)
 	 * @return object
 	 */
-	function esp_get_post_stats( $date_from, $date_to ) {
+	function esp_get_post_stats( $summary ) {
+		$date_from = $summary->date_from;
+		$date_to   = $summary->date_to;
 
 		// Create a unique cache key
 		$key = 'esp_post_stats_' . md5( $date_from, $date_to );
 
 		// See if it's cached or not
-		if ( $stats = wp_cache_get( $key, 'esp' ) )
+		if ( $stats = wp_cache_get( $key, 'esp' ) ) {
 			return $stats;
+		}
 
 		global $wpdb;
 

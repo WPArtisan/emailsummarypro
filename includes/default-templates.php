@@ -50,7 +50,7 @@ function esp_setup_default_email_template_parts() {
 			'method'   => 'email',
 			'type'     => 'html',
 			'part'     => 'posts',
-			'callback' => null,
+			'callback' => 'esp_get_post_stats',
 		),
 		array(
 			'order'    => 30,

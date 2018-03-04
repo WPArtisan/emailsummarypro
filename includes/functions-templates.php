@@ -73,6 +73,13 @@ if ( ! function_exists( 'esp_get_template_part' ) ) :
 			'blog_id'          => get_current_blog_id(),
 		);
 
+		$summary->date
+		$summary->date_from
+		$summary->date_to
+		if ( isset( $_GLOBAL['summary'] ) ) {
+
+		}
+
 		/**
 		 * Filter specific arguments used in all templates.
 		 *
@@ -156,9 +163,9 @@ if ( ! function_exists( 'esp_get_template' ) ) :
 	 * @param  string $template     [description]
 	 * @return string
 	 */
-	function esp_get_template( $method, $template ) {
+	function esp_get_template( $summary ) {
 		// Get all the registered template parts.
-		$template_parts = esp_get_template_parts( $method, $template );
+		$template_parts = esp_get_template_parts( $summary->method, $summary->template );
 
 		$content = '';
 

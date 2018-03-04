@@ -26,7 +26,7 @@ class Email_Summary_Pro_Email {
 	public function __construct( $summary ) {
 		$this->to           = $summary->recipients;
 		$this->subject      = $summary->subject;
-		$this->body         = $summary->content;
+		// $this->body         = esp_get_template( $summary );
 		$this->disable_html = $summary->disable_html;
 	}
 
