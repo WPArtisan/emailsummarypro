@@ -2,7 +2,7 @@
 /**
  * Summary class.
  *
- * General layout is inspired by EDD's Discount class..
+ * General layout is inspired by EDD's Discount class.
  *
  * @package     email-summary-pro
  * @subpackage  Includes/Summary
@@ -20,6 +20,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Summary class. Saves, deletes, applies etc.
  */
 class Email_Summary_Pro_Summary {
+
+	public $method = 'email';
 
 	/**
 	 * Summary ID.
@@ -79,7 +81,7 @@ class Email_Summary_Pro_Summary {
 	 * Gets a summary.
 	 *
 	 * @access public
-	 * @param  WP_Post $summary WP_Post obhject to setup.
+	 * @param  WP_Post $summary WP_Post object to setup.
 	 * @return object WPNA_Placement
 	 */
 	public function setup_summary( $summary = null ) {
@@ -114,13 +116,13 @@ class Email_Summary_Pro_Summary {
 		/**
 		 * Setup all object variables
 		 */
-		$this->ID                  = absint( $summary->ID );
-		$this->name                = $this->setup_name();
-		$this->status              = $this->setup_status();
-		$this->recipients          = $this->setup_recipients();
-		$this->interval            = $this->setup_interval();
-		$this->disable_html_emails = $this->setup_disable_html_emails();
-		$this->next_scheduled      = $this->setup_next_scheduled();
+		$this->ID             = absint( $summary->ID );
+		$this->name           = $this->setup_name();
+		$this->status         = $this->setup_status();
+		$this->recipients     = $this->setup_recipients();
+		$this->interval       = $this->setup_interval();
+		$this->disable_html   = $this->setup_disable_html();
+		$this->next_scheduled = $this->setup_next_scheduled();
 
 		/**
 		 * Fires after the instance of the WPNA_Summary object is set up.
@@ -188,9 +190,9 @@ class Email_Summary_Pro_Summary {
 	 *
 	 * @return string Summary disable_html_emails.
 	 */
-	private function setup_disable_html_emails() {
-		$disable_html_emails = $this->get_meta( 'disable_html_emails', true );
-		return $disable_html_emails;
+	private function setup_disable_html() {
+		$disable_html = $this->get_meta( 'disable_html', true );
+		return $disable_html;
 	}
 
 	/**
@@ -201,8 +203,28 @@ class Email_Summary_Pro_Summary {
 	 * @return string Summary disable_html_emails.
 	 */
 	private function setup_next_scheduled() {
-		$next_scheduled = $this->get_meta( 'next_scheduled', true );
-		return $next_scheduled;
+		$start_of_week = get_option( 'start_of_week' );
+		$start_of_week_day = date( 'l', strtotime( "Sunday + {$start_of_week} Days" ) );
+		return strtotime( "next " . $start_of_week_day );
+	}
+
+	/**
+	 * [content description]
+	 *
+	 * @param  string $template Template to load.
+	 * @return string
+	 */
+	public function content( $template = 'html' ) {
+
+		// Load in the default template arguments.
+		add_filter( 'esp_template_part_default_arguments', array( $this, 'set_summary_arguments' ), 10, 4 );
+
+		$content = esp_get_template( $this->method, $template );
+
+		// Remove this filter incase we're sending more than one.
+		remove_filter( 'esp_template_part_default_arguments', array( $this, 'set_summary_arguments' ), 10 );
+
+		return $content;
 	}
 
 	/**
@@ -418,4 +440,42 @@ class Email_Summary_Pro_Summary {
 		$meta = get_post_meta( $this->ID, '_esp_summary_' . $key, $single );
 		return $meta;
 	}
+
+	public function set_summary_arguments( $arguments, $method, $type, $part ) {
+		$arguments['summary_date']      = '21-05-2018'; // $this->date, // The roundup is sent the day after the week ends.
+		$arguments['summary_date_from'] = '13-05-2018'; // $this->date_from, // The first date of the week we're rounding up.
+		$arguments['summary_date_to']   = '20-05-2018'; //$this->date_to, // The last date of the week we're rounding up (inclusive).
+
+		return $arguments;
+	}
+
 }
+
+
+
+
+
+
+
+
+
+
+// public function date( $date = 'latest' ) {
+// 	$start_of_week = get_option( 'start_of_week' );
+// 	$start_of_week_day = date( 'l', strtotime( "Sunday + {$start_of_week} Days" ) );
+//
+// 	if ( 'latest' == $date ) {
+// 		$unix_timestamp = strtotime( "last " . $start_of_week_day );
+// 	} else {
+// 		$unix_timestamp = strtotime( $date );
+// 	}
+//
+// 	// The date the newsletter was sent out. Normally one day after.
+// 	$this->date = date( "Y-m-d", $unix_timestamp );
+//
+// 	// The date we want stats from
+// 	$this->date_from = date( "Y-m-d", strtotime( "Last " . $start_of_week_day, $unix_timestamp ) );
+//
+// 	// The date we want stats to (inclusive)
+// 	$this->date_to = date( "Y-m-d", strtotime( "+ 6 days ", strtotime( $this->date_from ) ) );
+// }

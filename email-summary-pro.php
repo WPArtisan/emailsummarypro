@@ -163,9 +163,11 @@ if ( ! class_exists( 'Email_Summary_Pro' ) ) :
 		 */
 		private function includes() {
 			require ESP_BASE_PATH . 'includes/post-types.php';
+			require ESP_BASE_PATH . 'includes/default-templates.php';
 			require ESP_BASE_PATH . 'includes/functions-helper.php';
 			require ESP_BASE_PATH . 'includes/functions-stats.php';
 			require ESP_BASE_PATH . 'includes/functions-summaries.php';
+			require ESP_BASE_PATH . 'includes/functions-templates.php';
 			require ESP_BASE_PATH . 'includes/actions-cron.php';
 			require ESP_BASE_PATH . 'includes/class-tabs-helper.php';
 			require ESP_BASE_PATH . 'includes/class-email.php';

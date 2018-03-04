@@ -24,7 +24,7 @@ if ( ! empty( $_GET['summary'] ) ) {
 
 // Load the transformer.
 $summary = esp_get_summary( $summary_id );
-
+var_dump( $summary->content() ); die;
 ?>
 <div class="wrap">
 
@@ -76,15 +76,15 @@ $summary = esp_get_summary( $summary_id );
 					</td>
 				</tr>
 
-				<?php do_action( 'esp_edit_summary_form_before_disable_html_emails' ); ?>
+				<?php do_action( 'esp_edit_summary_form_before_disable_html' ); ?>
 
 				<tr>
 					<th scope="row" valign="top">
 						<label for="esp-disable-html-emails"><?php esc_html_e( 'Disable HTML Emails', 'email-summary-pro' ); ?></label>
 					</th>
 					<td>
-						<input type="hidden" name="disable_html_emails" value="0">
-						<input type="checkbox" name="disable_html_emails" id="esp-disable-html-emails" class="" value="true" <?php checked( $summary->disable_html_emails ); ?> />
+						<input type="hidden" name="disable_html" value="0">
+						<input type="checkbox" name="disable_html" id="esp-disable-html-emails" class="" value="true" <?php checked( $summary->disable_html ); ?> />
 						<p class="description"><?php esc_html_e( 'Disable HTML emails and only recieve plain text ones.', 'email-summary-pro' ); ?></p>
 					</td>
 				</tr>

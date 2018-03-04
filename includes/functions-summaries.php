@@ -50,9 +50,9 @@ if ( ! function_exists( 'esp_get_summaries' ) ) :
 		$cache_key = md5( json_encode( $args ) );
 
 		// Check the key.
-		if ( $summaries = wp_cache_get( $cache_key, 'esp' ) ) {
-			return $summaries;
-		}
+		// if ( $summaries = wp_cache_get( $cache_key, 'esp' ) ) {
+		// 	return $summaries;
+		// }
 
 		$query = new WP_Query( $args );
 

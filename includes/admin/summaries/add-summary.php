@@ -64,15 +64,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 					</td>
 				</tr>
 
-				<?php do_action( 'esp_add_summary_form_before_disable_html_emails' ); ?>
+				<?php do_action( 'esp_add_summary_form_before_disable_html' ); ?>
 
 				<tr>
 					<th scope="row" valign="top">
 						<label for="esp-disable-html-emails"><?php esc_html_e( 'Disable HTML Emails', 'email-summary-pro' ); ?></label>
 					</th>
 					<td>
-						<input type="hidden" name="disable_html_emails" value="0">
-						<input type="checkbox" name="disable_html_emails" id="esp-disable-html-emails" class="" value="true" />
+						<input type="hidden" name="disable_html" value="0">
+						<input type="checkbox" name="disable_html" id="esp-disable-html-emails" class="" value="true" />
 						<p class="description"><?php esc_html_e( 'Disable HTML emails and only recieve plain text ones.', 'email-summary-pro' ); ?></p>
 					</td>
 				</tr>

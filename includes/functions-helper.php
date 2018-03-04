@@ -115,62 +115,21 @@ if ( ! function_exists( 'boolval' ) ) :
 
 endif;
 
-if ( ! function_exists( 'esp_locate_template' ) ) :
+if ( ! function_exists( 'str_word_count' ) ) :
 
 	/**
-	 * Locates a plugin template and returns the path to it
+	 * Count words in a string.
 	 *
-	 * Takes a template name and first searches for it in themes to see if
-	 * it's been overridden or not. If it can't find it defaults to the one
-	 * located in the plugin.
+	 * str_word_count was introduced in PHP 5.2.11, this patches it for lesser
+	 * versions. This is a simplicatic version but we're not really expecting
+	 * anyone to use it.
 	 *
 	 * @since 1.0.0
-	 * @todo Pass params through?
 	 *
-	 * @param  string $name Name of the template to locate.
-	 * @return string The full path to the template file.
+	 * @return int
 	 */
-	function esp_locate_template( $name ) {
-
-		// Check if there's an extension or not
-		$name .= '.php' !== substr( $name, -4 ) ? '.php' : '' ;
-
-		// locate_template() returns the path to file
-		// if either the child theme or the parent theme have overridden the template
-		if ( $overridden_template = locate_template( 'wp-roundup/' . $name ) )
-			return $overridden_template;
-
-		// If neither the child nor parent theme have overridden the template,
-		// we load the template from the 'templates' sub-directory of the directory this file is in
-		$template_path = ESP_BASE_PATH . '/templates/' . $name;
-
-		/**
-		 * Alter the path for a template file
-		 *
-		 * @since 1.0.0
-		 *
-		 * @param string $template_path The path to the template.
-		 * @param string $name          The name of the template to locate.
-		 */
-		$template_path = apply_filters( 'esp_template_path', $template_path, $name );
-
-		return $template_path;
-	}
-
-endif;
-
-if ( ! function_exists( 'esp_get_template' ) ) :
-
-	/**
-	 * [esp_get_template description]
-	 * @param  [type] $template [description]
-	 * @param  [type] $args     [description]
-	 * @return [type]           [description]
-	 */
-	function esp_get_template( $template, $args) {
-		extract( $args );
-
-		include esp_locate_template( $template );
+	function str_word_count( $string ) {
+		return count( explode( " ", $string ) );
 	}
 endif;
 
@@ -187,24 +146,6 @@ if ( ! function_exists( 'esp_load_textdomain' ) ) :
 	 */
 	function esp_load_textdomain() {
 		load_plugin_textdomain( 'wp-roundup', false, WP_ROUNDUP_BASE_PATH . '/languages' );
-	}
-endif;
-
-if ( ! function_exists( 'str_word_count' ) ) :
-
-	/**
-	 * Count words in a string.
-	 *
-	 * str_word_count was introduced in PHP 5.2.11, this patches it for lesser
-	 * versions. This is a simplicatic version but we're not really expecting
-	 * anyone to use it.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return int
-	 */
-	function str_word_count( $string ) {
-		return count( explode( " ", $string ) );
 	}
 endif;
 
@@ -240,19 +181,5 @@ if ( ! function_exists( 'esp_circle' ) ) :
 				</v:roundrect>
 			<![endif]-->
 		<?php
-	}
-endif;
-
-if ( ! function_exists( 'esp_sort_by_order' ) ) :
-
-	/**
-	 * Used with usort() to order an array by the order key.
-	 *
-	 * @param  array $a
-	 * @param  array $b
-	 * @return int
-	 */
-	function esp_sort_by_order( $a, $b ) {
-		return $a['order'] - $b['order'];
 	}
 endif;

@@ -85,12 +85,12 @@ class WPNA_Admin_Summaries_List_Table extends WP_List_Table {
 	 */
 	public function get_columns() {
 		$columns = array(
-			'cb'                  => '<input type ="checkbox" />',
-			'name'                => esc_html__( 'Name', 'email-summary-pro' ),
-			'status'              => esc_html__( 'Status', 'email-summary-pro' ),
-			'recipients'          => esc_html__( 'Recipients', 'email-summary-pro' ),
-			'disable_html_emails' => esc_html__( 'HTML Emails', 'email-summary-pro' ),
-			'next_scheduled'      => esc_html__( 'Next Scheduled', 'email-summary-pro' ),
+			'cb'             => '<input type ="checkbox" />',
+			'name'           => esc_html__( 'Name', 'email-summary-pro' ),
+			'status'         => esc_html__( 'Status', 'email-summary-pro' ),
+			'recipients'     => esc_html__( 'Recipients', 'email-summary-pro' ),
+			'disable_html'   => esc_html__( 'HTML Emails', 'email-summary-pro' ),
+			'next_scheduled' => esc_html__( 'Next Scheduled', 'email-summary-pro' ),
 		);
 
 		return $columns;
@@ -195,10 +195,10 @@ class WPNA_Admin_Summaries_List_Table extends WP_List_Table {
 	 */
 	public function get_sortable_columns() {
 		$sortable_columns = array(
-			'name'                => array( 'name', false ),
-			'status'              => array( 'status', false ),
-			'disable_html_emails' => array( 'disable_html_emails', false ),
-			'next_scheduled'      => array( 'next_scheduled', false ),
+			'name'           => array( 'name', false ),
+			'status'         => array( 'status', false ),
+			'disable_html'   => array( 'disable_html', false ),
+			'next_scheduled' => array( 'next_scheduled', false ),
 		);
 
 		return $sortable_columns;

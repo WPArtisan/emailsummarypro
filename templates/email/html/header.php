@@ -441,3 +441,10 @@
 		</style>
 	</head>
 	<body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0">
+
+		<center>
+			<table align="center" border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" id="bodyTable">
+				<tr>
+					<td align="center" valign="top" id="bodyCell">
+						<!-- BEGIN TEMPLATE // -->
+						<table border="0" cellpadding="0" cellspacing="0" id="templateContainer">
