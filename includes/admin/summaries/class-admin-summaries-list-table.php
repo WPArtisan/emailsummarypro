@@ -201,7 +201,8 @@ class WPNA_Admin_Summaries_List_Table extends WP_List_Table {
 	public function column_actions( $item ) {
 
 		// Setup the custom date selector.
-		$date_selector = '<input type="date" class="js-summary-date" id="esp-summary-date" max="' . date( 'Y-m-d' ) . '" value="" />';
+		$date_selector = '<span style="border-bottom: dashed 1px;" class="js-trigger-datepicker">' . date( 'Y-m-d' ) . '</span>';
+		$date_selector .= '<input type="date" class="js-datepicker hidden" id="esp-summary-date" max="' . date( 'Y-m-d' ) . '" value="' . esc_attr( date( 'Y-m-d' ) ) . '" />';
 
 		// Add these params.
 		$default_query = array(
@@ -231,7 +232,7 @@ class WPNA_Admin_Summaries_List_Table extends WP_List_Table {
 			esc_html__( 'Preview', 'email-summary-pro' )
 	 	);
 
-		return sprintf( '%s<br /><div><span class="edit">%s</span>&nbsp;|&nbsp;<span class="edit">%s</span></div>', $date_selector, $resend_button, $preview_button );
+		return sprintf( '<div><div>%s</div><span class="edit">%s</span>&nbsp;|&nbsp;<span class="edit">%s</span></div>', $date_selector, $resend_button, $preview_button );
 	}
 
 	/**
