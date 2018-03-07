@@ -1,5 +1,5 @@
 <?php
-	$comment_stats = esp_get_comment_stats( $summary_date_from, $summary_date_to );
+	$comment_stats = esp_get_comment_stats( $date_from, $date_to );
 ?>
 
 <?php echo PHP_EOL . PHP_EOL; ?>

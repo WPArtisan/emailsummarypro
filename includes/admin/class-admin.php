@@ -410,7 +410,7 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	}
 
 	/**
-	 * Resends the last stats email.
+	 * Resends a particular summary.
 	 *
 	 * @return void
 	 */
@@ -425,14 +425,20 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 			wp_die( __( 'Cheatin&#8217; huh?', 'email-summary-pro' ) );
 		}
 
-		// Setup new email summary and send it.
-		$summary = new Email_Summary_Pro_Email();
+		// grab the summary ID.
+		$summary_id = absint( $_GET['summary_id'] );
 
-		if ( ! empty( $_GET['date'] ) ) {
-			$summary->date( $_GET['date'] );
+		// Try and grab the summary.
+		$summary = esp_get_summary( $summary_id );
+
+		if ( ! $summary ){
+			return;
 		}
 
-		$summary->send();
+		// Setup the email.
+		$email = new Email_Summary_Pro_Email( $summary );
+		// Send the summary.
+		$email->send();
 
 		// Add these params.
 		$query = array(
@@ -449,24 +455,27 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	}
 
 	/**
-	 * Resends the last stats email.
+	 * Show a summary in browser.
 	 *
 	 * @return void
 	 */
 	public function preview_summary() {
-		// Check it's an admin user.
-		if ( ! current_user_can( 'manage_options' ) ) {
+		if ( ! isset( $_GET['summary_id'] ) ) {
 			return;
 		}
 
-		// Setup new email summary and output the preview.
-		$summary = new Email_Summary_Pro_Email();
+		// grab the summary ID.
+		$summary_id = absint( $_GET['summary_id'] );
 
-		if ( ! empty( $_GET['date'] ) ) {
-			$summary->date( $_GET['date'] );
+		// Try and grab the summary.
+		$summary = esp_get_summary( $summary_id );
+
+		if ( ! $summary ){
+			return;
 		}
 
-		echo $summary->get_template( 'html' );
+		// Show the preview.
+		echo esp_get_template( $summary );
 		die;
 	}
 

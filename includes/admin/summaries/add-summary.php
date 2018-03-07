@@ -4,7 +4,7 @@
  *
  * @package     email-summary-pro
  * @subpackage  Admin/Summaries
- * @copyright   Copyright (c) 2017, WPArtisan
+ * @copyright   Copyright (c) 2018, WPArtisan
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU Public License
  * @since       1.0.0
  */
@@ -61,6 +61,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<td>
 						<input type="text" id="esp-recipients" name="recipients" value="" class="regular-text" />
 						<p class="description"><?php echo sprintf( esc_html__( 'Multiple recipients can be added using commas. e.g. %s', 'email-summary-pro'), '<code>admin1@site.com, admin2@site.com</code>' ); ?></p>
+					</td>
+				</tr>
+
+				<?php do_action( 'esp_add_summary_form_before_subject' ); ?>
+
+				<tr>
+					<th scope="row" valign="top">
+						<label for="esp-subject"><?php esc_html_e( 'Subject', 'email-summary-pro' ); ?></label>
+					</th>
+					<td>
+						<input type="text" id="esp-subject" name="subject" value="" class="regular-text" />
+						<p class="description"><?php esc_html_e( 'Subject of the email.', 'email-summary-pro' ); ?></p>
 					</td>
 				</tr>
 

@@ -4,7 +4,7 @@
  *
  * @package     email-summary-pro
  * @subpackage  Includes
- * @copyright   Copyright (c) 2017, WPArtisan
+ * @copyright   Copyright (c) 2018, WPArtisan
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU Public License
  * @since       1.0.0
  */
@@ -22,7 +22,7 @@ if ( ! function_exists( 'esp_add_template_part' ) ) :
 	 * @param string  $method        Method used to send the summary.
 	 * @param string  $template      Template to use.
 	 * @param string  $part          Template part to add.
-	 * @param integer  $order         Order to add the template part to the template.
+	 * @param integer $order         Order to add the template part to the template.
 	 * @param string|array $callback Used to supply args to the template.
 	 * @return void
 	 */
@@ -42,28 +42,25 @@ if ( ! function_exists( 'esp_get_template_part' ) ) :
 	/**
 	 * Return a template part with populated placeholders.
 	 *
-	 * @param  [type] $method [description]
-	 * @param  [type] $template   [description]
-	 * @param  [type] $part   [description]
+	 * @param  object $summary  Email_Summary_Pro_Summary
+	 * @param  string $template The template to search for.
+	 * @param  string $part     The template part to load.
 	 * @return string
 	 */
-	function esp_get_template_part( $method, $template, $part ) {
+	function esp_get_template_part( $summary, $template, $part ) {
 		global $esp_templates;
 
-		// Check the tempalte exists before trying to get it
+		$method = $summary->method;
+
+		// Default to email.
+		if ( ! empty( $summary->method ) ) {
+			$method = 'email';
+		}
+
+		// Check the template exists before trying to get it
 		if ( ! file_exists( esp_locate_template( $method . '/' . $template . '/' . $part ) ) ) {
 			return false;
 		}
-
-		ob_start();
-
-		include esp_locate_template( $method . '/' . $template . '/' . $part );
-
-		// Read the contents into a variable.
-		$template_content = ob_get_contents();
-
-		// Turn off output buffering.
-		ob_end_clean();
 
 		// Default arguments used in all templates.
 		$arguments = array(
@@ -71,22 +68,18 @@ if ( ! function_exists( 'esp_get_template_part' ) ) :
 			'site_description' => get_bloginfo( 'description' ),
 			'site_url'         => get_bloginfo( 'url' ),
 			'blog_id'          => get_current_blog_id(),
+			'date'             => $summary->date, // The roundup is sent the day after the week ends.
+			'date_from'        => $summary->date_from, // The first date of the week we're rounding up.
+			'date_to'          => $summary->date_to, // The last date of the week we're rounding up (inclusive).
 		);
-
-		$summary->date
-		$summary->date_from
-		$summary->date_to
-		if ( isset( $_GLOBAL['summary'] ) ) {
-
-		}
 
 		/**
 		 * Filter specific arguments used in all templates.
 		 *
 		 * @var array $arguments key => value array of default arguments.
-		 * @var string $method Current method using to send the summary.
-		 * @var string $template   Type of message to send.
-		 * @var string $part   Template part to load.
+		 * @var string $method   Current method using to send the summary.
+		 * @var string $template Type of message to send.
+		 * @var string $part     Template part to load.
 		 */
 		$arguments = apply_filters( 'esp_template_part_default_arguments', $arguments, $method, $template, $part );
 
@@ -107,10 +100,30 @@ if ( ! function_exists( 'esp_get_template_part' ) ) :
 		 */
 		$arguments = apply_filters( 'esp_template_part_arguments-' . $method . '-' . $template . '-' . $part, $arguments );
 
+		extract( $arguments );
+
+		ob_start();
+
+		include esp_locate_template( $method . '/' . $template . '/' . $part );
+
+		// Read the contents into a variable.
+		$template_content = ob_get_contents();
+
+		// Turn off output buffering.
+		ob_end_clean();
+
 		// Replace all the arguments.
 		foreach ( $arguments as $key => $value ) {
 			$template_content = str_replace( sprintf( '%%%s%%', $key ), $value, $template_content );
 		}
+
+		/**
+		 * Filter specific arguments used in this template.
+		 *
+		 * @var string $template_content The content of the tempate.
+		 * @var array  $arguments        key => value array of template specific arguments.
+		 */
+		$template_content = apply_filters( 'esp_template_part-' . $method . '-' . $template . '-' . $part, $template_content, $arguments );
 
 		return $template_content;
 	}
@@ -119,10 +132,11 @@ endif;
 if ( ! function_exists( 'esp_get_template_parts' ) ) :
 
 	/**
-	 * [esp_get_template_parts description]
-	 * @param  [type] $method [description]
-	 * @param  [type] $template   [description]
-	 * @return [type]         [description]
+	 * Retrieve all the parts for a template.
+	 *
+	 * @param  string $method   template for method
+	 * @param  string $template Template name.
+	 * @return array  part_name => callback for arguments
 	 */
 	function esp_get_template_parts( $method, $template ) {
 		global $esp_templates;
@@ -137,16 +151,9 @@ if ( ! function_exists( 'esp_get_template_parts' ) ) :
 		ksort( $template_parts );
 
 		/**
-		 * Register template parts.
+		 * Filter template parts for this method and template.
 		 *
-		 * Use this hook to register template parts for template types.
-		 * It should be an array of short links to template parts relative to the
-		 * templates directory.
-		 *
-		 * e.g. 'html/parts/introduction' or 'plain/parts/jetpack-comments'
-		 *
-		 * @var array $default_template_parts Location of template part to include.
-		 * @var string $template The type of template we're dealing with.
+		 * @var string $template_parts array part_name => callback for arguments.
 		 */
 		$template_parts = apply_filters( 'esp_template_parts-' . $method . '-' . $template, $template_parts );
 
@@ -157,22 +164,26 @@ endif;
 if ( ! function_exists( 'esp_get_template' ) ) :
 
 	/**
-	 * [esp_get_template description]
+	 * Get an entire template for a summary
 	 *
-	 * @param  string $method [description]
-	 * @param  string $template     [description]
-	 * @return string
+	 * @param  onject $summary  Summary to load the template for.
+	 * @param  string $template Load a specifc template.
+	 * @return string Template content.
 	 */
-	function esp_get_template( $summary ) {
+	function esp_get_template( $summary, $template = null ) {
+		if ( is_null( $template ) ) {
+			$template = $summary->template;
+		}
+
 		// Get all the registered template parts.
-		$template_parts = esp_get_template_parts( $summary->method, $summary->template );
+		$template_parts = esp_get_template_parts( $summary->method, $template );
 
 		$content = '';
 
 		// Cycle through them all and string them together.
 		foreach ( $template_parts as $order => $parts ) {
 			foreach ( $parts as $part => $callback ) {
-				$content .= esp_get_template_part( $method, $template, $part );
+				$content .= esp_get_template_part( $summary, $template, $part );
 			}
 		}
 

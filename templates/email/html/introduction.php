@@ -17,9 +17,9 @@
 
 					<h2>
 						<center>
-							<?php echo date( "l, jS F", strtotime( $summary_date_from ) ); ?>
+							<?php echo date( "l, jS F", strtotime( $date_from ) ); ?>
 							&nbsp;&#150;&nbsp;
-							<?php echo date( "l, jS F", strtotime( $summary_date_to ) ); ?>
+							<?php echo date( "l, jS F", strtotime( $date_to ) ); ?>
 						</center>
 					</h2>
 

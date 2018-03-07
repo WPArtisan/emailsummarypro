@@ -4,7 +4,7 @@
  *
  * @package     email-summary-pro
  * @subpackage  Includes
- * @copyright   Copyright (c) 2017, WPArtisan
+ * @copyright   Copyright (c) 2018, WPArtisan
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU Public License
  * @since       1.0.0
  */

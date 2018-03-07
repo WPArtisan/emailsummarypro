@@ -14,20 +14,44 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  */
 class Email_Summary_Pro_Email {
 
+	/**
+	 * Holds the summary we're dealing with.
+	 *
+	 * @var Email_Summary_Pro_Summary
+	 */
+	public $summary;
 
+	/**
+	 * Comma seperated string of email addresses.
+	 *
+	 * @var string
+	 */
 	public $to;
 
+	/**
+	 * Subject of the email.
+	 *
+	 * @var string
+	 */
 	public $subject;
 
-	public $body;
-
+	/**
+	 * Whether to send HTML versions or not.
+	 *
+	 * @var bool
+	 */
 	public $disable_html;
 
+	/**
+	 * Initialize the class.
+	 *
+	 * @param Email_Summary_Pro_Summary $summary Summary to send.
+	 */
 	public function __construct( $summary ) {
+		$this->summary      = $summary;
 		$this->to           = $summary->recipients;
 		$this->subject      = $summary->subject;
-		// $this->body         = esp_get_template( $summary );
-		$this->disable_html = $summary->disable_html;
+		$this->disable_html = (bool) $summary->disable_html;
 	}
 
 	/**
@@ -49,8 +73,8 @@ class Email_Summary_Pro_Email {
 		 */
 		$this->to = apply_filters( 'esp_email_to', $this->to );
 
-		// Bail if no recipient is set
-		if ( empty( $this->to ) ){
+		// Bail if no recipient is set.
+		if ( empty( $this->to ) ) {
 			return;
 		}
 
@@ -66,10 +90,10 @@ class Email_Summary_Pro_Email {
 		$boundary = uniqid( 'np' );
 
 		// If HTML emails are disabled, send a plain one.
-		if ( ! $this->disable_html ) {
-			$message = $this->body;
+		if ( $this->disable_html ) {
+			$message = esp_get_template( $summary, 'plain' );
 		} else {
-			//here is the content body
+			// Start of the content body.
 			$message = 'This is a MIME encoded message.';
 
 			// Set the plain text boundary.
@@ -77,14 +101,14 @@ class Email_Summary_Pro_Email {
 			$message .= 'Content-type: text/plain;charset=utf-8' . PHP_EOL . PHP_EOL;
 
 			// Plain text body.
-			$message .= $this->get_template( 'plain' );
+			$message .= esp_get_template( $this->summary, 'plain' );
 
 			// Set the HTML boundary.
 			$message .= PHP_EOL . PHP_EOL . '--' . $boundary . PHP_EOL;
 			$message .= 'Content-type: text/html;charset=utf-8' . PHP_EOL . PHP_EOL;
 
 			//Html body
-			$message .= $this->body;
+			$message .= esp_get_template( $this->summary, 'html' );
 
 			// Close the boundary.
 			$message .= PHP_EOL . PHP_EOL . '--' . $boundary . '--';
@@ -125,13 +149,13 @@ class Email_Summary_Pro_Email {
 		do_action( 'esp_before_wp_mail', $this->to, $this->subject, $message, $headers, $attachments );
 
 		// Send the email.
-		wp_mail( $this->to, $this->subject, $message, $headers, $attachments );
+		$success = wp_mail( $this->to, $this->subject, $message, $headers, $attachments );
 
 		/**
 		 * Run directly after the summary is sent.
 		 *
 		 */
-		do_action( 'eso_after_wp_mail', $this->to, $this->subject, $message, $headers, $attachments );
+		do_action( 'eso_after_wp_mail', $success, $this->to, $this->subject, $message, $headers, $attachments );
 
 		// Remove the action for logging errors.
 		remove_action( 'wp_mail_failed', array( $this, 'log_errors' ), 10 );
@@ -148,14 +172,13 @@ class Email_Summary_Pro_Email {
 	 * @return void
 	 */
 	public function log_errors( $wp_error ) {
-		// Get any old errors.
-		$errors = (array) get_transient( 'esp_email_errors' );
 
-		// Add the error message in,
-		$errors[] = $wp_error->get_error_message();
-
-		// Add it to the transient.
-		set_transient( 'esp_email_errors', $errors );
+		/**
+		 * Fire an action allowing other functions to hook in.
+		 *
+		 * @var WP_Error The error message.
+		 */
+		do_action( 'esp_email_log_errors', $wp_error, $summary );
 	}
 
 	/**
@@ -168,7 +191,7 @@ class Email_Summary_Pro_Email {
 	 * @return string
 	 */
 	public function set_content_type( $content_type ) {
-		if ( esp_get_option( 'disable_html_emails' ) ) {
+		if ( $this->disable_html ) {
 			return 'text/plain';
 		}
 

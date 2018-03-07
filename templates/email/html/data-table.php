@@ -1,5 +1,5 @@
 <?php
-	$post_stats = esp_get_post_stats( $summary_date_from, $summary_date_to );
+	$post_stats = esp_get_post_stats( $date_from, $date_to );
 
 	// Just exit if no stats
 	if ( ! $post_stats )
@@ -22,9 +22,15 @@
 							<?php foreach ( $post_stats->breakdown as $date => $stats ) : ?>
 
 								<?php
-									// Work it out as a percentage
-									$publish_percentage = round( ( $stats['publish_count'] / $post_stats->publish_count ) * 100 );
-									$pending_percentage = round( ( $stats['pending_count'] / $post_stats->pending_count ) * 100 );
+									$publish_percentage = $pending_percentage = 0;
+
+									// Work it out as a percentage.
+									if ( $post_stats->publish_count > 0 )  {
+										$publish_percentage = round( ( $stats['publish_count'] / $post_stats->publish_count ) * 100 );
+									}
+									if ( $post_stats->pending_count > 0 )  {
+										$pending_percentage = round( ( $stats['pending_count'] / $post_stats->pending_count ) * 100 );
+									}
 								?>
 
 								<td valign="bottom" align="center">

@@ -6,7 +6,7 @@
  *
  * @package     email-summary-pro
  * @subpackage  Includes/Summary
- * @copyright   Copyright (c) 2017, WPArtisan
+ * @copyright   Copyright (c) 2018, WPArtisan
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU Public License
  * @since       1.0.0
  */
@@ -20,8 +20,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Summary class. Saves, deletes, applies etc.
  */
 class Email_Summary_Pro_Summary {
-
-	public $method = 'email';
 
 	/**
 	 * Summary ID.
@@ -45,6 +43,13 @@ class Email_Summary_Pro_Summary {
 	public $status;
 
 	/**
+	 * Default to email.
+	 *
+	 * @var string
+	 */
+	public $method = 'email';
+
+	/**
 	 * Summary recipients.
 	 *
 	 * @var string
@@ -52,11 +57,40 @@ class Email_Summary_Pro_Summary {
 	public $recipients;
 
 	/**
-	 * Summary disable_html_emails.
+	 * Summary email subject.
 	 *
 	 * @var string
 	 */
-	public $disable_html_emails;
+	public $subject;
+
+	/**
+	 * Summary disable_html.
+	 *
+	 * @var string
+	 */
+	public $disable_html;
+
+	/**
+	 * The date of the summary in ISO8601 format.
+	 * Defaults to today but could be in the past if re-sending.
+	 *
+	 * @var string
+	 */
+	public $date;
+
+	/**
+	 * The start date of the summary in ISO8601 format.
+	 *
+	 * @var string
+	 */
+	public $date_from;
+
+	/**
+	 * The end date of the summary in ISO8601 format.
+	 *
+	 * @var string
+	 */
+	public $date_to;
 
 	/**
 	 * Class constructor.
@@ -120,9 +154,14 @@ class Email_Summary_Pro_Summary {
 		$this->name           = $this->setup_name();
 		$this->status         = $this->setup_status();
 		$this->recipients     = $this->setup_recipients();
+		$this->subject        = $this->setup_subject();
 		$this->interval       = $this->setup_interval();
+		$this->template       = $this->setup_template();
 		$this->disable_html   = $this->setup_disable_html();
 		$this->next_scheduled = $this->setup_next_scheduled();
+		$this->date           = $this->setup_date();
+		$this->date_from      = $this->setup_date_from();
+		$this->date_to        = $this->setup_date_to();
 
 		/**
 		 * Fires after the instance of the WPNA_Summary object is set up.
@@ -172,6 +211,18 @@ class Email_Summary_Pro_Summary {
 	}
 
 	/**
+	 * Setup the summary subject.
+	 *
+	 * @access private
+	 *
+	 * @return string Summary subject.
+	 */
+	private function setup_subject() {
+		$subject = $this->get_meta( 'subject', true );
+		return $subject;
+	}
+
+	/**
 	 * Setup the summary interval.
 	 *
 	 * @access private
@@ -184,15 +235,43 @@ class Email_Summary_Pro_Summary {
 	}
 
 	/**
-	 * Setup the summary disable_html_emails.
+	 * Setup the summary template.
 	 *
 	 * @access private
 	 *
-	 * @return string Summary disable_html_emails.
+	 * @return string Summary template.
+	 */
+	private function setup_template() {
+		$template = $this->get_meta( 'template', true );
+		return $template;
+	}
+
+	/**
+	 * Setup the summary disable_html.
+	 *
+	 * @access private
+	 *
+	 * @return string Summary disable_html.
 	 */
 	private function setup_disable_html() {
 		$disable_html = $this->get_meta( 'disable_html', true );
 		return $disable_html;
+	}
+
+	/**
+	 * Setup the date variable.
+	 *
+	 * If one has been set then use the summary from that week / day.
+	 * Otherwise default to last summary's.
+	 *
+	 * @return string The date of the summary.
+	 */
+	private function setup_date() {
+		if ( empty( $this->date ) ) {
+			$this->date = date( DateTime::ISO8601 );
+		}
+
+		return $this->date;
 	}
 
 	/**
@@ -204,15 +283,15 @@ class Email_Summary_Pro_Summary {
 	 */
 	private function setup_date_from() {
 		// Default to the current date/time.
-		$date_from = $this->date;
+		$this->date_from = $this->date;
 
 		if ( 'weekly' === $this->interval ) {
 			$start_of_week     = get_option( 'start_of_week' );
 			$start_of_week_day = date( 'l', strtotime( "Sunday + {$start_of_week} Days" ) );
-			$date_from         = strtotime( 'Last ' . $start_of_week_day, $this->date );
+			$this->date_from   = date( DateTime::ISO8601, strtotime( 'Last ' . $start_of_week_day, strtotime( $this->date ) ) );
 		}
 
-		return $date_from;
+		return $this->date_from;
 	}
 
 	/**
@@ -224,13 +303,13 @@ class Email_Summary_Pro_Summary {
 	 */
 	private function setup_date_to() {
 		// Default to the current date/time.
-		$date_to = $this->date;
+		$this->date_to = $this->date;
 
 		if ( 'weekly' === $this->interval ) {
-			$date_to = strtotime( '+ 6 days ', strtotime( $this->date_from ) );
+			$this->date_to = date( DateTime::ISO8601, strtotime( '+ 6 days ', strtotime( $this->date_from ) ) );
 		}
 
-		return $date_to;
+		return $this->date_to;
 	}
 
 	/**
@@ -238,7 +317,7 @@ class Email_Summary_Pro_Summary {
 	 *
 	 * @access private
 	 *
-	 * @return string Summary disable_html_emails.
+	 * @return string Summary disable_html.
 	 */
 	private function setup_next_scheduled() {
 		$next_scheduled = null;
@@ -257,23 +336,19 @@ class Email_Summary_Pro_Summary {
 	}
 
 	/**
-	 * [content description]
+	 * Set the date of a the summary you want to run.
+	 * Default to the nearest previous one.
 	 *
-	 * @param  string $template Template to load.
-	 * @return string
+	 * @param string $date Date you want the summary for.
 	 */
-	// public function content( $template = 'html' ) {
-    //
-	// 	// Load in the default template arguments.
-	// 	// add_filter( 'esp_template_part_default_arguments', array( $this, 'set_summary_arguments' ), 10, 4 );
-    //
-	// 	$content = esp_get_template( $this->method, $template );
-    //
-	// 	// Remove this filter incase we're sending more than one.
-	// 	// remove_filter( 'esp_template_part_default_arguments', array( $this, 'set_summary_arguments' ), 10 );
-    //
-	// 	return $content;
-	// }
+	public function set_date( $date ) {
+		// Make sure the date is in ISO8601 format.
+		$this->date = date( DateTime::ISO8601, strtotime( $date ) );
+
+		// Re-setup the date_to and date_from with the new date.
+		$this->setup_date_from();
+		$this->setup_date_to();
+	}
 
 	/**
 	 * Send the summary summary.
@@ -441,9 +516,12 @@ class Email_Summary_Pro_Summary {
 		$meta = array(
 			'name'                => ! empty( $args['name'] ) ? $args['name'] : '',
 			'status'              => ! empty( $args['status'] ) ? $args['status'] : 'active',
+			'method'              => ! empty( $args['method'] ) ? $args['method'] : 'email',
 			'recipients'          => ! empty( $args['recipients'] ) ? $args['recipients'] : '',
+			'subject'             => ! empty( $args['subject'] ) ? $args['subject'] : '',
 			'interval'            => ! empty( $args['interval'] ) ? $args['interval'] : 'weekly',
-			'disable_html_emails' => ! empty( $args['disable_html_emails'] ) ? $args['disable_html_emails'] : '0',
+			'template'            => ! empty( $args['template'] ) ? $args['template'] : 'html',
+			'disable_html' => ! empty( $args['disable_html'] ) ? $args['disable_html'] : '0',
 		);
 
 		// Work out the date of the next summary.
@@ -489,41 +567,4 @@ class Email_Summary_Pro_Summary {
 		return $meta;
 	}
 
-	public function set_summary_arguments( $arguments, $method, $type, $part ) {
-		$arguments['summary_date']      = '21-05-2018'; // $this->date, // The roundup is sent the day after the week ends.
-		$arguments['summary_date_from'] = '13-05-2018'; // $this->date_from, // The first date of the week we're rounding up.
-		$arguments['summary_date_to']   = '20-05-2018'; //$this->date_to, // The last date of the week we're rounding up (inclusive).
-
-		return $arguments;
-	}
-
 }
-
-
-
-
-
-
-
-
-
-
-// public function date( $date = 'latest' ) {
-// 	$start_of_week = get_option( 'start_of_week' );
-// 	$start_of_week_day = date( 'l', strtotime( "Sunday + {$start_of_week} Days" ) );
-//
-// 	if ( 'latest' == $date ) {
-// 		$unix_timestamp = strtotime( "last " . $start_of_week_day );
-// 	} else {
-// 		$unix_timestamp = strtotime( $date );
-// 	}
-//
-// 	// The date the newsletter was sent out. Normally one day after.
-// 	$this->date = date( "Y-m-d", $unix_timestamp );
-//
-// 	// The date we want stats from
-// 	$this->date_from = date( "Y-m-d", strtotime( "Last " . $start_of_week_day, $unix_timestamp ) );
-//
-// 	// The date we want stats to (inclusive)
-// 	$this->date_to = date( "Y-m-d", strtotime( "+ 6 days ", strtotime( $this->date_from ) ) );
-// }

@@ -4,7 +4,7 @@
  *
  * @package     email-summary-pro
  * @subpackage  Admin/Summaries
- * @copyright   Copyright (c) 2017, WPArtisan
+ * @copyright   Copyright (c) 2018, WPArtisan
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU Public License
  * @since       1.0.0
  */
@@ -24,7 +24,6 @@ if ( ! empty( $_GET['summary'] ) ) {
 
 // Load the transformer.
 $summary = esp_get_summary( $summary_id );
-var_dump( $summary->content() ); die;
 ?>
 <div class="wrap">
 
@@ -76,6 +75,18 @@ var_dump( $summary->content() ); die;
 					</td>
 				</tr>
 
+				<?php do_action( 'esp_edit_summary_form_before_subject' ); ?>
+
+				<tr>
+					<th scope="row" valign="top">
+						<label for="esp-subject"><?php esc_html_e( 'Subject', 'email-summary-pro' ); ?></label>
+					</th>
+					<td>
+						<input type="text" id="esp-subject" name="subject" value="<?php echo esc_attr( $summary->subject ); ?>" class="regular-text" />
+						<p class="description"><?php esc_html_e( 'Subject of the email.', 'email-summary-pro' ); ?></p>
+					</td>
+				</tr>
+
 				<?php do_action( 'esp_edit_summary_form_before_disable_html' ); ?>
 
 				<tr>
@@ -84,7 +95,7 @@ var_dump( $summary->content() ); die;
 					</th>
 					<td>
 						<input type="hidden" name="disable_html" value="0">
-						<input type="checkbox" name="disable_html" id="esp-disable-html-emails" class="" value="true" <?php checked( $summary->disable_html ); ?> />
+						<input type="checkbox" name="disable_html" id="esp-disable-html" class="" value="true" <?php checked( $summary->disable_html ); ?> />
 						<p class="description"><?php esc_html_e( 'Disable HTML emails and only recieve plain text ones.', 'email-summary-pro' ); ?></p>
 					</td>
 				</tr>

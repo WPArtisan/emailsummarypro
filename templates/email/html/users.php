@@ -3,7 +3,7 @@
 	if ( ! get_option( 'users_can_register' ) )
 		return;
 
-	$user_stats = esp_get_user_stats( $summary_date_from, $summary_date_to );
+	$user_stats = esp_get_user_stats( $date_from, $date_to );
 ?>
 <tr>
 	<td align="center" valign="top">

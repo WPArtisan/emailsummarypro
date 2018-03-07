@@ -4,7 +4,7 @@
  *
  * @package     email-summary-pro
  * @subpackage  Includes/summary
- * @copyright   Copyright (c) 2017, WPArtisan
+ * @copyright   Copyright (c) 2018, WPArtisan
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU Public License
  * @since       1.0.0
  */
@@ -89,8 +89,8 @@ class WPNA_Admin_Summaries_List_Table extends WP_List_Table {
 			'name'           => esc_html__( 'Name', 'email-summary-pro' ),
 			'status'         => esc_html__( 'Status', 'email-summary-pro' ),
 			'recipients'     => esc_html__( 'Recipients', 'email-summary-pro' ),
-			'disable_html'   => esc_html__( 'HTML Emails', 'email-summary-pro' ),
 			'next_scheduled' => esc_html__( 'Next Scheduled', 'email-summary-pro' ),
+			'actions'        => esc_html__( 'Actions', 'email-summary-pro' ),
 		);
 
 		return $columns;
@@ -192,6 +192,48 @@ class WPNA_Admin_Summaries_List_Table extends WP_List_Table {
 	}
 
 	/**
+	 * Format the output for the cb column.
+	 *
+	 * @access public
+	 * @param  array $item Row item.
+	 * @return string Output for this row and column.
+	 */
+	public function column_actions( $item ) {
+// <input type="date" id="summary-week" max="' . date( 'Y-m-d' ) . '" value="' . esc_attr( $last_summary ) . '" />
+		$date_selector = '';
+
+		// Add these params.
+		$default_query = array(
+			'page'       => 'email_summary_pro',
+			'summary_id' => $item->ID,
+		);
+
+		// Resend URL.
+		$resend_url = wp_nonce_url( add_query_arg( array_merge( $default_query, array( 'esp-action' => 'resend_summary' ) ), admin_url( 'options-general.php' ) ), 'resend_summary', 'esp_nonce');
+		// Resend input button.
+		$resend_button = sprintf(
+			'<a href="%s" data-url="%s" class="js-url-action" title="%s">%s</a>',
+			esc_url( $resend_url ),
+			esc_url( $resend_url ),
+			esc_html__( 'Resend Email Summary', 'email-summary-pro' ),
+			esc_html__( 'Resend', 'email-summary-pro' )
+	 	);
+
+		// Preview URL.
+		$preview_url = add_query_arg( array_merge( $default_query, array( 'esp-action' => 'preview_summary' ) ), admin_url( 'options-general.php' ) );
+		// Preview input button.
+		$preview_button = sprintf(
+			'<a href="%s" data-url="%s" target="_blank" class="js-url-action" title="%s">%s</a>',
+			esc_url( $preview_url ),
+			esc_url( $preview_url ),
+			esc_html__( 'Preview Email Summary', 'email-summary-pro' ),
+			esc_html__( 'Preview', 'email-summary-pro' )
+	 	);
+
+		return sprintf( '%s<span class="edit">%s</span>&nbsp;|&nbsp;<span class="edit">%s</span>', $date_selector, $resend_button, $preview_button );
+	}
+
+	/**
 	 * Define which columns are sortable.
 	 *
 	 * @access public
@@ -201,7 +243,6 @@ class WPNA_Admin_Summaries_List_Table extends WP_List_Table {
 		$sortable_columns = array(
 			'name'           => array( 'name', false ),
 			'status'         => array( 'status', false ),
-			'disable_html'   => array( 'disable_html', false ),
 			'next_scheduled' => array( 'next_scheduled', false ),
 		);
 
