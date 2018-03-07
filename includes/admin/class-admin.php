@@ -112,7 +112,7 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 		add_action( current_action(), array( $this, 'setup_tabs' ), 10 );
 		add_action( current_action(), array( $this, 'add_screen_options' ), 10, 0 );
 		add_action( current_action(), array( $this, 'setup_admin_summaries_list_table' ), 10, 0 );
-		// add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ), 10, 1 );
+		add_action( 'admin_enqueue_scripts', array( $this, 'scripts' ), 10, 1 );
 	}
 
 	/**
@@ -187,6 +187,17 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 		$this->summaries_list_table = new WPNA_Admin_Summaries_List_Table();
 		// Check for bulk action and process.
 		$this->summaries_list_table->process_bulk_action();
+	}
+
+	/**
+	 * Enqueue the admin JS.
+	 *
+	 * @access public
+	 * @param  string $hook The current page hook.
+	 * @return void
+	 */
+	public function scripts( $hook ) {
+		wp_enqueue_script( 'esp-admin', ESP_BASE_URL . 'assets/js/admin.js', array( 'jquery' ), ESP_VERSION, true );
 	}
 
 	/**
@@ -347,70 +358,7 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	}
 
 	/**
-	* Outputs the HTML for the resend_last_roundup button
-	*
-	* Just a link back to the current page with an action set.
-	*
-	* @access public
-	* @return void
-	*/
-	public function resend_summary_field_callback() {
-		// Work out the date of the last summary.
-		$start_of_week = get_option( 'start_of_week' );
-		$start_of_week_day = date( 'l', strtotime( "Sunday + {$start_of_week} Days" ) );
-		$last_summary = date( 'Y-m-d', strtotime( 'last ' . $start_of_week_day ) );
-
-		// Add these params.
-		$default_query = array(
-			'page' => 'email_summary_pro',
-		);
-
-		// Resend URL.
-		$resend_url = wp_nonce_url( add_query_arg( array_merge( $default_query, array( 'esp-action' => 'resend_summary' ) ), admin_url( 'options-general.php' ) ), 'resend_summary', 'esp_nonce');
-
-		// Preview URL.
-		$preview_url = add_query_arg( array_merge( $default_query, array( 'esp-action' => 'preview_summary' ) ), admin_url( 'options-general.php' ) );
-		?>
-		<input type="date" id="summary-week" max="<?php echo date( 'Y-m-d' ); ?>" value="<?php echo esc_attr( $last_summary ); ?>" >
-		<a href="#" data-url="<?php echo esc_url( $resend_url ); ?>" class="button button-secondary js-url-action" title="<?php esc_html_e( 'Resend Email Summary', 'email-summary-pro' ); ?>"><?php esc_html_e( 'Resend', 'email-summary-pro' ); ?></a>
-		<a href="#" data-url="<?php echo esc_url( $preview_url ); ?>" class="button button-secondary js-url-action" title="<?php esc_html_e( 'Preview Email Summary', 'email-summary-pro' ); ?>" target="_blank" ><?php esc_html_e( 'Preview', 'email-summary-pro' ); ?></a>
-		<p class="description"><?php esc_html_e( 'Select a past date to resend, or preview, the email summary for that week.', 'easy-summary-pro' ); ?></p>
-		<script>
-			var setUrl = function( ev ) {
-				var el = ev.target;
-				// Get the date to summerise.
-				var summaryWeek = document.querySelector( 'input#summary-week' ).value;
-				// Get the URL.
-				var url = el.getAttribute( 'data-url' );
-				// Replace and continue.
-				el.setAttribute( 'href', url + '&date=' + summaryWeek );
-			};
-
-			// Set watchers for every URL action.
-			[].forEach.call( document.querySelectorAll( '.js-url-action' ), function(el) {
-				el.addEventListener( 'click', setUrl.bind() );
-			} );
-		</script>
-		<?php
-	}
-
-	/**
-	* Outputs the HTML for the scheduled field.
-	*
-	* Works out the tme the next summary email is scheduled for.
-	*
-	* @access public
-	* @return void
-	*/
-	public function next_summary_field_callback() {
-		$next = wp_next_scheduled( 'esp_cron_hook' );
-		?>
-		<p class="description"><code><?php echo esc_html( date( 'H:ma, jS M Y', $next ) ); ?></code></p>
-		<?php
-	}
-
-	/**
-	 * Resends a particular summary.
+	 * Resends a summary for a set date.
 	 *
 	 * @return void
 	 */
@@ -435,6 +383,11 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 			return;
 		}
 
+		// if a custom date is set, use that instead.
+		if ( ! empty( $_GET['date'] ) ) {
+			$summary->set_date( sanitize_text_field( wp_unslash( $_GET['date'] ) ) );
+		}
+
 		// Setup the email.
 		$email = new Email_Summary_Pro_Email( $summary );
 		// Send the summary.
@@ -455,7 +408,7 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	}
 
 	/**
-	 * Show a summary in browser.
+	 * Show a summary preview in browser.
 	 *
 	 * @return void
 	 */
@@ -472,6 +425,11 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 
 		if ( ! $summary ){
 			return;
+		}
+
+		// if a custom date is set, use that instead.
+		if ( ! empty( $_GET['date'] ) ) {
+			$summary->set_date( sanitize_text_field( wp_unslash( $_GET['date'] ) ) );
 		}
 
 		// Show the preview.

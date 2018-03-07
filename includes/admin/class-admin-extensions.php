@@ -63,6 +63,7 @@ class Email_Summary_Pro_Admin_Extensions extends Email_Summary_Pro_Admin_Base {
 			background: white;
 			border-radius: 2px;
 			border: 1px solid lightgray;
+			margin-bottom: 30px;
 		}
 		.esp-grid-item h2 {
 			margin-left: 15px;
@@ -130,10 +131,17 @@ class Email_Summary_Pro_Admin_Extensions extends Email_Summary_Pro_Admin_Base {
 
 		$extensions = array(
 			array(
-				'name'        => 'Frequency',
-				'description' => 'Change the frequency of site email. Hourly, Daily, Monthly, as often as you like',
+				'name'        => 'Template Manager',
+				'description' => 'Change which template parts are shown in your summaries and in what the order.',
 				'image'       => 'https://8333-presscdn-0-98-pagely.netdna-ssl.com/wp-content/uploads/edd/2016/04/stripe-featured-image.png',
-				'link'        => 'https://emailsummarypro.com/extensions/frequency/?utm_source=plugin&utm_medium=extensions-b',
+				'link'        => 'https://emailsummarypro.com/extensions/template-manager/?utm_source=plugin&utm_medium=extensions-b',
+				'active'      => false,
+			),
+			array(
+				'name'        => 'Summary Frequency',
+				'description' => 'Adjsut the frequency of your summaries. Hourly, Daily, Monthly, as often as you like',
+				'image'       => 'https://8333-presscdn-0-98-pagely.netdna-ssl.com/wp-content/uploads/edd/2016/04/stripe-featured-image.png',
+				'link'        => 'https://emailsummarypro.com/extensions/summary-frequency/?utm_source=plugin&utm_medium=extensions-b',
 				'active'      => false,
 			),
 			array(

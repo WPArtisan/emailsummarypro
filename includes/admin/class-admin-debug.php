@@ -51,23 +51,12 @@ class Email_Summary_Pro_Admin_Debug extends Email_Summary_Pro_Admin_Base {
 	 * @return void
 	 */
 	public function tab_callback() {
-		$email_errors = get_transient( 'esp_email_errors' );
 		?>
-
-		<h2>
-			<?php esc_html_e( 'Email Errors', 'email-summary-pro' ); ?>
-		</h2>
-<textarea style="width: 100%; padding: 20px;">
-<?php if ( ! empty( $email_errors ) ) : ?>
-<?php foreach ( $email_errors as $error ) :?>
-<?php echo esc_html( $error ); ?>
-<?php endforeach;?>
-<?php endif;?>
-</textarea>
-
 		<h2>
 			<?php esc_html_e( 'System Information', 'email-summary-pro' ); ?>
 		</h2>
+
+		<textarea style="width: 60%; padding: 20px;"></textarea>
 
 		<?php
 	}

@@ -18,7 +18,7 @@
 					<h2>
 						<center>
 							<?php echo date( "l, jS F", strtotime( $date_from ) ); ?>
-							&nbsp;&#150;&nbsp;
+							&nbsp;-&nbsp;
 							<?php echo date( "l, jS F", strtotime( $date_to ) ); ?>
 						</center>
 					</h2>
