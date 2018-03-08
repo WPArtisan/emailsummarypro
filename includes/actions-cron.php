@@ -1,6 +1,6 @@
 <?php
 /**
- * Sets up all the CRON hooks required for sending the summaries.
+ * Deals with ending summaries on a CRON hook.
  *
  * @package     email-summary-pro
  * @subpackage  Includes
@@ -9,44 +9,33 @@
  * @since       1.0.0
  */
 
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
- * Setup the CRON jobs for all active summaries.
+ * CRON hook for sending summaries.
  *
+ * @param int $summary_id ID of the summary to do.
  * @return void
  */
-function esp_setup_cron_jobs() {
-
-	// Send any summaries due in the next hour.
-	if ( ! wp_next_scheduled( 'esp_send_summaries' ) ) {
-		wp_schedule_event( current_time( 'timestamp' ), 'hourly', 'esp_send_summaries' );
-	}
-
-}
-// add_action( 'wp', 'esp_setup_cron_jobs', 10 );
-
-/**
- * Check for any summaries due to go out in the next hour and send them.
- *
- * @return void.
- */
-function esp_check_for_summaries_to_send() {
-	// Find summaries due in the next hour.
-	$args = array(
-		'posts_per_page' => 9999,
-		'post_status'    => array( 'active' ),
-	);
-
-	$summaries = esp_get_summaries( $args );
-
-	if ( ! $summaries ) {
+function esp_send_summary( $summary_id = null ) {
+	if ( ! $summary_id ) {
 		return;
 	}
 
-	foreach ( $summaries as $summary ) {
-		// Setup the email.
-		$email = new ESP_Email( $summary );
-		// Send the summary.
-		$email->send();
+	// Try and grab the summary.
+	$summary = esp_get_summary( absint( $summary_id ) );
+
+	if ( ! $summary ) {
+		return;
 	}
+
+	// Setup the email.
+	$email = new Email_Summary_Pro_Email( $summary );
+
+	// Send the summary.
+	$email->send();
 }
-// add_action( 'esp_send_summaries', 'esp_check_for_summaries_to_send', 10, 0 );
+add_action( 'esp_do_summary', 'esp_send_summary', 10, 1 );

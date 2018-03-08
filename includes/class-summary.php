@@ -404,11 +404,8 @@ class Email_Summary_Pro_Summary {
 
 		// Check it's active.
 		if ( 'active' === $this->status ) {
-// 			var_Dump( $this->interval );
-// var_dump( $this->next_scheduled );
-// var_Dump( $this->ID );die;
 			// Schedue a new one.
-			wp_schedule_event( strtotime( $this->next_scheduled ), $this->interval, 'esp_do_summary', $this->ID );
+			wp_schedule_event( strtotime( $this->next_scheduled ), $this->interval, 'esp_do_summary', array( $this->ID ) );
 		}
 	}
 

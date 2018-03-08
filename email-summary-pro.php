@@ -168,10 +168,10 @@ if ( ! class_exists( 'Email_Summary_Pro' ) ) :
 			require ESP_BASE_PATH . 'includes/functions-stats.php';
 			require ESP_BASE_PATH . 'includes/functions-summaries.php';
 			require ESP_BASE_PATH . 'includes/functions-templates.php';
-			require ESP_BASE_PATH . 'includes/actions-cron.php';
 			require ESP_BASE_PATH . 'includes/class-tabs-helper.php';
 			require ESP_BASE_PATH . 'includes/class-email.php';
 			require ESP_BASE_PATH . 'includes/class-summary.php';
+			require ESP_BASE_PATH . 'includes/actions-cron.php';
 			require ESP_BASE_PATH . 'includes/admin/summaries/class-admin-summaries-list-table.php';
 			require ESP_BASE_PATH . 'includes/admin/admin-actions.php';
 			require ESP_BASE_PATH . 'includes/admin/admin-notices.php';
