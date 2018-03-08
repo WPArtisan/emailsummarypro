@@ -68,6 +68,7 @@ if ( ! function_exists( 'esp_get_template_part' ) ) :
 			'site_description' => get_bloginfo( 'description' ),
 			'site_url'         => get_bloginfo( 'url' ),
 			'blog_id'          => get_current_blog_id(),
+			'summary_id'       => $summary->ID,
 			'date'             => $summary->date, // The roundup is sent the day after the week ends.
 			'date_from'        => $summary->date_from, // The first date of the week we're rounding up.
 			'date_to'          => $summary->date_to, // The last date of the week we're rounding up (inclusive).
@@ -234,3 +235,69 @@ if ( ! function_exists( 'esp_locate_template' ) ) :
 	}
 
 endif;
+
+/**
+ * [get_element_styles description]
+ *
+ * @param  [type] $element [description]
+ * @param  [type] $append  [description]
+ * @return [type]          [description]
+ */
+function get_element_styles( $element = null, $append = null ) {
+	$element_styles = array(
+		'td' => array(
+			'font-family'    => 'sans-serif',
+			'font-size'      => '14px',
+			'vertical-align' => 'top',
+		),
+		'p' => array(
+			'font-family'   => 'sans-serif',
+			'font-size'     => '14px',
+			'font-weight'   => 'normal',
+			'margin'        => '0',
+			'Margin-bottom' => '15px',
+		),
+	);
+
+	/**
+	 * Default styling to use on elements in the email templates.
+	 *
+	 * @var array  $element_styles
+	 * @var string $element
+	 * @var mixed  $append
+	 */
+	$element_styles = apply_filters( 'esp_element_styles', $element_styles, $element, $append );
+
+	$styles_to_apply = array();
+
+	if ( isset( $default_element_styles[ $element ] ) ) {
+		$styles_to_apply = $default_element_styles[ $element ];
+	}
+
+	if ( ! empty( $append ) && is_array( $append ) ) {
+		$styles_to_apply = array_merge( $styles_to_apply, $append );
+	}
+
+	$styles = '';
+
+	foreach ( $styles_to_apply as $key => $value ) {
+		$styles .= $key . ':' . $value . ';';
+	}
+
+	if ( ! empty( $append ) && is_string( $append ) ) {
+		$styles .= $append;
+	}
+
+	return $styles;
+}
+
+/**
+ * [element_styles description]
+ *
+ * @param  [type] $element [description]
+ * @param  [type] $append  [description]
+ * @return [type]          [description]
+ */
+function element_styles( $element = null, $append = null ) {
+	echo esc_attr( get_element_styles( $element, $append ) );
+}

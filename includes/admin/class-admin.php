@@ -57,7 +57,6 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	public function hooks() {
 		add_action( 'admin_menu',          array( $this, 'add_menu_items' ), 23 );
 		add_action( 'esp_resend_summary',  array( $this, 'resend_summary' ), 10 );
-		add_action( 'esp_preview_summary', array( $this, 'preview_summary' ), 10 );
 		add_action( 'esp_add_summary',     array( $this, 'add_summary_action' ), 10, 1 );
 		add_action( 'esp_edit_summary',    array( $this, 'edit_summary_action' ), 10, 1 );
 		add_filter( 'set-screen-option',   array( $this, 'set_screen_option' ), 10, 3 );
@@ -125,7 +124,7 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	public function setup_tabs() {
 		email_summary_pro()->tabs_helper->register_tab(
 			'settings',
-			esc_html__( 'Summary', 'email-summary-pro' ),
+			esc_html__( 'Summaries', 'email-summary-pro' ),
 			$this->page_url(),
 			array( $this, 'list_table_output_callback' ),
 			true
@@ -417,36 +416,6 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 
 		wp_safe_redirect( $url );
 		exit;
-	}
-
-	/**
-	 * Show a summary preview in browser.
-	 *
-	 * @return void
-	 */
-	public function preview_summary() {
-		if ( ! isset( $_GET['summary_id'] ) ) {
-			return;
-		}
-
-		// grab the summary ID.
-		$summary_id = absint( $_GET['summary_id'] );
-
-		// Try and grab the summary.
-		$summary = esp_get_summary( $summary_id );
-
-		if ( ! $summary ){
-			return;
-		}
-
-		// if a custom date is set, use that instead.
-		if ( ! empty( $_GET['date'] ) ) {
-			$summary->set_date( sanitize_text_field( wp_unslash( $_GET['date'] ) ) );
-		}
-
-		// Show the preview.
-		echo esp_get_template( $summary );
-		die;
 	}
 
 }

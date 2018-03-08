@@ -204,14 +204,8 @@ class WPNA_Admin_Summaries_List_Table extends WP_List_Table {
 		$date_selector = '<span style="border-bottom: dashed 1px;" class="js-trigger-datepicker">' . date( 'Y-m-d' ) . '</span>';
 		$date_selector .= '<input type="date" class="js-datepicker hidden" id="esp-summary-date" max="' . date( 'Y-m-d' ) . '" value="' . esc_attr( date( 'Y-m-d' ) ) . '" />';
 
-		// Add these params.
-		$default_query = array(
-			'page'       => 'email_summary_pro',
-			'summary_id' => $item->ID,
-		);
-
 		// Resend URL.
-		$resend_url = wp_nonce_url( add_query_arg( array_merge( $default_query, array( 'esp-action' => 'resend_summary' ) ), admin_url( 'options-general.php' ) ), 'resend_summary', 'esp_nonce');
+		$resend_url = wp_nonce_url( add_query_arg( array( 'page' => 'email_summary_pro', 'esp-action' => 'resend_summary', 'summary_id' => $item->ID ), admin_url( 'options-general.php' ) ), 'resend_summary', 'esp_nonce');
 		// Resend input button.
 		$resend_button = sprintf(
 			'<a href="%s" data-url="%s" class="js-url-action" title="%s">%s</a>',
@@ -222,7 +216,7 @@ class WPNA_Admin_Summaries_List_Table extends WP_List_Table {
 	 	);
 
 		// Preview URL.
-		$preview_url = add_query_arg( array_merge( $default_query, array( 'esp-action' => 'preview_summary' ) ), admin_url( 'options-general.php' ) );
+		$preview_url = wp_nonce_url( add_query_arg( array( 'esp-action' => 'preview_summary', 'summary_id' => $item->ID ), get_home_url() ), 'preview_summary', 'esp_nonce' );
 		// Preview input button.
 		$preview_button = sprintf(
 			'<a href="%s" data-url="%s" target="_blank" class="js-url-action" title="%s">%s</a>',

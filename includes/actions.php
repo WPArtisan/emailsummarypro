@@ -1,9 +1,8 @@
 <?php
 /**
- * Admin Actions
+ * Site Actions
  *
  * @package     email-summary-pro
- * @subpackage  Admin/Actions
  * @copyright   Copyright (c) 2018, WPArtisan
  * @license     http://opensource.org/licenses/gpl-2.0.php GNU Public License
  * @since       1.0.0
@@ -23,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @return void
  */
-function esp_process_admin_actions() {
+function esp_process_actions() {
 	// @codingStandardsIgnoreStart
 	if ( isset( $_POST['esp-action'] ) ) {
 		do_action( 'esp_' . sanitize_key( wp_unslash( $_POST['esp-action'] ) ), $_POST );
@@ -34,4 +33,4 @@ function esp_process_admin_actions() {
 	}
 	// @codingStandardsIgnoreEnd
 }
-add_action( 'admin_init', 'esp_process_admin_actions' );
+add_action( 'init', 'esp_process_actions' );

@@ -61,16 +61,7 @@ if ( ! class_exists( 'Email_Summary_Pro' ) ) :
 		public $admin;
 
 		/**
-		 * The admin debug class.
-		 *
-		 * @access public
-		 * @since  1.0
-		 * @var    Email_Summary_Pro_Admin_Debug
-		 */
-		public $admin_debug;
-
-		/**
-		 * The admin debug class.
+		 * The admin extensions class.
 		 *
 		 * @access public
 		 * @since  1.0
@@ -177,13 +168,13 @@ if ( ! class_exists( 'Email_Summary_Pro' ) ) :
 			require ESP_PLUGIN_DIR . 'includes/class-tabs-helper.php';
 			require ESP_PLUGIN_DIR . 'includes/class-email.php';
 			require ESP_PLUGIN_DIR . 'includes/class-summary.php';
+			require ESP_PLUGIN_DIR . 'includes/actions.php';
 			require ESP_PLUGIN_DIR . 'includes/actions-cron.php';
 			require ESP_PLUGIN_DIR . 'includes/admin/summaries/class-admin-summaries-list-table.php';
 			require ESP_PLUGIN_DIR . 'includes/admin/admin-actions.php';
 			require ESP_PLUGIN_DIR . 'includes/admin/admin-notices.php';
 			require ESP_PLUGIN_DIR . 'includes/admin/class-admin-base.php';
 			require ESP_PLUGIN_DIR . 'includes/admin/class-admin.php';
-			require ESP_PLUGIN_DIR . 'includes/admin/class-admin-debug.php';
 			require ESP_PLUGIN_DIR . 'includes/admin/class-admin-extensions.php';
 		}
 
@@ -197,7 +188,6 @@ if ( ! class_exists( 'Email_Summary_Pro' ) ) :
 		public function setup_objects() {
 			self::$instance->tabs_helper      = new Email_Summary_Pro_Tabs_Helper;
 			self::$instance->admin            = new Email_Summary_Pro_Admin;
-			self::$instance->admin_debug      = new Email_Summary_Pro_Admin_Debug;
 			self::$instance->admin_extensions = new Email_Summary_Pro_Admin_Extensions;
 		}
 

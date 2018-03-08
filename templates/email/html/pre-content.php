@@ -1,22 +1,2 @@
-<tr>
-	<td align="center" valign="top">
-		<!-- BEGIN PREHEADER // -->
-		<table border="0" cellpadding="0" cellspacing="0" width="100%" id="templatePreheader">
-			<tr>
-				<td valign="top" class="preheaderContent" style="padding-top:10px; padding-right:20px; padding-bottom:10px; padding-left:20px;">
-					<?php echo date( "l, jS F Y", strtotime( $date_from ) ); ?>
-					&nbsp;-&nbsp;
-					<?php echo date( "l, jS F Y", strtotime( $date_to ) ); ?>
-				</td>
-				<!-- *|IFNOT:ARCHIVE_PAGE|* -->
-				<td valign="top" width="180" class="preheaderContent" style="padding-top:10px; padding-right:20px; padding-bottom:10px; padding-left:0;">
-					<?php esc_html_e( 'Email not displaying correctly?', 'email-summary-pro' ); ?>
-					<br />
-					<a href="<?php echo esc_url( add_query_arg( array( 'page' => 'email_summary_pro', 'esp-action' => 'preview_summary', 'date' => $date ), admin_url( 'options-general.php' ) ) ); ?>" target="_blank"><?php esc_html_e( 'View it in your browser', 'email-summary-pro' ); ?></a>.
-				</td>
-				<!-- *|END:IF|* -->
-			</tr>
-		</table>
-		<!-- // END PREHEADER -->
-	</td>
-</tr>
+<!-- START CENTERED WHITE CONTAINER -->
+<span class="preheader" style="color: transparent; display: none; height: 0; max-height: 0; max-width: 0; opacity: 0; overflow: hidden; mso-hide: all; visibility: hidden; width: 0;">This is preheader text. Some clients will show this text as a preview.</span>
