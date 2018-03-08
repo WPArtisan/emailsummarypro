@@ -103,24 +103,24 @@ function esp_dismiss_notices() {
 
 		// They've already rated the app, kill all rating prompts.
 		case 'rating_permanent':
-			delete_site_option( 'esp_rating_prompts' );
+			delete_option( 'esp_rating_prompts' );
 		break;
 
 		// They don't want to be bugged anymore at the moment.
 		// Remove the current interval prompt.
 		case 'rating_temporary':
 
-			$prompts = (array) get_site_option( 'esp_rating_prompts' );
+			$prompts = (array) get_option( 'esp_rating_prompts' );
 
 			// 1 or fewer intervals and just remove the whole option.
 			if ( count( $prompts ) <= 1 ) {
-				delete_site_option( 'esp_rating_prompts' );
+				delete_option( 'esp_rating_prompts' );
 
 			} else {
 				// Sort the array and remove the lowest interval.
 				sort( $prompts, SORT_NUMERIC );
 				array_shift( $prompts );
-				update_site_option( 'esp_rating_prompts', $prompts );
+				update_option( 'esp_rating_prompts', $prompts );
 			}
 
 		break;
@@ -160,8 +160,8 @@ function esp_rating_notices() {
 	}
 
 	// Get the plugin activation time & rating prompts intervals.
-	$activation_time = get_site_option( 'esp_activation_time' );
-	$prompts = (array) get_site_option( 'esp_rating_prompts' );
+	$activation_time = get_option( 'esp_activation_time' );
+	$prompts = (array) get_option( 'esp_rating_prompts' );
 
 	// Sort the prompts to ensure they're in order.
 	sort( $prompts, SORT_NUMERIC );

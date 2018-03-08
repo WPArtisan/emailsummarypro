@@ -6,7 +6,7 @@
 				<td valign="top" class="headerContent">
 
 					<br />
-					<center><img src="<?php echo esc_url( ESP_BASE_URL . 'assets/img/clipboard.png' ); ?>" style="max-width:64px;" id="headerImage" /></center>
+					<center><img src="<?php echo esc_url( ESP_PLUGIN_URL . 'assets/img/clipboard.png' ); ?>" style="max-width:64px;" id="headerImage" /></center>
 
 				</td>
 			</tr>

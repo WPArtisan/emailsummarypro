@@ -218,7 +218,7 @@ if ( ! function_exists( 'esp_locate_template' ) ) :
 
 		// If neither the child nor parent theme have overridden the template,
 		// we load the template from the 'templates' sub-directory of the directory this file is in
-		$template_path = ESP_BASE_PATH . '/templates/' . $name;
+		$template_path = ESP_PLUGIN_DIR . '/templates/' . $name;
 
 		/**
 		 * Alter the path for a template file

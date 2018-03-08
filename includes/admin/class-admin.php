@@ -198,7 +198,7 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	 * @return void
 	 */
 	public function scripts( $hook ) {
-		wp_enqueue_script( 'esp-admin', ESP_BASE_URL . 'assets/js/admin.js', null, ESP_VERSION, true );
+		wp_enqueue_script( 'esp-admin', ESP_PLUGIN_URL . 'assets/js/admin.js', null, ESP_VERSION, true );
 	}
 
 	/**
@@ -209,7 +209,7 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	 * @return void
 	 */
 	public function styles( $hook ) {
-		wp_enqueue_style( 'esp-admin', ESP_BASE_URL . 'assets/css/admin.css', ESP_VERSION, true );
+		wp_enqueue_style( 'esp-admin', ESP_PLUGIN_URL . 'assets/css/admin.css', ESP_VERSION, true );
 	}
 
 	/**
@@ -227,11 +227,11 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 		// @codingStandardsIgnoreLine
 		if ( isset( $_GET['esp-action'] ) && 'add_summary' === $_GET['esp-action'] ) {
 			// Load the summary template.
-			require ESP_BASE_PATH . '/includes/admin/summaries/add-summary.php';
+			require ESP_PLUGIN_DIR . '/includes/admin/summaries/add-summary.php';
 		// @codingStandardsIgnoreLine
 		} elseif ( isset( $_GET['esp-action'] ) && 'edit_summary' === $_GET['esp-action'] ) {
 			// Load the edit summary template.
-			require ESP_BASE_PATH . '/includes/admin/summaries/edit-summary.php';
+			require ESP_PLUGIN_DIR . '/includes/admin/summaries/edit-summary.php';
 		} else {
 			$this->tab_callback();
 		}

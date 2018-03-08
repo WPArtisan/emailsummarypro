@@ -142,14 +142,19 @@ if ( ! class_exists( 'Email_Summary_Pro' ) ) :
 				define( 'ESP_VERSION', $this->version );
 			}
 
-			// Plugin base path.
-			if ( ! defined( 'ESP_BASE_PATH' ) ) {
-				define( 'ESP_BASE_PATH', plugin_dir_path( __FILE__ ) );
+			// Plugin Root File
+			if ( ! defined( 'ESP_PLUGIN_FILE' ) ) {
+				define( 'ESP_PLUGIN_FILE', __FILE__ );
 			}
 
-			// Plugin base URL.
-			if ( ! defined( 'ESP_BASE_URL' ) ) {
-				define( 'ESP_BASE_URL', plugin_dir_url( __FILE__ ) );
+			// Plugin dir path.
+			if ( ! defined( 'ESP_PLUGIN_DIR' ) ) {
+				define( 'ESP_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+			}
+
+			// Plugin folder URL.
+			if ( ! defined( 'ESP_PLUGIN_URL' ) ) {
+				define( 'ESP_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 			}
 
 		}
@@ -162,23 +167,24 @@ if ( ! class_exists( 'Email_Summary_Pro' ) ) :
 		 * @return void
 		 */
 		private function includes() {
-			require ESP_BASE_PATH . 'includes/post-types.php';
-			require ESP_BASE_PATH . 'includes/default-templates.php';
-			require ESP_BASE_PATH . 'includes/functions-helper.php';
-			require ESP_BASE_PATH . 'includes/functions-stats.php';
-			require ESP_BASE_PATH . 'includes/functions-summaries.php';
-			require ESP_BASE_PATH . 'includes/functions-templates.php';
-			require ESP_BASE_PATH . 'includes/class-tabs-helper.php';
-			require ESP_BASE_PATH . 'includes/class-email.php';
-			require ESP_BASE_PATH . 'includes/class-summary.php';
-			require ESP_BASE_PATH . 'includes/actions-cron.php';
-			require ESP_BASE_PATH . 'includes/admin/summaries/class-admin-summaries-list-table.php';
-			require ESP_BASE_PATH . 'includes/admin/admin-actions.php';
-			require ESP_BASE_PATH . 'includes/admin/admin-notices.php';
-			require ESP_BASE_PATH . 'includes/admin/class-admin-base.php';
-			require ESP_BASE_PATH . 'includes/admin/class-admin.php';
-			require ESP_BASE_PATH . 'includes/admin/class-admin-debug.php';
-			require ESP_BASE_PATH . 'includes/admin/class-admin-extensions.php';
+			require ESP_PLUGIN_DIR . 'includes/install.php';
+			require ESP_PLUGIN_DIR . 'includes/post-types.php';
+			require ESP_PLUGIN_DIR . 'includes/default-templates.php';
+			require ESP_PLUGIN_DIR . 'includes/functions-helper.php';
+			require ESP_PLUGIN_DIR . 'includes/functions-stats.php';
+			require ESP_PLUGIN_DIR . 'includes/functions-summaries.php';
+			require ESP_PLUGIN_DIR . 'includes/functions-templates.php';
+			require ESP_PLUGIN_DIR . 'includes/class-tabs-helper.php';
+			require ESP_PLUGIN_DIR . 'includes/class-email.php';
+			require ESP_PLUGIN_DIR . 'includes/class-summary.php';
+			require ESP_PLUGIN_DIR . 'includes/actions-cron.php';
+			require ESP_PLUGIN_DIR . 'includes/admin/summaries/class-admin-summaries-list-table.php';
+			require ESP_PLUGIN_DIR . 'includes/admin/admin-actions.php';
+			require ESP_PLUGIN_DIR . 'includes/admin/admin-notices.php';
+			require ESP_PLUGIN_DIR . 'includes/admin/class-admin-base.php';
+			require ESP_PLUGIN_DIR . 'includes/admin/class-admin.php';
+			require ESP_PLUGIN_DIR . 'includes/admin/class-admin-debug.php';
+			require ESP_PLUGIN_DIR . 'includes/admin/class-admin-extensions.php';
 		}
 
 		/**
