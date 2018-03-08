@@ -433,7 +433,7 @@ if ( ! function_exists( 'esp_get_user_stats' ) ) :
 		$stats['active'] = count( $users );
 
 		/**
-		 * Filter the post stats for the date raneg before they're returned.
+		 * Filter the post stats for the date ranege before they're returned.
 		 *
 		 * @since 1.0.0
 		 *

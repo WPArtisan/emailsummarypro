@@ -11,6 +11,7 @@
 		<h2 style="<?php element_styles( 'h2' ); ?>"><?php _e( 'Users', 'email-summary-pro' ); ?></h2>
 
 		<p style="<?php element_styles( 'p' ); ?>">
+
 			<?php if ( ! $user_stats ) : ?>
 
 				<?php _e( 'No one registered this week.', 'email-summary-pro' ); ?>

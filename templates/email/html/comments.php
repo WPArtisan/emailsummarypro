@@ -8,6 +8,7 @@
 
 		<p style="<?php element_styles( 'p' ); ?>">
 			<?php if ( ! $comment_stats ) : ?>
+
 				<i><?php _e( 'No comment action this week.', 'email-summary-pro' ); ?></i>
 
 			<?php else : ?>
@@ -30,13 +31,15 @@
 					);
 				?>
 
-				<?php echo sprintf(
-						__( '<strong>%1$s</strong> are also waiting to be approved.', 'email-summary-pro' ),
-						sprintf(
-							_n( '1 comment', '%s comments', $comment_stats->pending_comments, 'email-summary-pro' ), number_format( $comment_stats->pending_comments )
-						)
-					);
-				?>
+				<?php if ( $comment_stats->pending_comments > 0 ) : ?>
+					<?php echo sprintf(
+							__( '<strong>%1$s</strong> are also waiting to be approved.', 'email-summary-pro' ),
+							sprintf(
+								_n( '1 comment', '%s comments', $comment_stats->pending_comments, 'email-summary-pro' ), number_format( $comment_stats->pending_comments )
+							)
+						);
+					?>
+				<?php endif; ?>
 
 			<?php endif;?>
 		</p>
