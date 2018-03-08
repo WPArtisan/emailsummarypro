@@ -2,11 +2,11 @@
 	$post_stats = esp_get_post_stats( $date_from, $date_to );
 ?>
 <tr>
-	<td style="<?php element_styles( 'td' ); ?>">
+	<td style="<?php esp_element_style( 'td' ); ?>">
 
-		<h2 style="<?php element_styles( 'h2' ); ?>"><?php _e( 'Posts', 'email-summary-pro' ); ?></h2>
+		<h2 style="<?php esp_element_style( 'h2' ); ?>"><?php _e( 'Posts', 'email-summary-pro' ); ?></h2>
 
-		<p style="<?php element_styles( 'p' ); ?>">
+		<p style="<?php esp_element_style( 'p' ); ?>">
 			<?php if ( empty( $post_stats ) ) : ?>
 
 				<?php _e( 'Absolutely nothing happened this week post wise &#128532;. Quiet week huh?', 'email-summary-pro' ); ?>
@@ -22,7 +22,7 @@
 
 					<?php if ( 1 === $post_stats->author_count ) : ?>
 
-						<?php echo sprintf( __( '<a target="_blank" href="%1$s">%2$s</a> published <strong>%3$s</strong> in <strong>%4$s</strong>.', 'email-summary-pro' ),
+						<?php echo sprintf( __( '<a style="{element_styles_a}" target="_blank" href="%1$s">%2$s</a> published <strong>%3$s</strong> in <strong>%4$s</strong>.', 'email-summary-pro' ),
 							get_author_posts_url( $post_stats->longest_post['author_id'], get_the_author_meta( 'user_nicename', $post_stats->longest_post['author_id'] ) ),
 							get_the_author_meta( 'display_name', $post_stats->longest_post['author_id'] ),
 							sprintf( _n( '1 post', '%s posts', $post_stats->publish_count, 'email-summary-pro' ), number_format( $post_stats->publish_count ) ),
@@ -67,7 +67,7 @@
 				<?php if ( $post_stats->publish_count > 1 ) : ?>
 
 					<?php echo sprintf(
-						__( 'The longest post was <strong>%1$s</strong> (<a target="_blank" href="%2$s">%3$s</a> by %4$s) and the shortest was <strong>%5$s</strong> (<a target="_blank" href="%6$s">%7$s</a> by %8$s).', 'email-summary-pro' ),
+						__( 'The longest post was <strong>%1$s</strong> (<a style="{element_styles_a}" target="_blank" href="%2$s">%3$s</a> by %4$s) and the shortest was <strong>%5$s</strong> (<a style="{element_styles_a}" target="_blank" href="%6$s">%7$s</a> by %8$s).', 'email-summary-pro' ),
 						// Longest post.
 						sprintf( _n( '%s word', '%s words', $post_stats->longest_post['word_count'], 'email-summary-pro' ), number_format( $post_stats->longest_post['word_count'] ) ),
 						get_permalink( $post_stats->longest_post['post_id'] ),
@@ -80,7 +80,7 @@
 						get_the_author_meta( 'display_name', $post_stats->shortest_post['author_id'] )
 					); ?>
 
-					<?php echo sprintf( __( '<a target="_blank" href="%1$s">%2$s</a> was the best day (%3$s published), <a target="_blank" href="%4$s">%5$s</a> was the best author (%6$s published), and <a target="_blank" href="%7$s">%8$s</a> was the most popular category (%9$s published).', 'email-summary-pro' ),
+					<?php echo sprintf( __( '<a style="{element_styles_a}" target="_blank" href="%1$s">%2$s</a> was the best day (%3$s published), <a style="{element_styles_a}" target="_blank" href="%4$s">%5$s</a> was the best author (%6$s published), and <a style="{element_styles_a}" target="_blank" href="%7$s">%8$s</a> was the most popular category (%9$s published).', 'email-summary-pro' ),
 						// Most popular day.
 						get_day_link( date( 'Y', $date_popular_unix ), date( 'm', $date_popular_unix ), date( 'd', $date_popular_unix ) ),
 						date( 'l', $date_popular_unix ),
@@ -98,7 +98,7 @@
 				<?php elseif ( $post_stats->publish_count === 1 ) : ?>
 
 					<?php echo sprintf(
-						__( 'The post was <a target="_blank" href="%1$s">%2$s</a> and was <strong>%3$s</strong> long. It was published on <a target="_blank" href="%4$s">%5$s</a> in <a target="_blank" href="%6$s">%7$s</a>.', 'email-summary-pro' ),
+						__( 'The post was <a style="{element_styles_a}" target="_blank" href="%1$s">%2$s</a> and was <strong>%3$s</strong> long. It was published on <a style="{element_styles_a}" target="_blank" href="%4$s">%5$s</a> in <a style="{element_styles_a}" target="_blank" href="%6$s">%7$s</a>.', 'email-summary-pro' ),
 						// Post details.
 						get_permalink( $post_stats->longest_post['post_id'] ),
 						get_the_title( $post_stats->longest_post['post_id'] ),

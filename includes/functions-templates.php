@@ -64,14 +64,22 @@ if ( ! function_exists( 'esp_get_template_part' ) ) :
 
 		// Default arguments used in all templates.
 		$arguments = array(
-			'site_name'        => get_bloginfo( 'name' ),
-			'site_description' => get_bloginfo( 'description' ),
-			'site_url'         => get_bloginfo( 'url' ),
-			'blog_id'          => get_current_blog_id(),
-			'summary_id'       => $summary->ID,
-			'date'             => $summary->date, // The roundup is sent the day after the week ends.
-			'date_from'        => $summary->date_from, // The first date of the week we're rounding up.
-			'date_to'          => $summary->date_to, // The last date of the week we're rounding up (inclusive).
+			'site_name'         => get_bloginfo( 'name' ),
+			'site_description'  => get_bloginfo( 'description' ),
+			'site_url'          => get_bloginfo( 'url' ),
+			'blog_id'           => get_current_blog_id(),
+			'summary_id'        => $summary->ID,
+			'date'              => $summary->date, // The roundup is sent the day after the week ends.
+			'date_from'         => $summary->date_from, // The first date of the week we're rounding up.
+			'date_to'           => $summary->date_to, // The last date of the week we're rounding up (inclusive).
+			'element_styles_h1' => esp_get_element_style( 'h1' ),
+			'element_styles_h2' => esp_get_element_style( 'h2' ),
+			'element_styles_h3' => esp_get_element_style( 'h3' ),
+			'element_styles_h4' => esp_get_element_style( 'h4' ),
+			'element_styles_h5' => esp_get_element_style( 'h5' ),
+			'element_styles_h6' => esp_get_element_style( 'h6' ),
+			'element_styles_a'  => esp_get_element_style( 'a' ),
+			'element_styles_p'  => esp_get_element_style( 'p' ),
 		);
 
 		/**
@@ -115,7 +123,7 @@ if ( ! function_exists( 'esp_get_template_part' ) ) :
 
 		// Replace all the arguments.
 		foreach ( $arguments as $key => $value ) {
-			$template_content = str_replace( sprintf( '%%%s%%', $key ), $value, $template_content );
+			$template_content = str_replace( sprintf( '{%s}', $key ), $value, $template_content );
 		}
 
 		/**
@@ -237,13 +245,13 @@ if ( ! function_exists( 'esp_locate_template' ) ) :
 endif;
 
 /**
- * [get_element_styles description]
+ * Return the styling for an element.
  *
- * @param  [type] $element [description]
- * @param  [type] $append  [description]
- * @return [type]          [description]
+ * @param  string $element Element to output the styling for.
+ * @param  mixed  $append  Strong or array of styles to append.
+ * @return string Styling to apply to the element.
  */
-function get_element_styles( $element = null, $append = null ) {
+function esp_get_element_style( $element = null, $append = null ) {
 	$element_styles = array(
 		'td' => array(
 			'font-family'    => 'sans-serif',
@@ -255,9 +263,23 @@ function get_element_styles( $element = null, $append = null ) {
 			'font-size'     => '14px',
 			'font-weight'   => 'normal',
 			'margin'        => '0',
-			'Margin-bottom' => '15px',
+			'margin-bottom' => '15px',
+		),
+		'a' => array(
+			'font-family' => 'sans-serif',
+			'font-size'   => '14px',
+			'font-weight' => 'normal',
+			'color'       => 'blue',
 		),
 	);
+
+	/**
+	 * Default styling to use on this element in the email templates.
+	 *
+	 * @var array  $element_styles
+	 * @var mixed  $append
+	 */
+	$element_styles = apply_filters( 'esp_esp_element_style_' . $element, $element_styles, $append );
 
 	/**
 	 * Default styling to use on elements in the email templates.
@@ -266,12 +288,12 @@ function get_element_styles( $element = null, $append = null ) {
 	 * @var string $element
 	 * @var mixed  $append
 	 */
-	$element_styles = apply_filters( 'esp_element_styles', $element_styles, $element, $append );
+	$element_styles = apply_filters( 'esp_esp_element_style', $element_styles, $element, $append );
 
 	$styles_to_apply = array();
 
-	if ( isset( $default_element_styles[ $element ] ) ) {
-		$styles_to_apply = $default_element_styles[ $element ];
+	if ( isset( $element_styles[ $element ] ) ) {
+		$styles_to_apply = $element_styles[ $element ];
 	}
 
 	if ( ! empty( $append ) && is_array( $append ) ) {
@@ -292,12 +314,13 @@ function get_element_styles( $element = null, $append = null ) {
 }
 
 /**
- * [element_styles description]
+ * Output the styles for an element.
+ * Is escaped.
  *
- * @param  [type] $element [description]
- * @param  [type] $append  [description]
- * @return [type]          [description]
+ * @param  string $element Element to output the styling for.
+ * @param  mixed  $append  Strong or array of styles to append.
+ * @return void
  */
-function element_styles( $element = null, $append = null ) {
-	echo esc_attr( get_element_styles( $element, $append ) );
+function esp_element_style( $element = null, $append = null ) {
+	echo esc_attr( esp_get_element_style( $element, $append ) );
 }

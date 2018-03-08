@@ -6,12 +6,12 @@
 	}
 ?>
 <tr>
-	<td style="<?php element_styles( 'td' ); ?>">
+	<td style="<?php esp_element_style( 'td' ); ?>">
 
-		<h2 style="<?php element_styles( 'h2' ); ?>"><?php esc_html_e( 'Updates', 'email-summary-pro' ); ?></h2>
+		<h2 style="<?php esp_element_style( 'h2' ); ?>"><?php esc_html_e( 'Updates', 'email-summary-pro' ); ?></h2>
 
-		<p style="<?php element_styles( 'p' ); ?>">
-			<a target="_blank" href="<?php echo esc_url( admin_url( '/update-core.php' ) ); ?>"><?php echo esc_html( $update_data['title'] ); ?></a>
+		<p style="{element_styles_p}">
+			<a style="{element_styles_a}" target="_blank" href="<?php echo esc_url( admin_url( '/update-core.php' ) ); ?>"><?php echo esc_html( $update_data['title'] ); ?></a>
 		</p>
 
 	</td>

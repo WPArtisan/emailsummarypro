@@ -16,15 +16,13 @@ if ( ! function_exists( 'esp_get_post_stats' ) ) :
 	 *
 	 * Runs optimised SQL queries to get all the stats for a post type.
 	 *
-	 * @since 1.0.0
-	 *
 	 * @param string $date_from The start date of the stats
 	 * @param string $date_to The end date of the stats (inclusive)
 	 * @return object
 	 */
 	function esp_get_post_stats( $date_from, $date_to ) {
 		// Create a unique cache key
-		$key = 'esp_post_stats_' . md5( $date_from, $date_to );
+		$key = 'esp_stats_posts_' . md5( $date_from, $date_to );
 
 		// See if it's cached or not
 		if ( $stats = wp_cache_get( $key, 'esp' ) ) {
@@ -283,26 +281,23 @@ if ( ! function_exists( 'esp_get_comment_stats' ) ) :
 	function esp_get_comment_stats( $date_from, $date_to ) {
 
 		// Create a unique cache key
-		$key = 'esp_comment_stats_' . md5( $date_from, $date_to );
+		$key = 'esp_stats_comments_' . md5( $date_from, $date_to );
 
 		// See if it's cached or not
-		if ( $stats = wp_cache_get( $key, 'esp' ) )
+		if ( $stats = wp_cache_get( $key, 'esp' ) ) {
 			return $stats;
+		}
 
 		global $wpdb;
 
 		// Holds that stats.
 		// Set default values.
 		$stats = array(
-			'approved_comments' => 0,
-			'pending_comments'  => 0,
-			'posts_count'       => 0,
-			'popular_post'      => array(
+			'comments_approved'     => 0,
+			'comments_pending'      => 0,
+			'comments_posts_count'  => 0,
+			'comments_post_popular' => array(
 				'post_id' => 0,
-				'count'   => 0,
-			),
-			'popular_user'       => array(
-				'user_id' => 0,
 				'count'   => 0,
 			),
 		);
@@ -326,9 +321,10 @@ if ( ! function_exists( 'esp_get_comment_stats' ) ) :
 			)
 		);
 
-		// No posts found, return default stats.
-		if ( empty( $comments) )
+		// No posts found, return null.
+		if ( empty( $comments) ) {
 			return null;
+		}
 
 		// Used to  store all the psots comments were added to
 		$comments_posts = array();
@@ -338,12 +334,12 @@ if ( ! function_exists( 'esp_get_comment_stats' ) ) :
 
 			// If it's an approved comment increase the approved count
 			if ( $comment->comment_approved ) {
-				$stats['approved_comments']++;
+				$stats['comments_approved']++;
 
 			// If it's an unapproved comment increase the pending account
 			} else {
 
-				$stats['pending_comments']++;
+				$stats['comments_pending']++;
 			}
 
 			$comments_posts[] = $comment->comment_post_ID;
@@ -351,7 +347,7 @@ if ( ! function_exists( 'esp_get_comment_stats' ) ) :
 		}
 
 		// Count the total unique posts comments were added to
-		$stats['posts_count'] = count( array_unique( $comments_posts ) );
+		$stats['comments_posts_count'] = count( array_unique( $comments_posts ) );
 
 		// Count the occurances of each post
 		$comments_posts_count = array_count_values( $comments_posts );
@@ -360,19 +356,19 @@ if ( ! function_exists( 'esp_get_comment_stats' ) ) :
 		$flipped_comments_posts_count = array_flip( $comments_posts_count );
 
 		// Work out the most popular author
-		$stats['popular_post']['count'] = max( $comments_posts_count );
+		$stats['comments_post_popular']['count'] = max( $comments_posts_count );
 
 		// Get the most popular author ID
-		$stats['popular_post']['post_id'] = $flipped_comments_posts_count[ $stats['popular_post']['count'] ];
+		$stats['comments_post_popular']['post_id'] = $flipped_comments_posts_count[ $stats['comments_post_popular']['count'] ];
 
 		/**
-		 * Filter the post stats for the date raneg before they're returned.
+		 * Filter the comment stats for the date range before they're returned.
 		 *
 		 * @since 1.0.0
 		 *
-		 * @var object $stats The post stats to use
+		 * @var array $stats The comment stats.
 		 */
-		$stats = apply_filters( 'esp_comment_stats', (object) $stats );
+		$stats = apply_filters( 'esp_comment_stats', $stats, $date_to, $date_from );
 
 		// Cache the result
 		wp_cache_add( $key, $stats, 'esp' );
@@ -389,33 +385,31 @@ if ( ! function_exists( 'esp_get_user_stats' ) ) :
 	 *
 	 * Runs optimised SQL queries to get all the stats for users.
 	 *
-	 * @since 1.0.0
-	 *
 	 * @return object
 	 */
 	function esp_get_user_stats( $date_from, $date_to ) {
 
 		// Create a unique cache key
-		$key = 'esp_user_stats_' . md5( $date_from, $date_to );
+		$key = 'esp_stats_users_' . md5( $date_from, $date_to );
 
 		// See if it's cached or not
-		if ( $stats = wp_cache_get( $key, 'esp' ) )
+		if ( $stats = wp_cache_get( $key, 'esp' ) ) {
 			return $stats;
+		}
 
 		global $wpdb;
 
 		// Holds that stats.
 		// Set default values.
 		$stats = array(
-			'active' => 0,
+			'registered' => 0,
 		);
 
 		// Get all the content for our date range.
-		$users = $wpdb->get_results(
+		$users_count = $wpdb->get_var(
 			$wpdb->prepare(
 			"SELECT
-				{$wpdb->users}.ID,
-				{$wpdb->users}.user_nicename
+				COUNT(*)
 			FROM {$wpdb->users}
 			WHERE {$wpdb->users}.user_registered >= %s
 				AND {$wpdb->users}.user_registered < %s
@@ -425,21 +419,20 @@ if ( ! function_exists( 'esp_get_user_stats' ) ) :
 			)
 		);
 
-		// No users found, return default stats.
-		if ( empty( $users) )
+		// Return null if no users found at all.
+		if ( empty( $users_count ) ){
 			return null;
+		}
 
-		// Count the new users
-		$stats['active'] = count( $users );
+		// Count the new users.
+		$stats['registered'] = $users_count;
 
 		/**
-		 * Filter the post stats for the date ranege before they're returned.
+		 * Filter the users stats for the date range before they're returned.
 		 *
-		 * @since 1.0.0
-		 *
-		 * @var object $stats The post stats to use
+		 * @var array $stats The comment stats.
 		 */
-		$stats = apply_filters( 'esp_user_stats', (object) $stats );
+		$stats = apply_filters( 'esp_stats_users', $stats, $date_to, $date_from );
 
 		// Cache the result
 		wp_cache_add( $key, $stats, 'esp' );

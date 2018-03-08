@@ -10,8 +10,9 @@
  */
 
 /**
- * [esp_setup_default_email_template_parts description]
- * @return [type] [description]
+ * Register all the default template parts for email/html.
+ *
+ * @return void
  */
 function esp_setup_default_email_template_parts() {
 
@@ -59,13 +60,13 @@ function esp_setup_default_email_template_parts() {
 			'part'     => 'posts',
 			'callback' => 'esp_get_post_stats',
 		),
-		// array(
-		// 	'order'    => 35,
-		// 	'method'   => 'email',
-		// 	'type'     => 'html',
-		// 	'part'     => 'data-table',
-		// 	'callback' => null,
-		// ),
+		array(
+			'order'    => 35,
+			'method'   => 'email',
+			'type'     => 'html',
+			'part'     => 'data-table',
+			'callback' => null,
+		),
 		array(
 			'order'    => 40,
 			'method'   => 'email',
