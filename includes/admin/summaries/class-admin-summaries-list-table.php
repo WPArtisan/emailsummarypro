@@ -188,7 +188,7 @@ class WPNA_Admin_Summaries_List_Table extends WP_List_Table {
 			return '~';
 		}
 
-		return date( 'H:ma, jS M Y', $item->next_scheduled );
+		return date( 'H:ia, jS M Y', strtotime( $item->next_scheduled ) );
 	}
 
 	/**
@@ -436,12 +436,7 @@ class WPNA_Admin_Summaries_List_Table extends WP_List_Table {
 
 				// Loop over the array of record IDs and update them.
 				foreach ( $summaries as $id ) {
-					$id = wp_update_post(
-						array(
-							'ID'          => $id,
-							'post_status' => $status,
-						)
-					);
+					esp_update_summary_status( $id, $status );
 				}
 
 				break;

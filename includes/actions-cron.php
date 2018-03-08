@@ -22,7 +22,7 @@ function esp_setup_cron_jobs() {
 	}
 
 }
-add_action( 'wp', 'esp_setup_cron_jobs', 10 );
+// add_action( 'wp', 'esp_setup_cron_jobs', 10 );
 
 /**
  * Check for any summaries due to go out in the next hour and send them.
@@ -49,4 +49,4 @@ function esp_check_for_summaries_to_send() {
 		$email->send();
 	}
 }
-add_action( 'esp_send_summaries', 'esp_check_for_summaries_to_send', 10, 0 );
+// add_action( 'esp_send_summaries', 'esp_check_for_summaries_to_send', 10, 0 );

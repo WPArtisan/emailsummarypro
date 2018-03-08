@@ -136,11 +136,39 @@ if ( ! function_exists( 'esp_delete_summary' ) ) :
 	function esp_delete_summary( $summary_id ) {
 		do_action( 'esp_pre_delete_summary', $summary_id );
 
+		// Clear any currently scheduled events for this summary.
+		if ( $next_scheduled = wp_next_scheduled( 'esp_do_summary', $summary_id ) ) {
+			wp_unschedule_event( $next_scheduled, 'esp_do_summary', $summary_id );
+		}
+
+		// Delete the summary.
 		wp_delete_post( $summary_id, true );
 
+		// Clear the summary cache.
 		esp_clear_summary_cache();
 
 		do_action( 'esp_post_delete_summary', $summary_id );
+	}
+endif;
+
+if ( ! function_exists( 'esp_update_summary_status' ) ) :
+
+	/**
+	 * Updates a summary's status from one status to another.
+	 *
+	 * @param int    $code_id    Summary ID (default: 0)
+	 * @param string $new_status New status (default: active)
+	 * @return bool Whether the status has been updated or not.
+	 */
+	function esp_update_summary_status( $summary_id = 0, $new_status = 'active' ) {
+		$updated = false;
+		$summary = esp_get_summary( $summary_id );
+
+		if ( $summary && $summary->ID > 0 ) {
+			$updated = $summary->update_status( $new_status );
+		}
+
+		return $updated;
 	}
 endif;
 

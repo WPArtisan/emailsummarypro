@@ -320,12 +320,17 @@ class Email_Summary_Pro_Summary {
 	 * @return string Summary disable_html.
 	 */
 	private function setup_next_scheduled() {
-		$next_scheduled = null;
+
+		// If a CRON schedule is already setup return that.
+		if ( $next_scheduled = wp_next_scheduled( 'esp_do_summary', $this->ID ) ) {
+			return date( DateTime::ISO8601, $next_scheduled );
+		}
 
 		if ( 'weekly' === $this->interval ) {
 			$start_of_week     = get_option( 'start_of_week' );
 			$start_of_week_day = date( 'l', strtotime( "Sunday + {$start_of_week} Days" ) );
 			$next_scheduled    = strtotime( 'next ' . $start_of_week_day );
+			$next_scheduled    = date( DateTime::ISO8601, $next_scheduled );
 		}
 
 		if ( 'inactive' === $this->status ) {
@@ -378,6 +383,36 @@ class Email_Summary_Pro_Summary {
 	}
 
 	/**
+	 * Schedule the summary to send.
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function schedule() {
+		if ( empty( $this->ID ) ) {
+			return;
+		}
+
+		// Clear any currently scheduled events incase the time has changed.
+		// Or incase they've been made inactive.
+		if ( $next_scheduled = wp_next_scheduled( 'esp_do_summary', $this->ID ) ) {
+			// Remove the CRON hook.
+			wp_unschedule_event( $next_scheduled, 'esp_do_summary', $this->ID );
+			// Re-setup the next scheduled.
+			$this->setup_next_scheduled();
+		}
+
+		// Check it's active.
+		if ( 'active' === $this->status ) {
+// 			var_Dump( $this->interval );
+// var_dump( $this->next_scheduled );
+// var_Dump( $this->ID );die;
+			// Schedue a new one.
+			wp_schedule_event( strtotime( $this->next_scheduled ), $this->interval, 'esp_do_summary', $this->ID );
+		}
+	}
+
+	/**
 	 * Create a summary.
 	 *
 	 * @access public
@@ -409,7 +444,7 @@ class Email_Summary_Pro_Summary {
 		 *
 		 * @param array $meta Summary meta.
 		 */
-		do_action( 'edd_pre_insert_summary', $meta );
+		do_action( 'esp_pre_insert_summary', $meta );
 
 		$this->ID = wp_insert_post( array(
 			'post_type'   => 'esp_summary',
@@ -443,17 +478,18 @@ class Email_Summary_Pro_Summary {
 		// Setup the summary again.
 		$this->setup_summary( WP_Post::get_instance( $this->ID ) );
 
+		// And make sure it's scheduled.
+		$this->schedule();
+
 		return $this->ID;
 	}
 
 	/**
-	 * Update an existing discount in the database.
+	 * Update an existing summary in the database.
 	 *
-	 * @since 2.7
 	 * @access public
-	 *
-	 * @param array $args Discount details.
-	 * @return mixed bool|int false if data isn't passed and class not instantiated for creation, or post ID for the new discount.
+	 * @param array $args Summary details.
+	 * @return mixed bool|int false if data isn't passed and class not instantiated for creation, or post ID for the new summary.
 	 */
 	public function update( $args ) {
 		$meta = $this->build_meta( $args );
@@ -490,6 +526,9 @@ class Email_Summary_Pro_Summary {
 		// Setup the summary again.
 		$this->setup_summary( WP_Post::get_instance( $this->ID ) );
 
+		// And make sure it's scheduled.
+		$this->schedule();
+
 		/**
 		 * Fires after the summary has been updated in the database.
 		 *
@@ -499,6 +538,55 @@ class Email_Summary_Pro_Summary {
 		do_action( 'esp_post_update_summary', $meta, $this->ID );
 
 		return $this->ID;
+	}
+
+	/**
+	 * Update the status of the summary.
+	 *
+	 * @access public
+	 * @param string $new_status New status (default: active)
+	 * @return bool If the status been updated or not.
+	 */
+	public function update_status( $new_status = 'active' ) {
+		/**
+		 * Fires before the status of the summary is updated.
+		 *
+		 * @param int    $ID          Discount ID.
+		 * @param string $new_status  New status.
+		 * @param string $post_status Post status.
+		 */
+		do_action( 'esp_pre_update_summary_status', $this->ID, $new_status, $this->status );
+
+		$id = wp_update_post(
+			array(
+				'ID'          => $this->ID,
+				'post_status' => $new_status
+			)
+		);
+
+		// Clear the cache.
+		esp_clear_summary_cache();
+
+		// Setup the summary again.
+		$this->setup_summary( WP_Post::get_instance( $this->ID ) );
+
+		// And make sure it's scheduled or unscheduled.
+		$this->schedule();
+
+		/**
+		 * Fires after the status of the summary is updated.
+		 *
+		 * @param int    $ID          Discount ID.
+		 * @param string $new_status  New status.
+		 * @param string $post_status Post status.
+		 */
+		do_action( 'esp_post_update_summary_status', $this->ID, $new_status, $this->status );
+
+		if ( $id == $this->ID ) {
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -514,20 +602,15 @@ class Email_Summary_Pro_Summary {
 		}
 
 		$meta = array(
-			'name'                => ! empty( $args['name'] ) ? $args['name'] : '',
-			'status'              => ! empty( $args['status'] ) ? $args['status'] : 'active',
-			'method'              => ! empty( $args['method'] ) ? $args['method'] : 'email',
-			'recipients'          => ! empty( $args['recipients'] ) ? $args['recipients'] : '',
-			'subject'             => ! empty( $args['subject'] ) ? $args['subject'] : '',
-			'interval'            => ! empty( $args['interval'] ) ? $args['interval'] : 'weekly',
-			'template'            => ! empty( $args['template'] ) ? $args['template'] : 'html',
+			'name'         => ! empty( $args['name'] ) ? $args['name']                 : '',
+			'status'       => ! empty( $args['status'] ) ? $args['status']             : 'active',
+			'method'       => ! empty( $args['method'] ) ? $args['method']             : 'email',
+			'recipients'   => ! empty( $args['recipients'] ) ? $args['recipients']     : '',
+			'subject'      => ! empty( $args['subject'] ) ? $args['subject']           : '',
+			'interval'     => ! empty( $args['interval'] ) ? $args['interval']         : 'weekly',
+			'template'     => ! empty( $args['template'] ) ? $args['template']         : 'html',
 			'disable_html' => ! empty( $args['disable_html'] ) ? $args['disable_html'] : '0',
 		);
-
-		// Work out the date of the next summary.
-		// $start_of_week = get_option( 'start_of_week' );
-		// $start_of_week_day = date( 'l', strtotime( "Sunday + {$start_of_week} Days" ) );
-		// $next_summary = strtotime( date( 'Y-m-d 04:00:00', strtotime( 'next ' . $start_of_week_day ) ) );
 
 		$meta = apply_filters( 'esp_summary_meta', $meta, $this->ID );
 

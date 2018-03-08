@@ -17,6 +17,12 @@ var setUrl = function( ev ) {
 	el.addEventListener( 'click', setUrl.bind() );
 } );
 
+/**
+ * Open a date picker when we click on stylised date.
+ *
+ * @param  {[type]} ev [description]
+ * @return {[type]}    [description]
+ */
 var doDatepicker = function( ev ) {
 	var el = ev.target;
 	// Hide the stylised date.
@@ -29,6 +35,12 @@ var doDatepicker = function( ev ) {
 	el.addEventListener( 'click', doDatepicker.bind() );
 } );
 
+/**
+ * Close any open datepickers when we click elsewhere.
+ *
+ * @param  {[type]} ev [description]
+ * @return {[type]}    [description]
+ */
 var closeDatepicker = function( ev ) {
 	var el = ev.target;
 

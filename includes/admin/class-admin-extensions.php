@@ -139,9 +139,23 @@ class Email_Summary_Pro_Admin_Extensions extends Email_Summary_Pro_Admin_Base {
 			),
 			array(
 				'name'        => 'Summary Frequency',
-				'description' => 'Adjsut the frequency of your summaries. Hourly, Daily, Monthly, as often as you like',
+				'description' => 'Adjust the frequency of your summaries. Hourly, Daily, Monthly, as often as you like',
 				'image'       => 'https://8333-presscdn-0-98-pagely.netdna-ssl.com/wp-content/uploads/edd/2016/04/stripe-featured-image.png',
 				'link'        => 'https://emailsummarypro.com/extensions/summary-frequency/?utm_source=plugin&utm_medium=extensions-b',
+				'active'      => false,
+			),
+			array(
+				'name'        => 'Users as Recipients',
+				'description' => 'Set the Recipients as WordPress user levels.',
+				'image'       => 'https://8333-presscdn-0-98-pagely.netdna-ssl.com/wp-content/uploads/edd/2016/04/stripe-featured-image.png',
+				'link'        => 'https://emailsummarypro.com/extensions/summary-frequency/?utm_source=plugin&utm_medium=extensions-b',
+				'active'      => false,
+			),
+			array(
+				'name'        => 'Template Builder',
+				'description' => 'Build custom Template parts right from the WP Admin.',
+				'image'       => 'https://8333-presscdn-0-98-pagely.netdna-ssl.com/wp-content/uploads/edd/2016/01/recurring-payments-product-image.png',
+				'link'        => 'https://emailsummarypro.com/extensions/author-summary/?utm_source=plugin&utm_medium=extensions-b',
 				'active'      => false,
 			),
 			array(
