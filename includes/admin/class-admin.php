@@ -113,6 +113,7 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 		add_action( current_action(), array( $this, 'add_screen_options' ), 10, 0 );
 		add_action( current_action(), array( $this, 'setup_admin_summaries_list_table' ), 10, 0 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'scripts' ), 10, 1 );
+		add_action( 'admin_enqueue_scripts', array( $this, 'styles' ), 10, 1 );
 	}
 
 	/**
@@ -197,7 +198,18 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 	 * @return void
 	 */
 	public function scripts( $hook ) {
-		wp_enqueue_script( 'esp-admin', ESP_BASE_URL . 'assets/js/admin.js', array( 'jquery' ), ESP_VERSION, true );
+		wp_enqueue_script( 'esp-admin', ESP_BASE_URL . 'assets/js/admin.js', null, ESP_VERSION, true );
+	}
+
+	/**
+	 * Enqueue the admin CSS.
+	 *
+	 * @access public
+	 * @param  string $hook The current page hook.
+	 * @return void
+	 */
+	public function styles( $hook ) {
+		wp_enqueue_style( 'esp-admin', ESP_BASE_URL . 'assets/css/admin.css', ESP_VERSION, true );
 	}
 
 	/**
