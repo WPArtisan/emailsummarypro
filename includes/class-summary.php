@@ -330,12 +330,15 @@ class Email_Summary_Pro_Summary {
 			$start_of_week     = get_option( 'start_of_week' );
 			$start_of_week_day = date( 'l', strtotime( "Sunday + {$start_of_week} Days" ) );
 			$next_scheduled    = strtotime( 'next ' . $start_of_week_day );
+			$next_scheduled    = strtotime( '+4 hours ', $next_scheduled ); // Do it at 4 in the morning.
 			$next_scheduled    = date( DateTime::ISO8601, $next_scheduled );
 		}
 
 		if ( 'inactive' === $this->status ) {
 			$next_scheduled = null;
 		}
+
+		$next_scheduled = apply_filters( 'esp_summary_setup_next_scheduled', $next_scheduled, $this );
 
 		return $next_scheduled;
 	}
