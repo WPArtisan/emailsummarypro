@@ -58,7 +58,7 @@ function esp_setup_default_email_template_parts() {
 			'method'   => 'email',
 			'type'     => 'html',
 			'part'     => 'posts',
-			'callback' => 'esp_get_post_stats',
+			'callback' => null,
 		),
 		array(
 			'order'    => 35,

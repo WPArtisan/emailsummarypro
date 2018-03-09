@@ -275,7 +275,7 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 				<a href="<?php echo esc_url( add_query_arg( array( 'esp-action' => 'add_summary' ), admin_url( 'options-general.php?page=email_summary_pro' ) ) ); ?>" class="add-new-h2"><?php esc_html_e( 'Add New', 'email-summary-pro' ); ?></a>
 			</h1>
 			<h4>
-				<p><?php esc_html_e( 'Email Summaries are a round up of what has been happening on your site.', 'email-summary-pro' ); ?></p>
+				<p><?php esc_html_e( 'Summaries are a round up of what has been happening on your site.', 'email-summary-pro' ); ?></p>
 			</h4>
 
 			<?php do_action( 'esp_summaries_page_top' ); ?>

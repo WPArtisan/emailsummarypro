@@ -33,7 +33,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					</th>
 					<td>
 						<input type="text" id="esp-summary-name" name="name" value="" class="regular-text" />
-						<p class="description"><?php esc_html_e( 'The name of this summary.', 'email-summary-pro' ); ?></p>
+						<p class="description"><?php esc_html_e( 'For identification purposes only, not displayed anywhere.', 'email-summary-pro' ); ?></p>
 					</td>
 				</tr>
 
@@ -76,16 +76,30 @@ if ( ! defined( 'ABSPATH' ) ) {
 					</td>
 				</tr>
 
+				<?php do_action( 'esp_edit_summary_form_before_title' ); ?>
+
+				<tr>
+					<th scope="row" valign="top">
+						<label for="esp-summary-title"><?php esc_html_e( 'Title', 'email-summary-pro' ); ?></label>
+					</th>
+					<td>
+						<input type="text" id="esp-summary-title" name="title" value="" class="regular-text" />
+						<p class="description"><?php esc_html_e( 'Title shown at the top of the summary.', 'email-summary-pro' ); ?></p>
+					</td>
+				</tr>
+
 				<?php do_action( 'esp_add_summary_form_before_disable_html' ); ?>
 
 				<tr>
 					<th scope="row" valign="top">
-						<label for="esp-disable-html-emails"><?php esc_html_e( 'Disable HTML Emails', 'email-summary-pro' ); ?></label>
+						<label for="esp-disable-html"><?php esc_html_e( 'Disable HTML Emails', 'email-summary-pro' ); ?></label>
 					</th>
 					<td>
-						<input type="hidden" name="disable_html" value="0">
-						<input type="checkbox" name="disable_html" id="esp-disable-html-emails" class="" value="true" />
-						<p class="description"><?php esc_html_e( 'Disable HTML emails and only recieve plain text ones.', 'email-summary-pro' ); ?></p>
+						<label>
+							<input type="hidden" name="disable_html" value="0">
+							<input type="checkbox" name="disable_html" id="esp-disable-html-emails" class="" value="true" />
+							<?php esc_html_e( 'Only receive plain text emails.', 'email-summary-pro' ); ?>
+						</label>
 					</td>
 				</tr>
 

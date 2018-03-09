@@ -2,12 +2,7 @@
 	<td style="<?php esp_element_style( 'td' ); ?>">
 		<h1 style="<?php esp_element_style( 'h1' ); ?>">
 			<center>
-				<?php echo sprintf(
-						__( '<a style="" target="_blank" href="%1$s"><strong>%2$s\'s</strong></a> Weekly Round Up', 'email-summary-pro' ),
-						esc_url( get_bloginfo('url') ),
-						get_bloginfo( 'site_title' )
-					);
-				?>
+				<?php echo $title; ?>
 			</center>
 		</h1>
 

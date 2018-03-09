@@ -155,6 +155,8 @@ class Email_Summary_Pro_Summary {
 		$this->status         = $this->setup_status();
 		$this->recipients     = $this->setup_recipients();
 		$this->subject        = $this->setup_subject();
+		$this->title_raw      = $this->setup_title_raw();
+		$this->title          = $this->setup_title();
 		$this->interval       = $this->setup_interval();
 		$this->template       = $this->setup_template();
 		$this->disable_html   = $this->setup_disable_html();
@@ -176,14 +178,23 @@ class Email_Summary_Pro_Summary {
 
 	/**
 	 * Setup the name of the summary.
+	 * Used of admin identification only.
 	 *
 	 * @access private
-	 *
 	 * @return string Name of the summary.
 	 */
 	private function setup_name() {
-		$title = get_the_title( $this->ID );
-		return $title;
+		$name = get_the_title( $this->ID );
+
+		/**
+		 * Filter the name used for this summary.
+		 *
+		 * @var string $name The name (main title) used for this summary.
+		 * @var object $this The current summary.
+		 */
+		$name = apply_filters( 'esp_summary_name', $name, $this );
+
+		return $name;
 	}
 
 	/**
@@ -195,6 +206,15 @@ class Email_Summary_Pro_Summary {
 	 */
 	private function setup_status() {
 		$status = get_post_status( $this->ID );
+
+		/**
+		 * Filter the status of this summary.
+		 *
+		 * @var string $status The status of this summary.
+		 * @var object $this The current summary.
+		 */
+		$status = apply_filters( 'esp_summary_status', $status, $this );
+
 		return $status;
 	}
 
@@ -207,6 +227,15 @@ class Email_Summary_Pro_Summary {
 	 */
 	private function setup_recipients() {
 		$recipients = $this->get_meta( 'recipients', true );
+
+		/**
+		 * Filter the recipients of this summary.
+		 *
+		 * @var string $recipients The recipients of this summary.
+		 * @var object $this The current summary.
+		 */
+		$recipients = apply_filters( 'esp_summary_recipients', $recipients, $this );
+
 		return $recipients;
 	}
 
@@ -219,7 +248,78 @@ class Email_Summary_Pro_Summary {
 	 */
 	private function setup_subject() {
 		$subject = $this->get_meta( 'subject', true );
+
+		/**
+		 * Filter the subject of this summary.
+		 *
+		 * @var string $subject The subject of this summary.
+		 * @var object $this The current summary.
+		 */
+		$subject = apply_filters( 'esp_summary_subject', $subject, $this );
+
 		return $subject;
+	}
+
+	/**
+	 * Setup the raw title for the summary.
+	 * No placeholders will be replaced.
+	 *
+	 * @access private
+	 * @return string Title of the summary.
+	 */
+	private function setup_title_raw() {
+		$title = $this->get_meta( 'title', true );
+
+		/**
+		 * Filter the title of this summary.
+		 *
+		 * @var string $name The title of this summary.
+		 * @var object $this The current summary.
+		 */
+		$title = apply_filters( 'esp_summary_title_raw', $title, $this );
+
+		return $title;
+	}
+
+	/**
+	 * Setup the title for the summary.
+	 * With all placeholders replaced.
+	 *
+	 * @access private
+	 * @return string Title of the summary.
+	 */
+	private function setup_title() {
+		$title = $this->get_meta( 'title', true );
+
+		$title_placeholders = array(
+			'site_name'         => get_bloginfo( 'name' ),
+			'site_description'  => get_bloginfo( 'description' ),
+			'site_url'          => get_bloginfo( 'url' ),
+			'blog_id'           => get_current_blog_id(),
+		);
+
+		/**
+		 * Add or remove any title placeholders using this hook.
+		 *
+		 * @param array $title_placeholders Placeholders for the title.
+		 * @var object $this The current summary.
+		 */
+		$title_placeholders = apply_filters( 'esp_title_placeholders', $title_placeholders, $this );
+
+		// Replace all the arguments.
+		foreach ( $title_placeholders as $key => $value ) {
+			$title = str_replace( sprintf( '{%s}', $key ), $value, $title );
+		}
+
+		/**
+		 * Filter the title of this summary.
+		 *
+		 * @var string $name The title of this summary.
+		 * @var object $this The current summary.
+		 */
+		$title = apply_filters( 'esp_summary_title', $title, $this );
+
+		return $title;
 	}
 
 	/**
@@ -231,6 +331,15 @@ class Email_Summary_Pro_Summary {
 	 */
 	private function setup_interval() {
 		$interval = $this->get_meta( 'interval', true );
+
+		/**
+		 * Filter the interval of this summary.
+		 *
+		 * @var string $interval The interval of this summary.
+		 * @var object $this The current summary.
+		 */
+		$interval = apply_filters( 'esp_summary_interval', $interval, $this );
+
 		return $interval;
 	}
 
@@ -243,6 +352,15 @@ class Email_Summary_Pro_Summary {
 	 */
 	private function setup_template() {
 		$template = $this->get_meta( 'template', true );
+
+		/**
+		 * Filter the template of this summary.
+		 *
+		 * @var string $template The template of this summary.
+		 * @var object $this The current summary.
+		 */
+		$template = apply_filters( 'esp_summary_template', $template, $this );
+
 		return $template;
 	}
 
@@ -255,6 +373,15 @@ class Email_Summary_Pro_Summary {
 	 */
 	private function setup_disable_html() {
 		$disable_html = $this->get_meta( 'disable_html', true );
+
+		/**
+		 * Filter disable_html of this summary.
+		 *
+		 * @var string $disable_html The disable_html of this summary.
+		 * @var object $this The current summary.
+		 */
+		$disable_html = apply_filters( 'esp_summary_disable_html', $disable_html, $this );
+
 		return $disable_html;
 	}
 
@@ -607,6 +734,7 @@ class Email_Summary_Pro_Summary {
 			'method'       => ! empty( $args['method'] ) ? $args['method']             : 'email',
 			'recipients'   => ! empty( $args['recipients'] ) ? $args['recipients']     : '',
 			'subject'      => ! empty( $args['subject'] ) ? $args['subject']           : '',
+			'title'        => ! empty( $args['title'] ) ? $args['title']               : '',
 			'interval'     => ! empty( $args['interval'] ) ? $args['interval']         : 'weekly',
 			'template'     => ! empty( $args['template'] ) ? $args['template']         : 'html',
 			'disable_html' => ! empty( $args['disable_html'] ) ? $args['disable_html'] : '0',

@@ -3,7 +3,7 @@
 	<head>
 	<meta name="viewport" content="width=device-width">
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title><?php echo sprintf( esc_html__( '%s\'s weekly roundup', 'email-summary-pro' ), get_bloginfo('site_name') ); ?></title>
+	<title><?php echo strip_tags( $title ); ?></title>
 	<style>
 	/* -------------------------------------
 		INLINED WITH htmlemail.io/inline

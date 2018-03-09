@@ -47,7 +47,7 @@ if ( ! function_exists( 'esp_get_template_part' ) ) :
 	 * @param  string $part     The template part to load.
 	 * @return string
 	 */
-	function esp_get_template_part( $summary, $template, $part ) {
+	function esp_get_template_part( $summary, $template, $order, $part ) {
 		global $esp_templates;
 
 		$method = $summary->method;
@@ -69,6 +69,7 @@ if ( ! function_exists( 'esp_get_template_part' ) ) :
 			'site_url'          => get_bloginfo( 'url' ),
 			'blog_id'           => get_current_blog_id(),
 			'summary_id'        => $summary->ID,
+			'title'             => $summary->title, // Name of the summary.
 			'date'              => $summary->date, // The roundup is sent the day after the week ends.
 			'date_from'         => $summary->date_from, // The first date of the week we're rounding up.
 			'date_to'           => $summary->date_to, // The last date of the week we're rounding up (inclusive).
@@ -93,13 +94,15 @@ if ( ! function_exists( 'esp_get_template_part' ) ) :
 		$arguments = apply_filters( 'esp_template_part_default_arguments', $arguments, $method, $template, $part );
 
 		// Template specific arguments.
-		if ( isset( $esp_templates[ $method ][ $template ][ $part ] ) ) {
+		if ( isset( $esp_templates[ $method ][ $template ][ $order ][ $part ] ) ) {
 
 			// The function should return a key => value array of argument => value.
-			$template_part_arguments = call_user_func( $esp_templates[ $method ][ $template ][ $part ] );
+			$template_part_arguments = call_user_func_array( $esp_templates[ $method ][ $template ][ $order ][ $part ], array( $summary->date_from, $summary->date_to ) );
 
-			// Merge them into the default arguments.
-			$arguments = array_merge( $arguments, $template_part_arguments );
+			if ( is_array( $template_part_arguments ) ) {
+				// Merge them into the default arguments.
+				$arguments = array_merge( $arguments, $template_part_arguments );
+			}
 		}
 
 		/**
@@ -192,7 +195,7 @@ if ( ! function_exists( 'esp_get_template' ) ) :
 		// Cycle through them all and string them together.
 		foreach ( $template_parts as $order => $parts ) {
 			foreach ( $parts as $part => $callback ) {
-				$content .= esp_get_template_part( $summary, $template, $part );
+				$content .= esp_get_template_part( $summary, $template, $order, $part );
 			}
 		}
 
