@@ -132,7 +132,7 @@ class Email_Summary_Pro_Admin_Extensions extends Email_Summary_Pro_Admin_Base {
 		$extensions = array(
 			array(
 				'name'        => 'Template Manager',
-				'description' => 'Change which template parts are shown in your summaries and in what the order.',
+				'description' => 'Manage the template parts that are shown in your summaries and in what the order.',
 				'image'       => 'https://8333-presscdn-0-98-pagely.netdna-ssl.com/wp-content/uploads/edd/2016/04/stripe-featured-image.png',
 				'link'        => 'https://emailsummarypro.com/extensions/template-manager/?utm_source=plugin&utm_medium=extensions-b',
 				'active'      => false,

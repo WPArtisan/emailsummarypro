@@ -740,7 +740,14 @@ class Email_Summary_Pro_Summary {
 			'disable_html' => ! empty( $args['disable_html'] ) ? $args['disable_html'] : '0',
 		);
 
-		$meta = apply_filters( 'esp_summary_meta', $meta, $this->ID );
+		/**
+		 * Filter the meta that gets saved for the summary.
+		 *
+		 * @var $meta array of meta to save.
+		 * @var $args array of form data that was passed to the summary.
+		 * @var ID of the current summary.
+		 */
+		$meta = apply_filters( 'esp_summary_meta', $meta, $args, $this->ID );
 
 		return $meta;
 	}

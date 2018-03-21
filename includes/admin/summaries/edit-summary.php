@@ -31,12 +31,12 @@ $summary = esp_get_summary( $summary_id );
 
 	<form id="esp-edit-summary" action="" method="POST">
 
-		<?php do_action( 'esp_edit_summary_form_top' ); ?>
+		<?php do_action( 'esp_edit_summary_form_top', $summary, $summary_id ); ?>
 
 		<table class="form-table">
 			<tbody>
 
-				<?php do_action( 'esp_edit_summary_form_before_name' ); ?>
+				<?php do_action( 'esp_edit_summary_form_before_name', $summary, $summary_id ); ?>
 
 				<tr>
 					<th scope="row" valign="top">
@@ -48,7 +48,7 @@ $summary = esp_get_summary( $summary_id );
 					</td>
 				</tr>
 
-				<?php do_action( 'esp_edit_summary_form_before_status' ); ?>
+				<?php do_action( 'esp_edit_summary_form_before_status', $summary, $summary_id ); ?>
 
 				<tr>
 					<th scope="row" valign="top">
@@ -63,7 +63,7 @@ $summary = esp_get_summary( $summary_id );
 					</td>
 				</tr>
 
-				<?php do_action( 'esp_edit_summary_form_before_recipients' ); ?>
+				<?php do_action( 'esp_edit_summary_form_before_recipients', $summary, $summary_id ); ?>
 
 				<tr>
 					<th scope="row" valign="top">
@@ -75,7 +75,7 @@ $summary = esp_get_summary( $summary_id );
 					</td>
 				</tr>
 
-				<?php do_action( 'esp_edit_summary_form_before_subject' ); ?>
+				<?php do_action( 'esp_edit_summary_form_before_subject', $summary, $summary_id ); ?>
 
 				<tr>
 					<th scope="row" valign="top">
@@ -87,7 +87,7 @@ $summary = esp_get_summary( $summary_id );
 					</td>
 				</tr>
 
-				<?php do_action( 'esp_edit_summary_form_before_title' ); ?>
+				<?php do_action( 'esp_edit_summary_form_before_title', $summary, $summary_id ); ?>
 
 				<tr>
 					<th scope="row" valign="top">
@@ -99,7 +99,7 @@ $summary = esp_get_summary( $summary_id );
 					</td>
 				</tr>
 
-				<?php do_action( 'esp_edit_summary_form_before_disable_html' ); ?>
+				<?php do_action( 'esp_edit_summary_form_before_disable_html', $summary, $summary_id ); ?>
 
 				<tr>
 					<th scope="row" valign="top">
@@ -117,7 +117,7 @@ $summary = esp_get_summary( $summary_id );
 			</tbody>
 		</table>
 
-		<?php do_action( 'esp_edit_summary_form_bottom' ); ?>
+		<?php do_action( 'esp_edit_summary_form_bottom', $summary, $summary_id ); ?>
 
 		<p class="submit">
 			<input type="hidden" name="summary_id" value="<?php echo absint( $summary->ID ); ?>" />

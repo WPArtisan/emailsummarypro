@@ -163,6 +163,15 @@ if ( ! function_exists( 'esp_get_template_parts' ) ) :
 		ksort( $template_parts );
 
 		/**
+		 * Filter all template parts
+		 *
+		 * @var string $template_parts array part_name => callback for arguments.
+		 * @var string $method string Always Email currently.
+		 * @var string $template string Template to load.
+		 */
+		$template_parts = apply_filters( 'esp_template_parts', $template_parts, $method, $template );
+
+		/**
 		 * Filter template parts for this method and template.
 		 *
 		 * @var string $template_parts array part_name => callback for arguments.
@@ -178,7 +187,7 @@ if ( ! function_exists( 'esp_get_template' ) ) :
 	/**
 	 * Get an entire template for a summary
 	 *
-	 * @param  onject $summary  Summary to load the template for.
+	 * @param  object $summary  Summary to load the template for.
 	 * @param  string $template Load a specifc template.
 	 * @return string Template content.
 	 */
@@ -189,6 +198,15 @@ if ( ! function_exists( 'esp_get_template' ) ) :
 
 		// Get all the registered template parts.
 		$template_parts = esp_get_template_parts( $summary->method, $template );
+
+		/**
+		 * Filter all the template parts for this template.
+		 *
+		 * @var  array  $template_parts The template parts.
+		 * @var  object $summary  Summary to load the template for.
+		 * @var  string $template Load a specifc template.
+		 */
+		$template_parts = apply_filters( 'esp_get_template_template_parts', $template_parts, $summary, $template );
 
 		$content = '';
 
