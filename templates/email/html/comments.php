@@ -4,7 +4,7 @@
 <tr>
 	<td style="<?php esp_element_style( 'td' ); ?>">
 
-		<h2 style="<?php esp_element_style( 'h2' ); ?>"><?php _e( 'Comments', 'email-summary-pro' ); ?></h2>
+		<h2 style="<?php esp_element_style( 'h2' ); ?>"><?php esc_html_e( 'Comments', 'email-summary-pro' ); ?></h2>
 
 		<p style="<?php esp_element_style( 'p' ); ?>">
 			<?php if ( ! $comment_stats ) : ?>
@@ -16,7 +16,7 @@
 				<?php echo sprintf(
 						__( 'You had <strong>%1$s</strong>', 'email-summary-pro' ),
 						sprintf(
-							_n( '1 approved comment', '%s approved comments', $comment_stats['comments_approved'], 'email-summary-pro' ), number_format( $comment_stats['comments_approved'] )
+							_n( '1 approved {site_title} comment', '%s approved comments', $comment_stats['comments_approved'], 'email-summary-pro' ), number_format( $comment_stats['comments_approved'] )
 						)
 					);
 				?>

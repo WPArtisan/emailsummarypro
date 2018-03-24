@@ -26,14 +26,14 @@ if ( ! function_exists( 'esp_add_template_part' ) ) :
 	 * @param string|array $callback Used to supply args to the template.
 	 * @return void
 	 */
-	function esp_add_template_part( $method, $template, $part, $order = 50, $callback = null ) {
+	function esp_add_template_part( $method, $template, $part, $order = 50 ) {
 		global $esp_templates;
 
 		if ( ! $esp_templates || ! is_array( $esp_templates ) ) {
 			$esp_templates = array();
 		}
 
-		$esp_templates[ $method ][ $template ][ $order ][ $part ] = $callback;
+		$esp_templates[ $method ][ $template ][ $order ][] = $part;
 	}
 endif;
 
@@ -53,7 +53,7 @@ if ( ! function_exists( 'esp_get_template_part' ) ) :
 		$method = $summary->method;
 
 		// Default to email.
-		if ( ! empty( $summary->method ) ) {
+		if ( empty( $method ) ) {
 			$method = 'email';
 		}
 
@@ -62,57 +62,43 @@ if ( ! function_exists( 'esp_get_template_part' ) ) :
 			return false;
 		}
 
-		// Default arguments used in all templates.
-		$arguments = array(
-			'site_name'         => get_bloginfo( 'name' ),
-			'site_description'  => get_bloginfo( 'description' ),
-			'site_url'          => get_bloginfo( 'url' ),
-			'blog_id'           => get_current_blog_id(),
-			'summary_id'        => $summary->ID,
-			'title'             => $summary->title, // Name of the summary.
-			'date'              => $summary->date, // The roundup is sent the day after the week ends.
-			'date_from'         => $summary->date_from, // The first date of the week we're rounding up.
-			'date_to'           => $summary->date_to, // The last date of the week we're rounding up (inclusive).
-			'element_styles_h1' => esp_get_element_style( 'h1' ),
-			'element_styles_h2' => esp_get_element_style( 'h2' ),
-			'element_styles_h3' => esp_get_element_style( 'h3' ),
-			'element_styles_h4' => esp_get_element_style( 'h4' ),
-			'element_styles_h5' => esp_get_element_style( 'h5' ),
-			'element_styles_h6' => esp_get_element_style( 'h6' ),
-			'element_styles_a'  => esp_get_element_style( 'a' ),
-			'element_styles_p'  => esp_get_element_style( 'p' ),
-		);
-
-		/**
-		 * Filter specific arguments used in all templates.
-		 *
-		 * @var array $arguments key => value array of default arguments.
-		 * @var string $method   Current method using to send the summary.
-		 * @var string $template Type of message to send.
-		 * @var string $part     Template part to load.
-		 */
-		$arguments = apply_filters( 'esp_template_part_default_arguments', $arguments, $method, $template, $part );
-
-		// Template specific arguments.
-		if ( isset( $esp_templates[ $method ][ $template ][ $order ][ $part ] ) ) {
-
-			// The function should return a key => value array of argument => value.
-			$template_part_arguments = call_user_func_array( $esp_templates[ $method ][ $template ][ $order ][ $part ], array( $summary->date_from, $summary->date_to ) );
-
-			if ( is_array( $template_part_arguments ) ) {
-				// Merge them into the default arguments.
-				$arguments = array_merge( $arguments, $template_part_arguments );
-			}
-		}
-
-		/**
-		 * Filter specific arguments used in this template.
-		 *
-		 * @var array $arguments key => value array of template specific arguments.
-		 */
-		$arguments = apply_filters( 'esp_template_part_arguments-' . $method . '-' . $template . '-' . $part, $arguments );
-
-		extract( $arguments );
+// // Default arguments used in all templates.
+// $arguments = array(
+// 	'site_name'         => get_bloginfo( 'name' ),
+// 	'site_description'  => get_bloginfo( 'description' ),
+// 	'site_url'          => get_bloginfo( 'url' ),
+// 	'blog_id'           => get_current_blog_id(),
+// 	'summary_id'        => $summary->ID,
+// 	'title'             => $summary->title, // Name of the summary.
+// 	'date'              => $summary->date, // The roundup is sent the day after the week ends.
+// 	'date_from'         => $summary->date_from, // The first date of the week we're rounding up.
+// 	'date_to'           => $summary->date_to, // The last date of the week we're rounding up (inclusive).
+// 	'element_styles_h1' => esp_get_element_style( 'h1' ),
+// 	'element_styles_h2' => esp_get_element_style( 'h2' ),
+// 	'element_styles_h3' => esp_get_element_style( 'h3' ),
+// 	'element_styles_h4' => esp_get_element_style( 'h4' ),
+// 	'element_styles_h5' => esp_get_element_style( 'h5' ),
+// 	'element_styles_h6' => esp_get_element_style( 'h6' ),
+// 	'element_styles_a'  => esp_get_element_style( 'a' ),
+// 	'element_styles_p'  => esp_get_element_style( 'p' ),
+// );
+//
+// /**
+//  * Filter specific arguments used in all templates.
+//  *
+//  * @var array $arguments key => value array of default arguments.
+//  * @var string $method   Current method using to send the summary.
+//  * @var string $template Type of message to send.
+//  * @var string $part     Template part to load.
+//  */
+// $arguments = apply_filters( 'esp_template_part_default_arguments', $arguments, $method, $template, $part );
+//
+// /**
+//  * Filter specific arguments used in this template.
+//  *
+//  * @var array $arguments key => value array of template specific arguments.
+//  */
+// $arguments = apply_filters( 'esp_template_part_arguments-' . $method . '-' . $template . '-' . $part, $arguments );
 
 		ob_start();
 
@@ -124,9 +110,21 @@ if ( ! function_exists( 'esp_get_template_part' ) ) :
 		// Turn off output buffering.
 		ob_end_clean();
 
-		// Replace all the arguments.
-		foreach ( $arguments as $key => $value ) {
-			$template_content = str_replace( sprintf( '{%s}', $key ), $value, $template_content );
+		// Extract all the placeholders.
+		preg_match_all( '~\{(.+?)\}~', $template_content , $matches );
+
+		if ( ! empty( $matches[1] ) ) {
+			// Get all the registered placeholders.
+			$registered_placeholders = array();
+			// Only get the valid placeholders.
+			$valid_placeholders = array_intersect_key( $registered_placeholders, array_flip( $matches[1] ) );
+			// Loop over all the matches.
+			foreach ( $valid_placeholders as $valid_placeholder ) {
+				// Get the value.
+				$value = call_user_func_array( $registered_placeholders[ $valid_placeholder ], $summary, $template, $order, $part );
+				// Replace the match.
+				$template_content = str_replace( sprintf( '{%s}', $match ), $value, $template_content );
+			}
 		}
 
 		/**
@@ -212,7 +210,7 @@ if ( ! function_exists( 'esp_get_template' ) ) :
 
 		// Cycle through them all and string them together.
 		foreach ( $template_parts as $order => $parts ) {
-			foreach ( $parts as $part => $callback ) {
+			foreach ( $parts as $part ) {
 				$content .= esp_get_template_part( $summary, $template, $order, $part );
 			}
 		}
