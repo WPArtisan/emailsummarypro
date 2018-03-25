@@ -128,12 +128,11 @@ if ( ! function_exists( 'esp_get_template_part' ) ) :
 		}
 
 		/**
-		 * Filter specific arguments used in this template.
+		 * Filter this template content.
 		 *
 		 * @var string $template_content The content of the tempate.
-		 * @var array  $arguments        key => value array of template specific arguments.
 		 */
-		$template_content = apply_filters( 'esp_template_part-' . $method . '-' . $template . '-' . $part, $template_content, $arguments );
+		$template_content = apply_filters( 'esp_template_part-' . $method . '-' . $template . '-' . $part, $template_content );
 
 		return $template_content;
 	}

@@ -108,9 +108,9 @@ class Email_Summary_Pro_Admin extends Email_Summary_Pro_Admin_Base {
 			// add_action( current_action(), 'esp_contextual_help', 10, 0 );
 		}
 
-		add_action( current_action(), array( $this, 'setup_tabs' ), 10 );
-		add_action( current_action(), array( $this, 'add_screen_options' ), 10, 0 );
-		add_action( current_action(), array( $this, 'setup_admin_summaries_list_table' ), 10, 0 );
+		add_action( current_filter(), array( $this, 'setup_tabs' ), 10 );
+		add_action( current_filter(), array( $this, 'add_screen_options' ), 10, 0 );
+		add_action( current_filter(), array( $this, 'setup_admin_summaries_list_table' ), 10, 0 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'scripts' ), 10, 1 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'styles' ), 10, 1 );
 	}
