@@ -168,6 +168,7 @@ if ( ! class_exists( 'Email_Summary_Pro' ) ) :
 			require ESP_PLUGIN_DIR . 'includes/class-tabs-helper.php';
 			require ESP_PLUGIN_DIR . 'includes/class-email.php';
 			require ESP_PLUGIN_DIR . 'includes/class-summary.php';
+			require ESP_PLUGIN_DIR . 'includes/class-license.php';
 			require ESP_PLUGIN_DIR . 'includes/actions.php';
 			require ESP_PLUGIN_DIR . 'includes/actions-cron.php';
 			require ESP_PLUGIN_DIR . 'includes/admin/summaries/class-admin-summaries-list-table.php';
