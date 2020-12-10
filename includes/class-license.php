@@ -62,36 +62,39 @@ if ( ! class_exists( 'Email_Summary_Pro_License' ) ) :
 		 */
 		public function hooks() {
 
-			// Register settings
-			add_filter( 'esp_settings_licenses', array( $this, 'settings' ), 1 );
+			// Tell the extension page the extension is active.
+			add_filter( 'esp_extension_active_' . $this->item_id, '__return_true', 10, 1 );
+
+			// Save license
+			add_filter( 'esp_save_licenses', array( $this, 'save_licenses' ), 1 );
 
 			// Display help text at the top of the Licenses tab
-			add_action( 'esp_settings_tab_top', array( $this, 'license_help_text' ) );
+			// add_action( 'esp_settings_tab_top', array( $this, 'license_help_text' ) );
 
 			// Activate license key on settings save
 			add_action( 'admin_init', array( $this, 'activate_license' ) );
 
 			// Deactivate license key
-			add_action( 'admin_init', array( $this, 'deactivate_license' ) );
+			// add_action( 'admin_init', array( $this, 'deactivate_license' ) );
 
 			// Check that license is valid once per week
-			if ( esp_doing_cron() ) {
-				add_action( 'esp_weekly_scheduled_events', array( $this, 'weekly_license_check' ) );
-			}
+			// if ( esp_doing_cron() ) {
+			// 	add_action( 'esp_weekly_scheduled_events', array( $this, 'weekly_license_check' ) );
+			// }
 
 			// For testing license notices, uncomment this line to force checks on every page load
 			//add_action( 'admin_init', array( $this, 'weekly_license_check' ) );
 
 			// Updater
-			add_action( 'admin_init', array( $this, 'auto_updater' ), 0 );
+			// add_action( 'admin_init', array( $this, 'auto_updater' ), 0 );
 
 			// Display notices to admins
-			add_action( 'admin_notices', array( $this, 'notices' ) );
+			// add_action( 'admin_notices', array( $this, 'notices' ) );
 
-			add_action( 'in_plugin_update_message-' . plugin_basename( $this->file ), array( $this, 'plugin_row_license_missing' ), 10, 2 );
+			// add_action( 'in_plugin_update_message-' . plugin_basename( $this->file ), array( $this, 'plugin_row_license_missing' ), 10, 2 );
 
 			// Register plugins for beta support
-			add_filter( 'esp_beta_enabled_extensions', array( $this, 'register_beta_support' ) );
+			// add_filter( 'esp_beta_enabled_extensions', array( $this, 'register_beta_support' ) );
 		}
 
 		/**
@@ -130,19 +133,8 @@ if ( ! class_exists( 'Email_Summary_Pro_License' ) ) :
 		 * @param array   $settings
 		 * @return  array
 		 */
-		public function settings( $settings ) {
-			$esp_license_settings = array(
-				array(
-					'id'      => $this->item_shortname . '_license_key',
-					'name'    => sprintf( __( '%1$s', 'email-summary-pro' ), $this->item_name ),
-					'desc'    => '',
-					'type'    => 'license_key',
-					'options' => array( 'is_valid_license_option' => $this->item_shortname . '_license_active' ),
-					'size'    => 'regular'
-				)
-			);
+		public function save_licenses( $settings ) {
 
-			return array_merge( $settings, $esp_license_settings );
 		}
 
 		/**

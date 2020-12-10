@@ -86,6 +86,9 @@ class Email_Summary_Pro_Admin_Extensions extends Email_Summary_Pro_Admin_Base {
 		.esp-cta-button {
 			margin-top: 30px !important;
 		}
+		.esp-license-input {
+			width: 100%;
+		}
 		</style>
 
 		<h2>
@@ -94,31 +97,46 @@ class Email_Summary_Pro_Admin_Extensions extends Email_Summary_Pro_Admin_Base {
 		</h2>
 
 		<p>
-			<?php echo wp_kses( __( 'These extensions <b>add extra functionality</b> to your email summaries.', 'wp-native-articles' ), array( 'b' => true ) ); ?>
+			<?php echo wp_kses( __( 'These extensions <b>add extra functionality</b> to your email summaries.', 'email-summary-pro' ), array( 'b' => true ) ); ?>
 		</p>
 
-		<div class="esp-grid-container">
-			<?php foreach ( $this->get_extentions() as $extension ) : ?>
-				<div class="esp-grid-item">
-					<h2>
+		<form method="post" action="options.php">
+			<div class="esp-grid-container">
+				<?php foreach ( $this->get_extentions() as $extension ) : ?>
+					<div class="esp-grid-item">
+						<h2>
+							<a href="<?php echo esc_html( $extension['link'] ); ?>" target="_blank">
+								<?php echo esc_html( $extension['name'] ); ?>
+							</a>
+						</h2>
 						<a href="<?php echo esc_html( $extension['link'] ); ?>" target="_blank">
-							<?php echo esc_html( $extension['name'] ); ?>
+							<img src="<?php echo esc_html( $extension['image'] ); ?>" alt="" />
 						</a>
-					</h2>
-					<a href="<?php echo esc_html( $extension['link'] ); ?>" target="_blank">
-						<img src="<?php echo esc_html( $extension['image'] ); ?>" alt="" />
-					</a>
-					<div class="esp-body">
-						<p>
-							<?php echo esc_html( $extension['description'] ); ?>
-						</p>
-						<a class="button button-secondary esp-cta-button" href="<?php echo esc_html( $extension['link'] ); ?>" target="_blank">
-							<?php echo esc_html_e( 'Get this extension', 'email-summary-pro' ); ?>
-						</a>
+						<div class="esp-body">
+							<p>
+								<?php echo esc_html( $extension['description'] ); ?>
+							</p>
+
+							<?php if ( apply_filters( 'esp_extension_active_' . $extension['item_id'], false ) ) : ?>
+
+								<input type="text" id="license_key" name="wpna_license_key" value="" class="esp-license-input">
+								<p><?php echo esc_html_e( 'Please enter your licence key to enable updates.', 'email-summary-pro' ); ?><p>
+
+							<?php else :?>
+								<a class="button button-secondary esp-cta-button" href="<?php echo esc_html( $extension['link'] ); ?>" target="_blank">
+									<?php echo esc_html_e( 'Get this extension', 'email-summary-pro' ); ?>
+								</a>
+							<?php endif; ?>
+						</div>
 					</div>
-				</div>
-			<?php endforeach; ?>
-		</div>
+				<?php endforeach; ?>
+
+			</div>
+
+			<?php wp_nonce_field( 'esp_licenses-save', '__wpna_licenses_nonce' ); ?>
+			<input type="hidden" name="esp-action" value="save_licenses" />
+			<input type="submit" class="button-primary" name="activate_license" value="<?php esc_html_e( 'Save Changes', 'email-summary-pro' ); ?>"/>
+		</form>
 		<?php
 	}
 
@@ -132,6 +150,7 @@ class Email_Summary_Pro_Admin_Extensions extends Email_Summary_Pro_Admin_Base {
 		$extensions = array(
 			array(
 				'name'        => 'Template Manager',
+				'item_id'     => 12,
 				'description' => 'Manage the template parts that are shown in your summaries and in what the order.',
 				'image'       => 'https://8333-presscdn-0-98-pagely.netdna-ssl.com/wp-content/uploads/edd/2016/04/stripe-featured-image.png',
 				'link'        => 'https://emailsummarypro.com/extensions/template-manager/?utm_source=plugin&utm_medium=extensions-b',
@@ -139,6 +158,7 @@ class Email_Summary_Pro_Admin_Extensions extends Email_Summary_Pro_Admin_Base {
 			),
 			array(
 				'name'        => 'Summary Frequency',
+				'item_id'     => 13,
 				'description' => 'Adjust the frequency of your summaries. Hourly, Daily, Monthly, as often as you like',
 				'image'       => 'https://8333-presscdn-0-98-pagely.netdna-ssl.com/wp-content/uploads/edd/2016/04/stripe-featured-image.png',
 				'link'        => 'https://emailsummarypro.com/extensions/summary-frequency/?utm_source=plugin&utm_medium=extensions-b',
@@ -146,6 +166,7 @@ class Email_Summary_Pro_Admin_Extensions extends Email_Summary_Pro_Admin_Base {
 			),
 			array(
 				'name'        => 'Users as Recipients',
+				'item_id'     => 13,
 				'description' => 'Set the Recipients as WordPress user levels.',
 				'image'       => 'https://8333-presscdn-0-98-pagely.netdna-ssl.com/wp-content/uploads/edd/2016/04/stripe-featured-image.png',
 				'link'        => 'https://emailsummarypro.com/extensions/summary-frequency/?utm_source=plugin&utm_medium=extensions-b',
@@ -153,6 +174,7 @@ class Email_Summary_Pro_Admin_Extensions extends Email_Summary_Pro_Admin_Base {
 			),
 			array(
 				'name'        => 'Template Builder',
+				'item_id'     => 13,
 				'description' => 'Build custom Template parts right from the WP Admin.',
 				'image'       => 'https://8333-presscdn-0-98-pagely.netdna-ssl.com/wp-content/uploads/edd/2016/01/recurring-payments-product-image.png',
 				'link'        => 'https://emailsummarypro.com/extensions/author-summary/?utm_source=plugin&utm_medium=extensions-b',
@@ -160,6 +182,7 @@ class Email_Summary_Pro_Admin_Extensions extends Email_Summary_Pro_Admin_Base {
 			),
 			array(
 				'name'        => 'Author Summary',
+				'item_id'     => 13,
 				'description' => 'Send Authors summarys of how their posts are doing.',
 				'image'       => 'https://8333-presscdn-0-98-pagely.netdna-ssl.com/wp-content/uploads/edd/2016/01/recurring-payments-product-image.png',
 				'link'        => 'https://emailsummarypro.com/extensions/author-summary/?utm_source=plugin&utm_medium=extensions-b',
@@ -167,6 +190,7 @@ class Email_Summary_Pro_Admin_Extensions extends Email_Summary_Pro_Admin_Base {
 			),
 			array(
 				'name'        => 'Google Analytics',
+				'item_id'     => 13,
 				'description' => 'Add Google Analytics information to your Summary Emails.',
 				'image'       => 'https://8333-presscdn-0-98-pagely.netdna-ssl.com/wp-content/uploads/2015/08/software-licensing-product-image.png',
 				'link'        => 'https://emailsummarypro.com/extensions/google-analytics/?utm_source=plugin&utm_medium=extensions-b',
